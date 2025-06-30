@@ -1,0 +1,32 @@
+@font-face {
+    font-family: "Funnel Display", sans-serif;
+    src: url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
+}
+
+:root {
+    /* Status Colors */
+    --success: #28a745;
+    /* Green - Success */
+    --failed: #dc3545;
+    /* Red - Error */
+    --pending: #ffc107;
+    /* Yellow - Warning/Pending */
+
+    /* Brand Colors */
+    --primary-color: #0d6efd;
+    --primary-color-regular: #3D82E8;
+    --primary-color-light: #6696DC;
+    /* Blue - Primary Theme */
+
+    /* Text Colors */
+    --primary-text: #212529;
+    /* Dark Gray - Main text */
+    --secondary-text: #6c757d;
+    /* Light Gray - Subtext */
+
+    /* Border/Background Colors */
+    --light-border: #e9ecef;
+    /* Light Gray - subtle borders */
+    --deep-border: #adb5bd;
+    /* Medium Gray - section separators */
+}
