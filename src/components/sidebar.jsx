@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './sidebar.css'
 import logo from './../assets/ithyaraa-logo.png'
 import { FiChevronRight, FiChevronDown } from 'react-icons/fi';
-import { RiDashboardHorizontalFill } from "react-icons/ri";
+import { RiDashboardFill } from 'react-icons/ri'
 import { useNavigate } from 'react-router-dom';
-import { mainMenu, productMenu } from './menus';
+import { mainMenu, marketingMenu, ecommerceMenu, userManagementMenu } from './menus';
 
 
 
@@ -36,7 +36,7 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
 
     return (
         <div className='sidebar--component'>
-            {keymenu.map((menu) => {
+            {keymenu?.map((menu) => {
                 const isParentActive =
                     menu.menuID === activeMenu ||
                     menu.subMenu?.some(sub => sub.menuID === activeMenu);
@@ -49,7 +49,7 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
                         >
                             <div className="left">
                                 <span className="icon">
-                                    {menu.icon ? menu.icon : <RiDashboardHorizontalFill />}
+                                    {menu.icon ? menu.icon : <RiDashboardFill />}
                                 </span>
                                 <span className="text-menu">{menu.title}</span>
                             </div>
@@ -62,7 +62,7 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
 
                         {openMenu === menu.id && menu.subMenu?.length > 0 && (
                             <div className="submenu">
-                                {menu.subMenu.map((sub) => (
+                                {menu.subMenu?.map((sub) => (
                                     <div
                                         key={sub.menuID}
                                         className={`submenu-item ${activeMenu === sub.menuID ? 'active-submenu' : ''}`}
@@ -99,8 +99,17 @@ const Sidebar = ({ activeMenu }) => {
             <div className="sidebar-menu">
                 <p className='sidebar-p'>Main</p>
                 <SidebarMenu keymenu={mainMenu} activeMenu={activeMenu} />
-                <p className='sidebar-p'>Product</p>
-                <SidebarMenu keymenu={productMenu} activeMenu={activeMenu} />
+                <p className='sidebar-p'>Marketing Tools</p>
+                <SidebarMenu keymenu={marketingMenu} activeMenu={activeMenu} />
+                <p className='sidebar-p'>Ecom Tools</p>
+                <SidebarMenu keymenu={ecommerceMenu} activeMenu={activeMenu} />
+                <p className='sidebar-p'>User Management</p>
+                <SidebarMenu keymenu={userManagementMenu} activeMenu={activeMenu} />
+            </div>
+            <div className="bottom-sidebar">
+                <button className='primary-button-gta'>Go to Admin</button>
+                <button className='logout-button'>Logout</button>
+
             </div>
         </aside>
     );

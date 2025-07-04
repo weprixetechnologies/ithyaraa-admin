@@ -1,0 +1,13 @@
+.addproducts-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 10px;
+}
+
+.right-layout--product,
+.left-layout--product {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

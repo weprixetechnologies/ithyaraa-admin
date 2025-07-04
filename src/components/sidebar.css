@@ -2,11 +2,14 @@
     width: 100%;
     /* padding: 15px; */
     height: 100%;
+    max-height: 100dvh;
     background-color: #fff;
     /* Make shadow visible */
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 11;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .toplayout {
@@ -56,7 +59,9 @@
     flex-direction: row;
     gap: 10px;
     padding: 10px 15px;
-    background-color: var(--primary-color);
+    background: #745eef;
+    background: linear-gradient(133deg, rgba(116, 94, 239, 1) 0%, rgba(237, 94, 239, 1) 100%);
+    /* background-color: var(--primary-color); */
     color: #fff;
     font-size: 14px;
     border: none;
@@ -118,6 +123,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-bottom: 20px;
 }
 
 .welcome-name {
@@ -136,7 +142,18 @@
 }
 
 .sidebar-menu {
-    padding: 20px 15px;
+    padding: 0px 15px;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari */
 }
 
 .sidebar-p {
@@ -147,12 +164,12 @@
 }
 
 .sidebar--component {
-    margin-top: 20px;
+    margin-top: 10px;
     /* width: 90%; */
 }
 
 .menu-item {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 .menu-title {
@@ -186,8 +203,12 @@
 }
 
 .submenu {
+
     margin-left: 20px;
-    margin-top: 6px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .submenu-item {
@@ -198,6 +219,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.2s;
+
 }
 
 .submenu-item:hover {
@@ -223,4 +245,42 @@
 
 .submenu-item.active-submenu {
     border: 1px solid;
+}
+
+.bottom-sidebar {
+    /* margin-top: 10px;
+    margin-bottom: 5px; */
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+}
+
+.bottom-sidebar button {
+    padding: 10px;
+    /* border: none; */
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.primary-button-gta,
+.logout-button:hover {
+    color: var(--failed);
+    border: 1px solid var(--failed);
+    background-color: #fff;
+}
+
+.logout-button,
+.primary-button-gta:hover {
+    border: 1px solid var(--failed);
+    color: #fff;
+    background-color: var(--failed);
+}
+
+.submenu .text {
+    text-transform: capitalize;
+}
+
+.text-menu {
+    text-transform: capitalize;
 }

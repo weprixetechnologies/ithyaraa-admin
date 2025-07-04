@@ -53,12 +53,12 @@ const TopbarLayout = ({ title }) => {
                 <button className="go-fullscreen  u--c--rtb" onClick={handleToggleFullscreen}>
                     {isFullscreen ? <FiMinimize /> : <FiMaximize />}
                 </button>
-                <button className="profile-topbar ripple-container">
+                <div className="profile-topbar ripple-container">
                     <p>Profile</p>
                     <button>
                         <CiLocationArrow1 />
                     </button>
-                </button>
+                </div>
             </div>
         </section>
     );

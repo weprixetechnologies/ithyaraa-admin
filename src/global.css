@@ -30,6 +30,7 @@
     --primary-text: #212529;
     /* Dark Gray - Main text */
     --light-secondary-text: #a4a8b5;
+    --dark-secondary-text: #353638;
     --secondary-text: #6c757d;
     ;
     /* Light Gray - Subtext */
@@ -52,10 +53,16 @@
 
 
 
+
+.website-fullcontent {
+    height: 100dvh;
+}
+
 .website-fullcontent-children {
     padding: 10px;
     background-color: var(--bg-light);
     height: calc(100% - 70px);
+    overflow-y: auto;
 }
 
 .layout-ds {
@@ -66,8 +73,4 @@
 
 .auto-adjusting-sidebar {
     position: relative;
-}
-
-.website-fullcontent {
-    height: 100dvh;
 }

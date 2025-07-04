@@ -1,0 +1,32 @@
+.custom-date-picker {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: white;
+    width: fit-content;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 38px;
+}
+
+.date-input {
+    border: none;
+    padding: 10px 14px;
+    font-size: 16px;
+    color: #4b5563;
+    /* Tailwind gray-600 equivalent */
+    outline: none;
+    width: 120px;
+}
+
+.calendar-icon {
+    background-color: #4f46e5;
+    /* Tailwind indigo-600 */
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    height: 100%;
+}
