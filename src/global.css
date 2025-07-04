@@ -3,7 +3,14 @@
     src: url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
 }
 
+@font-face {
+    font-family: "Montserrat", sans-serif;
+    src: url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+    ;
+}
+
 :root {
+    --bg-light: #eeeef1;
     /* Status Colors */
     --success: #28a745;
     /* Green - Success */
@@ -13,15 +20,18 @@
     /* Yellow - Warning/Pending */
 
     /* Brand Colors */
-    --primary-color: #0d6efd;
+    --primary-color: rgb(13, 110, 253);
     --primary-color-regular: #3D82E8;
     --primary-color-light: #6696DC;
+    --primary-color-deep: #1B3C53;
     /* Blue - Primary Theme */
 
     /* Text Colors */
     --primary-text: #212529;
     /* Dark Gray - Main text */
+    --light-secondary-text: #a4a8b5;
     --secondary-text: #6c757d;
+    ;
     /* Light Gray - Subtext */
 
     /* Border/Background Colors */
@@ -29,4 +39,35 @@
     /* Light Gray - subtle borders */
     --deep-border: #adb5bd;
     /* Medium Gray - section separators */
+
+    --f2: "Montserrat", sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Funnel Display", sans-serif;
+}
+
+
+
+.website-fullcontent-children {
+    padding: 10px;
+    background-color: var(--bg-light);
+    height: calc(100% - 70px);
+}
+
+.layout-ds {
+    display: grid;
+    position: relative;
+    grid-template-columns: 18% 82%;
+}
+
+.auto-adjusting-sidebar {
+    position: relative;
+}
+
+.website-fullcontent {
+    height: 100dvh;
 }
