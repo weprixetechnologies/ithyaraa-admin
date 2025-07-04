@@ -3,6 +3,7 @@ import Layout from '../../layout'
 import './addproduct.css'
 import Container from '../../components/ui/container'
 import InputCustomLabelled from '../../components/ui/customLabelledField'
+import DataTable from '../../components/ui/dataTable'
 
 const AddProduct = () => {
     const [productName, setName] = useState('');
@@ -44,11 +45,19 @@ const AddProduct = () => {
 
 
                     </Container>
+                    <Container title={'Product Data'}></Container>
+                    <Container title={'Product Attributes'}></Container>
+                    <Container title={'Product Variations'}></Container>
+                    <Container title={'Schedule Sale'}></Container>
+
                 </div>
                 <div className="right-layout--product">
                     <Container title={'Featured Images'}></Container>
                     <Container title={'Gallery Images'}></Container>
                     <Container title={'Gallery Video'}></Container>
+                    <Container title={'Product Categories'}></Container>
+                    <Container title={'Product Tags'}></Container>
+                    <Container title={'Offer Section'}></Container>
 
                 </div>
 

@@ -1,3 +1,4 @@
+// Remix Icons (RI) – react-icons/ri
 import {
     RiDashboardFill,
     RiBarChart2Line,
@@ -8,13 +9,21 @@ import {
     RiGift2Line,
     RiCouponLine,
     RiFlashlightLine,
-    RiShoppingBag3Line,
     RiStockLine,
     RiFileList2Line,
+    RiShoppingBag3Line,
     RiMoneyDollarCircleLine,
     RiMegaphoneLine,
-    RiDashboardHorizontalFill
+    RiAddLine,
+    RiListUnordered,
+    RiUpload2Line,
+    RiRefund2Line,
+    RiMoneyDollarBoxLine,
+    RiFileUserLine,
+    RiFileChartLine,
 } from 'react-icons/ri';
+
+// Material Design Icons (MD) – react-icons/md
 import {
     MdOutlineGroups,
     MdOutlinePersonAdd,
@@ -29,6 +38,7 @@ import {
     MdOutlineConfirmationNumber,
     MdOutlineCampaign,
 } from 'react-icons/md';
+
 
 export const mainMenu = [
     {
@@ -65,8 +75,8 @@ export const mainMenu = [
         icon: <RiPriceTag3Line />,
         title: 'Brand',
         subMenu: [
-            { menuID: 'admin-4a', url: '/brands/add', icon: null, title: 'Add Brands' },
-            { menuID: 'admin-4b', url: '/brands/all', icon: null, title: 'All Brands' },
+            { menuID: 'admin-4a', url: '/brands/add', icon: <RiAddLine />, title: 'Add Brands' },
+            { menuID: 'admin-4b', url: '/brands/all', icon: <RiListUnordered />, title: 'All Brands' },
         ],
     },
     {
@@ -76,10 +86,10 @@ export const mainMenu = [
         icon: <RiGift2Line />,
         title: 'Combo',
         subMenu: [
-            { menuID: 'admin-5a', url: '/combo/add', icon: null, title: 'Add Combo' },
-            { menuID: 'admin-5b', url: '/combo/make', icon: null, title: 'Add Make Combo' },
-            { menuID: 'admin-5c', url: '/combo/all-make', icon: null, title: 'All Make Combos' },
-            { menuID: 'admin-5d', url: '/combo/prebuilt', icon: null, title: 'All Prebuilt Combo' },
+            { menuID: 'admin-5a', url: '/combo/add', icon: <RiAddLine />, title: 'Add Combo' },
+            { menuID: 'admin-5b', url: '/combo/make', icon: <RiAddLine />, title: 'Add Make Combo' },
+            { menuID: 'admin-5c', url: '/combo/all-make', icon: <RiListUnordered />, title: 'All Make Combos' },
+            { menuID: 'admin-5d', url: '/combo/prebuilt', icon: <RiListUnordered />, title: 'All Prebuilt Combo' },
         ],
     },
     {
@@ -89,9 +99,9 @@ export const mainMenu = [
         icon: <RiGift2Line />,
         title: 'Giftcards',
         subMenu: [
-            { menuID: 'admin-6a', url: '/giftcards/add', icon: null, title: 'Add Giftcard' },
-            { menuID: 'admin-6b', url: '/giftcards/all', icon: null, title: 'All Giftcards' },
-            { menuID: 'admin-6c', url: '/giftcards/bulk', icon: null, title: 'Bulk Giftcards' },
+            { menuID: 'admin-6a', url: '/giftcards/add', icon: <RiAddLine />, title: 'Add Giftcard' },
+            { menuID: 'admin-6b', url: '/giftcards/all', icon: <RiListUnordered />, title: 'All Giftcards' },
+            { menuID: 'admin-6c', url: '/giftcards/bulk', icon: <RiUpload2Line />, title: 'Bulk Giftcards' },
         ],
     },
     {
@@ -101,8 +111,8 @@ export const mainMenu = [
         icon: <RiCouponLine />,
         title: 'Offers',
         subMenu: [
-            { menuID: 'admin-7a', url: '/offers/add', icon: null, title: 'Add Offers' },
-            { menuID: 'admin-7b', url: '/offers/all', icon: null, title: 'All Offers' },
+            { menuID: 'admin-7a', url: '/offers/add', icon: <RiAddLine />, title: 'Add Offers' },
+            { menuID: 'admin-7b', url: '/offers/all', icon: <RiListUnordered />, title: 'All Offers' },
         ],
     },
     {
@@ -112,8 +122,8 @@ export const mainMenu = [
         icon: <RiFlashlightLine />,
         title: 'Flash Sale',
         subMenu: [
-            { menuID: 'admin-8a', url: '/flash-sale/add', icon: null, title: 'Add Flash Sale' },
-            { menuID: 'admin-8b', url: '/flash-sale/all', icon: null, title: 'All Flash Sale' },
+            { menuID: 'admin-8a', url: '/flash-sale/add', icon: <RiAddLine />, title: 'Add Flash Sale' },
+            { menuID: 'admin-8b', url: '/flash-sale/all', icon: <RiListUnordered />, title: 'All Flash Sale' },
         ],
     },
     {
@@ -131,9 +141,9 @@ export const mainMenu = [
         icon: <RiFileList2Line />,
         title: 'Reports',
         subMenu: [
-            { menuID: 'admin-10a', url: '/reports/users', icon: null, title: 'User Report' },
-            { menuID: 'admin-10b', url: '/reports/sales', icon: null, title: 'Sales Report' },
-            { menuID: 'admin-10c', url: '/reports/payment', icon: null, title: 'Payment Report' },
+            { menuID: 'admin-10a', url: '/reports/users', icon: <RiFileUserLine />, title: 'User Report' },
+            { menuID: 'admin-10b', url: '/reports/sales', icon: <RiFileChartLine />, title: 'Sales Report' },
+            { menuID: 'admin-10c', url: '/reports/payment', icon: <RiMoneyDollarBoxLine />, title: 'Payment Report' },
         ],
     },
     {
@@ -143,9 +153,9 @@ export const mainMenu = [
         icon: <RiShoppingBag3Line />,
         title: 'Orders',
         subMenu: [
-            { menuID: 'admin-11a', url: '/orders/all', icon: null, title: 'All Orders' },
-            { menuID: 'admin-11b', url: '/orders/add', icon: null, title: 'Add Orders' },
-            { menuID: 'admin-11c', url: '/orders/returns', icon: null, title: 'Returns' },
+            { menuID: 'admin-11a', url: '/orders/all', icon: <RiListUnordered />, title: 'All Orders' },
+            { menuID: 'admin-11b', url: '/orders/add', icon: <RiAddLine />, title: 'Add Orders' },
+            { menuID: 'admin-11c', url: '/orders/returns', icon: <RiRefund2Line />, title: 'Returns' },
         ],
     },
     {
@@ -155,8 +165,8 @@ export const mainMenu = [
         icon: <RiMoneyDollarCircleLine />,
         title: 'Payment',
         subMenu: [
-            { menuID: 'admin-12a', url: '/payment/add', icon: null, title: 'Add Payment' },
-            { menuID: 'admin-12b', url: '/payment/all', icon: null, title: 'All Payment' },
+            { menuID: 'admin-12a', url: '/payment/add', icon: <RiAddLine />, title: 'Add Payment' },
+            { menuID: 'admin-12b', url: '/payment/all', icon: <RiListUnordered />, title: 'All Payment' },
         ],
     },
     {
@@ -166,11 +176,12 @@ export const mainMenu = [
         icon: <RiMegaphoneLine />,
         title: 'Marketing',
         subMenu: [
-            { menuID: 'admin-13a', url: '/marketing/add-coupons', icon: null, title: 'Add Coupons' },
-            { menuID: 'admin-13b', url: '/marketing/all-coupons', icon: null, title: 'All Coupons' },
+            { menuID: 'admin-13a', url: '/marketing/add-coupons', icon: <RiAddLine />, title: 'Add Coupons' },
+            { menuID: 'admin-13b', url: '/marketing/all-coupons', icon: <RiListUnordered />, title: 'All Coupons' },
         ],
     },
 ];
+
 
 export const userManagementMenu = [
     {

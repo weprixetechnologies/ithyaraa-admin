@@ -57,3 +57,76 @@
     border-radius: 8px;
     resize: vertical;
 }
+
+.datatable-container {
+    width: 100%;
+    overflow-x: auto;
+    font-family: sans-serif;
+}
+
+.datatable {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.datatable thead {
+    background-color: #f2f2f2;
+}
+
+.datatable th,
+.datatable td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.datatable td {
+    max-width: 150px;
+    /* adjust as needed */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    cursor: pointer;
+}
+
+.datatable td:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    top: 100%;
+    left: 0;
+    white-space: nowrap;
+    z-index: 999;
+    font-size: 12px;
+}
+
+.pagination-controls {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+}
+
+.pagination-controls button {
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pagination-controls button.active {
+    background: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
