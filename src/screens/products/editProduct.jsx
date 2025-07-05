@@ -1,7 +1,6 @@
 /* eslint-disable */
 
-
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Layout from '../../layout'
 import './addproduct.css'
 import Container from '../../components/ui/container'
@@ -19,6 +18,44 @@ const offerArr = [
     { label: 'Diwali Deal', value: 'diwali2025' }
 ]
 
+const dummyVariations = [
+    {
+        v1: 'Black',
+        v2: 'M',
+        v3: '',
+        v4: '',
+        vCount: 2,
+        v_id: 'Black_M',
+        variation_id: 'black-m-001',
+        stock: 10,
+        regularPrice: 1000,
+        salePrice: 899,
+    },
+    {
+        v1: 'White',
+        v2: 'L',
+        v3: '',
+        v4: '',
+        vCount: 2,
+        v_id: 'White_L',
+        variation_id: 'white-l-001',
+        stock: 5,
+        regularPrice: 1000,
+        salePrice: 950,
+    },
+    {
+        v1: 'Black',
+        v2: 'L',
+        v3: '',
+        v4: '',
+        vCount: 2,
+        v_id: 'Black_L',
+        variation_id: 'black-l-001',
+        stock: 8,
+        regularPrice: 1000,
+        salePrice: 925,
+    }
+];
 
 const dummyCategories = [
     {
@@ -36,51 +73,46 @@ const dummyCategories = [
         product_ids: [],
     },
 ];
-const AddProduct = () => {
-    const [productName, setName] = useState('');
-    const [productDescription, setDescription] = useState('');
-    const [finalAttr, setFinalAtttr] = useState(null)
-    const [finalVariations, setFinalVariations] = useState(null)
-    const [selectedCategories, setSelectedCategories] = useState([]);
-    const [categories, setCategories] = useState(dummyCategories); // you may fetch this from server
-    const [overrideObj, setOverrideObj] = useState({
-        amount: '',
-        flat: '',
-        percent: '',
-    });
+const EditProduct = () => {
+    const [productName, setName] = useState('Smart T-Shirt');
+    const [productDescription, setDescription] = useState('High-quality cotton smart t-shirt with sweat detection and Bluetooth connectivity.');
+    const [finalAttr, setFinalAtttr] = useState([
+        { label: 'Colors', value: 'color', innerValues: ['Black', 'White'] },
+        { label: 'Sizes', value: 'size', innerValues: ['M', 'L'] }
+    ]);
+    const [finalVariations, setFinalVariations] = useState(dummyVariations);
+    const [selectedCategories, setSelectedCategories] = useState(['cat1']);
+    const [categories, setCategories] = useState(dummyCategories);
+    const [overrideObj, setOverrideObj] = useState({ amount: '1180', flat: '20', percent: '1.67' });
 
-    const featuredImageRef = useRef()
-    const galleryImageRef = useRef()
-    const [regularPrice, setRegularPrice] = useState('');
-    const [salePrice, setSalePrice] = useState('');
-    const [discountPercent, setDiscountPercent] = useState('');
-    const [discountFlat, setDiscountFlat] = useState('');
-    const [stock, setStock] = useState('');
-    const [tags, setTags] = useState({
-        newArrival: 'No',
-        bestSeller: 'No',
-        buyersChoice: 'No',
-    });
+    const featuredImageRef = useRef();
+    const galleryImageRef = useRef();
+    const [regularPrice, setRegularPrice] = useState('1200');
+    const [salePrice, setSalePrice] = useState('999');
+    const [discountPercent, setDiscountPercent] = useState('16.75');
+    const [discountFlat, setDiscountFlat] = useState('201');
+    const [stock, setStock] = useState('100');
+    const [tags, setTags] = useState({ newArrival: 'Yes', bestSeller: 'No', buyersChoice: 'Yes' });
+    const [featuredImageURL, setFeaturedImageURL] = useState([
+        {
+            imgUrl: 'https://www.shutterstock.com/image-vector/simple-gray-avatar-icons-representing-600nw-2473353263.jpg',
+            imgAlt: 'Black Shirt Front View'
+        },
+        {
+            imgUrl: 'https://www.shutterstock.com/image-vector/simple-gray-avatar-icons-representing-600nw-2473353263.jpg',
+            imgAlt: 'Black Shirt Back View'
+        }
+    ]);
 
-    const updateName = (data) => {
-        setName(data);
-        console.log(data);
-    };
-
-    const updateDescription = (data) => {
-        setDescription(data);
-    };
-
-    const getFinalAttr = (data) => {
-        setFinalAtttr(data)
-        console.log(data);
-
-    }
+    const updateName = (data) => setName(data);
+    const updateDescription = (data) => setDescription(data);
+    const getFinalAttr = (data) => setFinalAtttr(data);
 
     const options = [
         { label: 'Colors', value: 'color', innerValues: ['Red', 'Green'] },
         { label: 'Sizes', value: 'size', innerValues: ['S', 'M', 'L'] }
     ]
+
 
     // const uploadProduct = () => {
     //     featuredImageRef.current.uploadImagetoDatabase()
@@ -202,7 +234,18 @@ const AddProduct = () => {
 
                     </Container>
                     <Container gap={'10'} title={'Product Attributes'}>
-                        <ProductAttributes getData={getFinalAttr} options={options}></ProductAttributes>
+                        <ProductAttributes getData={getFinalAttr} options={options} prefillData={[
+                            {
+                                label: 'Colors',
+                                value: 'color',
+                                innerValues: ['Black', 'White']
+                            },
+                            {
+                                label: 'Sizes',
+                                value: 'size',
+                                innerValues: ['M', 'L']
+                            }
+                        ]}></ProductAttributes>
                     </Container>
                     <Container gap={'10'} title={'Product Variations'}>
                         <ProductVariation attributes={finalAttr}
@@ -297,13 +340,20 @@ const AddProduct = () => {
                         </div>
                     </Container>
                     <Container gap={'10'} title={'Schedule Sale'}>
-                        <ScheduleSale regularPrice={regularPrice} setOverrideObj={setOverrideObj} />
+                        <ScheduleSale
+                            regularPrice={regularPrice}
+                            setOverrideObj={setOverrideObj}
+                            prefillSalePrice={overrideObj.amount}
+                            prefillDiscountFlat={overrideObj.flat}
+                            prefillDiscountPercent={overrideObj.percent}
+                            prefillScheduleDate={overrideObj.scheduleDate}
+                        />
                     </Container>
 
                 </div>
                 <div className="right-layout--product">
                     <Container gap={'10'} title={'Featured Images'}>
-                        <ImageUpload ref={featuredImageRef} maxImages={2} placeholder={'Click to Upload Featured Images'} />
+                        <ImageUpload ref={featuredImageRef} maxImages={2} placeholder={'Click to Upload Featured Images'} prefilledImages={featuredImageURL} />
                     </Container>
                     <Container gap={'10'} title={'Gallery Images'}>
                         <ImageUpload ref={galleryImageRef} maxImages={8} placeholder={'Click to Add Gallery Images'} />
@@ -312,11 +362,13 @@ const AddProduct = () => {
                     <Container gap={'10'} title={'Product Categories'}>
                         <ProductCategories
                             categoryList={categories}
+                            prefillSelected={selectedCategories} // Preselect by _id or c_name
                             onCategoryChange={(selectedIds) => {
                                 setSelectedCategories(selectedIds);
                                 console.log('✅ Selected category IDs:', selectedIds);
                             }}
                         />
+
                     </Container>
                     <Container gap={'10'} title={'Product Tags'}>
                         <ProductTags />
@@ -333,4 +385,4 @@ const AddProduct = () => {
     )
 }
 
-export default AddProduct
+export default EditProduct

@@ -1,53 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputCustomLabelled from '../ui/customLabelledField';
-// import './productcategories.css'; // create this file for new styles
 
-const ProductCategories = ({ categoryList = [], onCategoryChange }) => {
+const ProductCategories = ({
+    categoryList = [],
+    onCategoryChange,
+    prefillSelected = []
+}) => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [newCategoryName, setNewCategoryName] = useState('');
-    const [newCategoryLabel, setNewCategoryLabel] = useState('');
+    const [localCategoryList, setLocalCategoryList] = useState([]);
+
+    // ⏬ Load initial categories and selections
+    useEffect(() => {
+        setLocalCategoryList(categoryList);
+        setSelectedCategories(prefillSelected);
+    }, []);
 
     const handleCheckboxChange = (categoryId) => {
-        setSelectedCategories((prev) => {
-            const updated = prev.includes(categoryId)
-                ? prev.filter(id => id !== categoryId)
-                : [...prev, categoryId];
+        const updated = selectedCategories.includes(categoryId)
+            ? selectedCategories.filter(id => id !== categoryId)
+            : [...selectedCategories, categoryId];
 
-            onCategoryChange?.(updated);
-            return updated;
-        });
+        setSelectedCategories(updated);
+        onCategoryChange?.(updated);
     };
 
     const handleAddNewCategory = () => {
-        if (!newCategoryName.trim()) {
-            alert('Please enter category name');
-            return;
-        }
+        const name = newCategoryName.trim();
+        if (!name) return alert("Please enter a valid name");
 
-        const newId = `${newCategoryName}_${Date.now()}`;
+        const newId = `${name}_${Date.now()}`;
+
         const newCategory = {
-            c_name: newCategoryName,
-            c_label: newCategoryLabel || newCategoryName,
+            _id: newId,
+            c_name: name,
+            c_label: name,
             c_imgurl: '',
-            product_ids: [],
-            _id: newId
+            product_ids: []
         };
 
-        categoryList.push(newCategory);
-        setSelectedCategories(prev => [...prev, newId]);
-        onCategoryChange?.([...selectedCategories, newId]);
+        setLocalCategoryList(prev => [...prev, newCategory]);
+
+        const updatedSelected = [...selectedCategories, newId];
+        setSelectedCategories(updatedSelected);
+        onCategoryChange?.(updatedSelected);
 
         setNewCategoryName('');
-        setNewCategoryLabel('');
     };
 
     return (
         <div className="product-categories-container">
-            {/* <h3 className="section-title">Choose Categories</h3> */}
-
             <div className="category-checkbox-list">
-                {categoryList.map((category, index) => {
-                    const id = category._id || category.c_name || `cat-${index}`;
+                {localCategoryList.map((cat, i) => {
+                    const id = cat._id || cat.c_name || `cat-${i}`;
                     return (
                         <label key={id} className="category-item">
                             <input
@@ -55,7 +60,7 @@ const ProductCategories = ({ categoryList = [], onCategoryChange }) => {
                                 checked={selectedCategories.includes(id)}
                                 onChange={() => handleCheckboxChange(id)}
                             />
-                            <span>{category.c_label}</span>
+                            <span>{cat.c_label}</span>
                         </label>
                     );
                 })}
@@ -77,8 +82,6 @@ const ProductCategories = ({ categoryList = [], onCategoryChange }) => {
                     Add Category
                 </button>
             </div>
-
-
         </div>
     );
 };

@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputCustomLabelled from '../ui/customLabelledField';
 import SelectCustomLabelled from '../ui/customSelect';
 import './productcomponent.css';
 
-const ProductAttributes = ({ options, getData }) => {
+const ProductAttributes = ({ options, getData, prefillData = [] }) => {
     const [selectedCategory, setSelectedCategory] = useState('');
     const [inputAttributeNew, setInputAttributeNew] = useState('');
     const [attributeValues, setAttributeValues] = useState({});
     const [newValues, setNewValues] = useState({});
 
+    useEffect(() => {
+        if (prefillData.length > 0) {
+            const prefilled = {};
+            prefillData.forEach(({ value, innerValues }) => {
+                prefilled[value] = innerValues;
+            });
+            setAttributeValues(prefilled);
+        }
+        // ✅ Empty dependency array ensures this runs only on first mount
+    }, []);
 
-    // ✅ Add attribute from Select (Use Existing)
+
     const useExistingAttribute = () => {
         if (!selectedCategory) return;
         const selectedOption = options.find(opt => opt.value === selectedCategory);
@@ -23,7 +33,6 @@ const ProductAttributes = ({ options, getData }) => {
         setSelectedCategory('');
     };
 
-    // ✅ Create new attribute from input
     const createNewAttribute = () => {
         const key = inputAttributeNew.toLowerCase().trim();
         if (!key || attributeValues[key]) return;
@@ -31,7 +40,6 @@ const ProductAttributes = ({ options, getData }) => {
         setInputAttributeNew('');
     };
 
-    // ✅ Add value to attribute
     const addNewValue = (attribute) => {
         const val = (newValues[attribute] || '').trim();
         if (!val) return;
@@ -43,7 +51,6 @@ const ProductAttributes = ({ options, getData }) => {
         setNewValues(prev => ({ ...prev, [attribute]: '' }));
     };
 
-    // ✅ Delete a value
     const removeValue = (attribute, valueToRemove) => {
         setAttributeValues(prev => ({
             ...prev,
@@ -51,66 +58,37 @@ const ProductAttributes = ({ options, getData }) => {
         }));
     };
 
-    // ✅ Track input per attribute
     const handleNewValueChange = (attr, value) => {
         setNewValues(prev => ({ ...prev, [attr]: value }));
     };
 
-
     const handleSaveAttributes = () => {
         const formattedAttributes = options
             .filter(opt => attributeValues.hasOwnProperty(opt.value))
-            ?.map(opt => ({
+            .map(opt => ({
                 label: opt.label,
                 value: opt.value,
                 innerValues: attributeValues[opt.value]
             }));
 
-        // Include new custom attributes if any
         const customAttributes = Object.entries(attributeValues)
             .filter(([key]) => !options.find(opt => opt.value === key))
-            ?.map(([key, values]) => ({
+            .map(([key, values]) => ({
                 label: key.charAt(0).toUpperCase() + key.slice(1),
                 value: key,
                 innerValues: values
             }));
 
         const finalAttributes = [...formattedAttributes, ...customAttributes];
-
-        console.log('🔁 Final Attributes:', finalAttributes);
-        getData(finalAttributes)
-
-        // 🔄 Replace with API call here if needed
+        getData(finalAttributes);
     };
+
     const handleLoadtoServer = () => {
-        const formattedAttributes = options
-            .filter(opt => attributeValues.hasOwnProperty(opt.value))
-            ?.map(opt => ({
-                label: opt.label,
-                value: opt.value,
-                innerValues: attributeValues[opt.value]
-            }));
-
-        // Include new custom attributes if any
-        const customAttributes = Object.entries(attributeValues)
-            .filter(([key]) => !options.find(opt => opt.value === key))
-            ?.map(([key, values]) => ({
-                label: key.charAt(0).toUpperCase() + key.slice(1),
-                value: key,
-                innerValues: values
-            }));
-
-        const finalAttributes = [...formattedAttributes, ...customAttributes];
-
-        console.log('🔁 Final Attributes:', finalAttributes);
-
-        // 🔄 Replace with API call here if needed
+        console.log('🔁 Final Attributes to Load:', attributeValues);
     };
-
 
     return (
         <div className="product-data">
-
             {/* Attribute creation section */}
             <div className="attributes--create-ex">
                 <div className="input-wrapper-ace">
@@ -138,9 +116,8 @@ const ProductAttributes = ({ options, getData }) => {
             {/* Attributes and values */}
             <div className="attributes-productdata-container">
                 {Object.entries(attributeValues)?.map(([attribute, values]) => (
-                    <div className="cnt6e">
-
-                        <div className="attributes-container" key={attribute}>
+                    <div className="cnt6e" key={attribute}>
+                        <div className="attributes-container">
                             <p>{attribute.charAt(0).toUpperCase() + attribute.slice(1)}</p>
                             <section className="attributes-container-child-4-attr">
                                 <div className="attr-cc4a">
@@ -167,6 +144,8 @@ const ProductAttributes = ({ options, getData }) => {
                     </div>
                 ))}
             </div>
+
+            {/* Save / Load */}
             <div className="save-attributes-wrap">
                 <button className="save-attributes" onClick={handleLoadtoServer}>
                     Load to Server
@@ -175,7 +154,6 @@ const ProductAttributes = ({ options, getData }) => {
                     Save Attribute
                 </button>
             </div>
-
         </div>
     );
 };

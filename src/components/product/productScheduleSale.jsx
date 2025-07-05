@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
-import DatePickerComponent from './datepicker';
+import React, { useState, useEffect } from 'react';
+import DatePickerComponent from '../ui/datepicker';
 import InputCustomLabelled from '../ui/customLabelledField';
 
-const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
+const ScheduleSale = ({
+    regularPrice,
+    setOverrideObj,
+    prefillSalePrice = '',
+    prefillDiscountFlat = '',
+    prefillDiscountPercent = '',
+    prefillScheduleDate = null
+}) => {
     const [scheduleDate, setScheduleDate] = useState(null);
     const [salePrice, setSalePrice] = useState('');
     const [discountPercent, setDiscountPercent] = useState('');
     const [discountFlat, setDiscountFlat] = useState('');
+
+    useEffect(() => {
+        if (prefillSalePrice) setSalePrice(prefillSalePrice.toString());
+        if (prefillDiscountFlat) setDiscountFlat(prefillDiscountFlat.toString());
+        if (prefillDiscountPercent) setDiscountPercent(prefillDiscountPercent.toString());
+        if (prefillScheduleDate) setScheduleDate(new Date(prefillScheduleDate));
+    }, [prefillSalePrice, prefillDiscountFlat, prefillDiscountPercent, prefillScheduleDate]);
 
     const handleSalePriceChange = (val) => {
         const sale = parseFloat(val) || 0;
@@ -22,6 +36,7 @@ const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
                 amount: sale.toFixed(2),
                 flat: flat.toFixed(2),
                 percent: perc.toFixed(2),
+                scheduleDate: scheduleDate ? scheduleDate.toISOString() : null
             });
         }
     };
@@ -41,6 +56,7 @@ const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
                 amount: sp.toFixed(2),
                 flat: flat.toFixed(2),
                 percent: perc.toFixed(2),
+                scheduleDate: scheduleDate ? scheduleDate.toISOString() : null
             });
         }
     };
@@ -60,21 +76,20 @@ const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
                 amount: sp.toFixed(2),
                 flat: flat.toFixed(2),
                 percent: perc.toFixed(2),
+                scheduleDate: scheduleDate ? scheduleDate.toISOString() : null
             });
         }
     };
 
-    // 🆕 Final confirm/schedule function on button click
     const handleScheduleClick = () => {
         setOverrideObj({
             amount: parseFloat(salePrice).toFixed(2),
             flat: parseFloat(discountFlat).toFixed(2),
             percent: parseFloat(discountPercent).toFixed(2),
-            scheduleDate: scheduleDate ? scheduleDate.toISOString() : null,
+            scheduleDate: scheduleDate ? scheduleDate.toISOString() : null
         });
 
-        // Optionally you can show a toast or confirmation here
-        console.log('Sale Scheduled');
+        console.log('✅ Sale Scheduled');
     };
 
     return (
@@ -86,6 +101,7 @@ const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
                     value={discountPercent}
                     inputFunction={handleDiscountPercentChange}
                     isLabel={true}
+                    type='number'
                 />
                 <InputCustomLabelled
                     label="Discount Flat"
@@ -93,6 +109,7 @@ const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
                     value={discountFlat}
                     inputFunction={handleDiscountFlatChange}
                     isLabel={true}
+                    type='number'
                 />
                 <InputCustomLabelled
                     label="Override Price"
@@ -100,6 +117,7 @@ const ScheduleSale = ({ regularPrice, setOverrideObj }) => {
                     value={salePrice}
                     inputFunction={handleSalePriceChange}
                     isLabel={true}
+                    type='number'
                 />
             </div>
 

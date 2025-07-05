@@ -1,12 +1,13 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import './ui-component.css'
+import './ui-component.css';
 
 const DataTable = ({
-    columns = [],
+    columns = [], // [{ label: 'Product ID', value: 'productid' }]
     data = [],
     searchQuery = '',
     searchColumn = '',
     defaultEntries = 6,
+    actions = null
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [entriesPerPage] = useState(defaultEntries);
@@ -17,7 +18,7 @@ const DataTable = ({
 
         let result = [];
 
-        if (searchColumn && columns.includes(searchColumn)) {
+        if (searchColumn && columns.find(c => c.value === searchColumn)) {
             result = data.filter(row =>
                 String(row[searchColumn]).toLowerCase().includes(lowerSearch)
             );
@@ -30,7 +31,7 @@ const DataTable = ({
         }
 
         setFilteredData(result);
-        setCurrentPage(1); // reset to page 1 on search
+        setCurrentPage(1);
     }, [searchQuery, data, searchColumn, columns]);
 
     const totalPages = Math.ceil(filteredData?.length / entriesPerPage);
@@ -42,47 +43,53 @@ const DataTable = ({
 
     return (
         <div className="datatable-container">
-            <table className="datatable">
-                <thead>
-                    <tr>
-                        {columns?.map((col, index) => (
-                            <th key={index}>{col}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentData?.length > 0 ? (
-                        currentData?.map((row, idx) => (
-                            <tr key={idx}>
-                                {columns?.map((col, i) => (
-                                    <td
-                                        key={i}
-                                        data-tooltip={String(row[col])}
-                                        title={String(row[col])}
-                                    >
-                                        {String(row[col])}
-                                    </td>
-                                ))}
-                            </tr>
-                        ))
-                    ) : (
+            <div className="table-wrapper">
+                <table className="datatable improved">
+                    <thead>
                         <tr>
-                            <td colSpan={columns?.length} style={{ textAlign: 'center' }}>
-                                No data found
-                            </td>
+                            {columns?.map((col, index) => (
+                                <th key={index}>{col.label}</th>
+                            ))}
+                            {actions && <th className="sticky-right">Actions</th>}
                         </tr>
-                    )}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {currentData?.length > 0 ? (
+                            currentData?.map((row, idx) => (
+                                <tr key={idx}>
+                                    {columns?.map((col, i) => (
+                                        <td
+                                            key={i}
+                                            data-tooltip={String(row[col.value])}
+                                            title={String(row[col.value])}
+                                        >
+                                            {String(row[col.value])}
+                                        </td>
+                                    ))}
+                                    {actions && (
+                                        <td className="table-actions sticky-right">
+                                            {actions(row)}
+                                        </td>
+                                    )}
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td
+                                    colSpan={columns.length + (actions ? 1 : 0)}
+                                    style={{ textAlign: 'center' }}
+                                >
+                                    No data found
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
 
             {/* Pagination */}
             <div className="pagination-controls">
-                <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage(p => p - 1)}
-                >
-                    ‹
-                </button>
+                <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>‹</button>
                 {[...Array(totalPages)]?.map((_, i) => (
                     <button
                         key={i}
@@ -92,12 +99,7 @@ const DataTable = ({
                         {i + 1}
                     </button>
                 ))}
-                <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage(p => p + 1)}
-                >
-                    ›
-                </button>
+                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>›</button>
             </div>
         </div>
     );
