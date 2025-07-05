@@ -24,7 +24,7 @@ const AddProduct = () => {
                         style={{ marginBottom: '10px', padding: '6px', width: '200px' }}
                     />
                     <select onChange={e => setSearchCol(e.target.value)} value={searchCol}>
-                        {columns.map(col => (
+                        {columns?.map(col => (
                             <option key={col} value={col}>{col}</option>
                         ))}
                     </select>

@@ -33,7 +33,7 @@ const DataTable = ({
         setCurrentPage(1); // reset to page 1 on search
     }, [searchQuery, data, searchColumn, columns]);
 
-    const totalPages = Math.ceil(filteredData.length / entriesPerPage);
+    const totalPages = Math.ceil(filteredData?.length / entriesPerPage);
 
     const currentData = useMemo(() => {
         const start = (currentPage - 1) * entriesPerPage;
@@ -45,16 +45,16 @@ const DataTable = ({
             <table className="datatable">
                 <thead>
                     <tr>
-                        {columns.map((col, index) => (
+                        {columns?.map((col, index) => (
                             <th key={index}>{col}</th>
                         ))}
                     </tr>
                 </thead>
                 <tbody>
-                    {currentData.length > 0 ? (
-                        currentData.map((row, idx) => (
+                    {currentData?.length > 0 ? (
+                        currentData?.map((row, idx) => (
                             <tr key={idx}>
-                                {columns.map((col, i) => (
+                                {columns?.map((col, i) => (
                                     <td
                                         key={i}
                                         data-tooltip={String(row[col])}
@@ -67,7 +67,7 @@ const DataTable = ({
                         ))
                     ) : (
                         <tr>
-                            <td colSpan={columns.length} style={{ textAlign: 'center' }}>
+                            <td colSpan={columns?.length} style={{ textAlign: 'center' }}>
                                 No data found
                             </td>
                         </tr>
@@ -83,7 +83,7 @@ const DataTable = ({
                 >
                     ‹
                 </button>
-                {[...Array(totalPages)].map((_, i) => (
+                {[...Array(totalPages)]?.map((_, i) => (
                     <button
                         key={i}
                         className={i + 1 === currentPage ? 'active' : ''}

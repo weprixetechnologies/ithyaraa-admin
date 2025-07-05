@@ -6,6 +6,8 @@
     width: 100%;
     padding: 20px;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .top-container--react {
@@ -24,7 +26,11 @@
     height: 1px;
 
     background-color: var(--light-secondary-text);
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
+}
+
+.p-customlabbelled {
+    margin-bottom: 8px;
 }
 
 .custominput {
@@ -33,7 +39,7 @@
     padding: 10px;
     font-family: -apple-system;
     font-size: 14px;
-    margin-top: 8px;
+
     border-radius: 8px;
 }
 
@@ -43,10 +49,6 @@
     color: var(--dark-secondary-text);
 }
 
-.labelcontainer-custom {
-    margin-top: 15px;
-
-}
 
 .textarea-custom {
     border: 1px solid #c0c0c0;
@@ -129,4 +131,24 @@
 .pagination-controls button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+}
+
+
+.customselect {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0 8px;
+    font-size: 14px;
+    outline: none;
+    background-color: #fff;
+}
+
+.customselect:disabled {
+    background-color: #fff;
+    color: #999;
+}
+
+.bordered-select {
+    /* Optional class if you pass selectClasses */
+    border: 1px solid #999;
 }

@@ -25,7 +25,7 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
     }, [activeMenu, keymenu]);
 
     const handleToggle = (menu) => {
-        if (menu.subMenu && menu.subMenu.length > 0) {
+        if (menu.subMenu && menu.subMenu?.length > 0) {
             // Toggle submenu (open/close)
             setOpenMenu(prev => (prev === menu.id ? null : menu.id));
         } else {

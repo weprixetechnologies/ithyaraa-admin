@@ -2,8 +2,9 @@ import React from 'react';
 import './ui-component.css';
 
 const InputCustomLabelled = ({
+    isLabel = true,
     value,
-    inputFunction,
+    inputFunction = () => { },
     label,
     placeholder,
     type = "text",
@@ -19,7 +20,10 @@ const InputCustomLabelled = ({
     return (
         <div className="labelcontainer-custom">
             <label htmlFor={htmlFor} className={labelClasses}>
-                <p className={`${pClasses} p-customlabbelled`}>{label}</p>
+                {
+                    isLabel && <p className={`${pClasses} p-customlabbelled`}>{label}</p>
+                }
+
 
                 {isInput ? (
                     <input
