@@ -1,3 +1,6 @@
+/* eslint-disable */
+
+
 import React, { useRef, useState } from 'react'
 import Layout from '../../layout'
 import './addproduct.css'
@@ -8,6 +11,14 @@ import ProductVariation from '../../components/product/productVariations'
 import ImageUpload from '../../components/ui/imageUpload'
 import SelectCustomLabelled from '../../components/ui/customSelect'
 import ProductCategories from '../../components/product/productcategories'
+import ProductTags from '../../components/product/producttags'
+import ProductOffer from '../../components/product/productoffer'
+import ScheduleSale from '../../components/ui/productScheduleSale'
+const offerArr = [
+    { label: 'Summer Sale', value: 'summer2025' },
+    { label: 'Diwali Deal', value: 'diwali2025' }
+]
+
 
 const dummyCategories = [
     {
@@ -32,6 +43,11 @@ const AddProduct = () => {
     const [finalVariations, setFinalVariations] = useState(null)
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [categories, setCategories] = useState(dummyCategories); // you may fetch this from server
+    const [overrideObj, setOverrideObj] = useState({
+        amount: '',
+        flat: '',
+        percent: '',
+    });
 
     const featuredImageRef = useRef()
     const galleryImageRef = useRef()
@@ -280,7 +296,9 @@ const AddProduct = () => {
 
                         </div>
                     </Container>
-                    <Container title={'Schedule Sale'}></Container>
+                    <Container gap={'10'} title={'Schedule Sale'}>
+                        <ScheduleSale regularPrice={regularPrice} setOverrideObj={setOverrideObj} />
+                    </Container>
 
                 </div>
                 <div className="right-layout--product">
@@ -300,8 +318,12 @@ const AddProduct = () => {
                             }}
                         />
                     </Container>
-                    <Container title={'Product Tags'}></Container>
-                    <Container title={'Offer Section'}></Container>
+                    <Container gap={'10'} title={'Product Tags'}>
+                        <ProductTags />
+                    </Container>
+                    <Container gap={'10'} title={'Offer Section'}>
+                        <ProductOffer offers={offerArr} />
+                    </Container>
 
                 </div>
 
