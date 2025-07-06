@@ -44,7 +44,7 @@ export const mainMenu = [
     {
         menuID: 'admin-1',
         id: 1,
-        url: '/dashboard',
+        url: '/',
         icon: <RiDashboardFill />,
         title: 'Dashboard',
         subMenu: [],
@@ -95,7 +95,7 @@ export const mainMenu = [
     {
         menuID: 'category-add',
         id: 19,
-        url: '/',
+        url: '/add-category',
         icon: <RiGift2Line />,
         title: 'category',
 

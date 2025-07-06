@@ -274,37 +274,36 @@ const AddCategory = () => {
             await addStep('📤 Uploading image...');
             const imageUrls = await imageUploadRef.current.uploadImagetoDatabase();
 
-            // 3️⃣ Prepare data object
+
+            // 3️⃣ Prepare updated category object
             await addStep('🧰 Preparing updated data...');
             const updatedCategory = {
-                imgUrl: imageUrls[0]?.imgUrl || '',
-                categoryName,
-                categoryID,
+                id: categoryID,
+                name: categoryName,
                 slug: categorySlug || generateSlug(categoryName),
-                description: categoryDescription
+                description: categoryDescription,
+                image: imageUrls[0]?.imgUrl || '',
             };
+
 
             console.log('📝 Updated category data to be sent:', updatedCategory);
 
-            // 4️⃣ Communicate with backend
+            // 4️⃣ Update local state
+            setCategories((prevCategories) =>
+                prevCategories.map((cat) =>
+                    cat.id === categoryID ? updatedCategory : cat
+                )
+            );
+
+            // 5️⃣ (Optional) Send to backend
             await addStep('📡 Sending update request...');
-            // await updateCategoryAPI(updatedCategory); // Implement this function with fetch/axios
-            // uncomment the above one
+            // await updateCategoryAPI(updatedCategory); // Uncomment when using backend
 
             await addStep('✅ Update successful!');
             console.log('UPDATING DONE');
-            console.log('UPDATED', updatedCategory);
 
-
-            // 5️⃣ Clear editing state and reset form
-            setEditingCategory(null);
-            setCategoryName('');
-            setCategorySlug('');
-            setCategoryID('');
-            setCategoryDescription('');
-            setSaveSteps([])
-            imageUploadRef.current?.resetImages?.();
-
+            // 6️⃣ Reset form and state
+            resetForm();
         } catch (err) {
             console.error('❌ Error during update:', err);
             alert('Update failed. Check console for details.');
@@ -312,6 +311,7 @@ const AddCategory = () => {
             setIsSaving(false);
         }
     };
+
     const updateCategoryAPI = async (category) => {
         const response = await fetch(`https://yourapi.com/categories/${category.categoryID}`, {
             method: 'PUT',

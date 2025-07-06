@@ -79,7 +79,8 @@ const AddProduct = () => {
 
     const options = [
         { label: 'Colors', value: 'color', innerValues: ['Red', 'Green'] },
-        { label: 'Sizes', value: 'size', innerValues: ['S', 'M', 'L'] }
+        { label: 'Sizes', value: 'size', innerValues: ['S', 'M', 'L'] },
+        { label: 'Style', value: 'style', innerValues: ['Padded', 'Non-Padded'] }
     ]
 
     // const uploadProduct = () => {
@@ -306,7 +307,7 @@ const AddProduct = () => {
                         <ImageUpload ref={featuredImageRef} maxImages={2} placeholder={'Click to Upload Featured Images'} />
                     </Container>
                     <Container gap={'10'} title={'Gallery Images'}>
-                        <ImageUpload ref={galleryImageRef} maxImages={8} placeholder={'Click to Add Gallery Images'} />
+                        <ImageUpload ref={galleryImageRef} maxImages={5} placeholder={'Click to Add Gallery Images'} />
                     </Container>
                     <Container title={'Gallery Video'}></Container>
                     <Container gap={'10'} title={'Product Categories'}>

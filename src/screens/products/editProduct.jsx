@@ -114,10 +114,10 @@ const EditProduct = () => {
     ]
 
 
-    // const uploadProduct = () => {
-    //     featuredImageRef.current.uploadImagetoDatabase()
-    //     galleryImageRef.current.uploadImagetoDatabase()
-    // }
+    const uploadProduct = () => {
+        featuredImageRef.current.uploadImagetoDatabase()
+        galleryImageRef.current.uploadImagetoDatabase()
+    }
 
     const handleRegularPriceChange = (val) => {
         const reg = parseFloat(val) || 0;
@@ -378,7 +378,7 @@ const EditProduct = () => {
                     </Container>
 
                 </div>
-
+                <button onClick={uploadProduct}>Update</button>
 
             </div>
         </Layout>

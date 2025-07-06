@@ -17,17 +17,31 @@ const ImageUpload = ({ maxImages = 5, placeholder = "Upload Image", prefilledIma
             console.log('Uploading new images only...');
 
             const uploadedUrls = await Promise.all(
-                newImages.map((file) => fakeUpload(file))
+                newImages.map((file) => fakeUpload(file)) // returns string URLs
             );
 
-            const finalUrls = [...oldImages, ...uploadedUrls].map((url) => ({
+            // Normalize uploaded new images to { imgUrl, imgAlt }
+            const formattedNew = uploadedUrls.map((url) => ({
                 imgUrl: url,
                 imgAlt: ''
             }));
 
+            // Normalize oldImages whether they are strings or objects
+            const formattedOld = oldImages.map((item) =>
+                typeof item === 'string'
+                    ? { imgUrl: item, imgAlt: '' }
+                    : {
+                        imgUrl: item.imgUrl ?? '',
+                        imgAlt: item.imgAlt ?? ''
+                    }
+            );
+
+            const finalUrls = [...formattedOld, ...formattedNew];
+
             console.log('📦 Final Image URLs:', finalUrls);
             return finalUrls;
         },
+
         resetImages: () => {
             setOldImages([]);
             setNewImages([]);

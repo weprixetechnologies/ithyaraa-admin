@@ -21,7 +21,7 @@ const AllProducts = () => {
             name: 'Helmet',
             type: 'Make-Combo',
             category: 'Accessories',
-            editUrl: '/edit-product/P002'
+            editUrl: '/all-products/P002'
         }
     ];
 
