@@ -5,6 +5,9 @@ import Dashboard from './screens/dashboard';
 import AddProduct from './screens/products/addProduct';
 import AllProducts from './screens/products/allProducts';
 import EditProduct from './screens/products/editProduct';
+import AllUsers from './screens/users/allUsers';
+import AddUser from './screens/users/addUser';
+import AddCategory from './screens/categories/addCategory';
 
 function App() {
   return (
@@ -16,6 +19,12 @@ function App() {
       <Route path='/all-products' element={<AllProducts />}></Route>
       <Route path='/all-products/:id' element={<EditProduct />}></Route>
 
+      {/* USER */}
+      <Route path='/all-users' element={<AllUsers />}></Route>
+      <Route path='/add-user' element={<AddUser />}></Route>
+
+      {/* CATEGORY */}
+      <Route path='/add-category' element={<AddCategory />}></Route>
 
       {/* AUTH PAGE */}
       <Route path='/login' element={<Login />}></Route>

@@ -7,7 +7,8 @@ const DataTable = ({
     searchQuery = '',
     searchColumn = '',
     defaultEntries = 6,
-    actions = null
+    actions = null,
+    isLoading = false // ✅ NEW
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [entriesPerPage] = useState(defaultEntries);
@@ -54,18 +55,43 @@ const DataTable = ({
                         </tr>
                     </thead>
                     <tbody>
-                        {currentData?.length > 0 ? (
-                            currentData?.map((row, idx) => (
+                        {isLoading ? (
+                            <tr>
+                                <td
+                                    colSpan={columns.length + (actions ? 1 : 0)}
+                                    style={{
+                                        textAlign: 'center',
+                                        padding: '1rem',
+                                        fontStyle: 'italic',
+                                        color: '#555'
+                                    }}
+                                >
+                                    LOADING DATA...
+                                </td>
+                            </tr>
+                        ) : currentData?.length > 0 ? (
+                            currentData.map((row, idx) => (
                                 <tr key={idx}>
-                                    {columns?.map((col, i) => (
-                                        <td
-                                            key={i}
-                                            data-tooltip={String(row[col.value])}
-                                            title={String(row[col.value])}
-                                        >
-                                            {String(row[col.value])}
-                                        </td>
-                                    ))}
+                                    {columns.map((col, i) => {
+                                        const value = row[col.value];
+                                        const tooltipText =
+                                            row[col.value + '_tooltip'] || // custom tooltip
+                                            (typeof value === 'string' ? value : '');
+
+                                        return (
+                                            <td key={i}>
+                                                <div
+                                                    title={tooltipText}
+                                                    data-tooltip={tooltipText}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                                                >
+                                                    {React.isValidElement(value) || typeof value !== 'string'
+                                                        ? value
+                                                        : <span>{value}</span>}
+                                                </div>
+                                            </td>
+                                        );
+                                    })}
                                     {actions && (
                                         <td className="table-actions sticky-right">
                                             {actions(row)}
@@ -89,8 +115,13 @@ const DataTable = ({
 
             {/* Pagination */}
             <div className="pagination-controls">
-                <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>‹</button>
-                {[...Array(totalPages)]?.map((_, i) => (
+                <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage((p) => p - 1)}
+                >
+                    ‹
+                </button>
+                {[...Array(totalPages)].map((_, i) => (
                     <button
                         key={i}
                         className={i + 1 === currentPage ? 'active' : ''}
@@ -99,7 +130,12 @@ const DataTable = ({
                         {i + 1}
                     </button>
                 ))}
-                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>›</button>
+                <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage((p) => p + 1)}
+                >
+                    ›
+                </button>
             </div>
         </div>
     );

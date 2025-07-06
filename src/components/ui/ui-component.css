@@ -77,6 +77,14 @@
     font-family: var(--f2);
 }
 
+.datatable thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.datatable thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
 .datatable th,
 .datatable td {
     padding: 10px;
@@ -160,4 +168,76 @@ th {
 .bordered-select {
     /* Optional class if you pass selectClasses */
     border: 1px solid #999;
+}
+
+.imageupload-wrapper {
+    margin-bottom: 1rem;
+}
+
+.upload-preview {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.upload-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.upload-img:hover {
+    opacity: 0.7;
+}
+
+.dashed-box {
+    border: 2px dashed red;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    background: #f9f9f9;
+}
+
+.upload-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.upload-status svg {
+    color: var(--primary-color);
+}
+
+.upload-status.uploading svg {
+    color: var(--primary-color);
+}
+
+.upload-status.completed svg {
+    color: green;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

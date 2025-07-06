@@ -64,8 +64,8 @@ export const mainMenu = [
         icon: <RiUser3Line />,
         title: 'Users',
         subMenu: [
-            { menuID: 'admin-3a', url: '/users/add', icon: <RiUserAddLine />, title: 'Add User' },
-            { menuID: 'admin-3b', url: '/users/all', icon: <RiTeamLine />, title: 'All Users' },
+            { menuID: 'admin-3a', url: '/add-user', icon: <RiUserAddLine />, title: 'Add User' },
+            { menuID: 'admin-3b', url: '/all-users', icon: <RiTeamLine />, title: 'All Users' },
         ],
     },
     {
@@ -91,6 +91,14 @@ export const mainMenu = [
             { menuID: 'admin-5c', url: '/combo/all-make', icon: <RiListUnordered />, title: 'All Make Combos' },
             { menuID: 'admin-5d', url: '/combo/prebuilt', icon: <RiListUnordered />, title: 'All Prebuilt Combo' },
         ],
+    },
+    {
+        menuID: 'category-add',
+        id: 19,
+        url: '/',
+        icon: <RiGift2Line />,
+        title: 'category',
+
     },
     {
         menuID: 'admin-6',
