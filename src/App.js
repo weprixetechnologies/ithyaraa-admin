@@ -11,6 +11,7 @@ import AddCategory from './screens/categories/addCategory';
 import AddCombo from './screens/combo/addCombo';
 import PhoneLogin from './auth/loginphone';
 import MakeCombo from './screens/combo/makeCombo';
+import AddOffer from './screens/offers/addOffers';
 
 function App() {
   return (
@@ -34,6 +35,8 @@ function App() {
       <Route path='/add-combo' element={<AddCombo />} />
       <Route path='/make-combo' element={<MakeCombo />} />
 
+      {/* OFFERS */}
+      <Route path='/offers/add' element={<AddOffer />}></Route>
       {/* AUTH PAGE */}
       <Route path='/login' element={<Login />}></Route>
       <Route path='/login-phone' element={<PhoneLogin />}></Route>

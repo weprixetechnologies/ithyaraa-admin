@@ -1,0 +1,1402 @@
+[
+  {
+    "productId": "PID-1",
+    "productName": "Max Notebook",
+    "regularPrice": 65,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 28,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Notebook"
+    }
+  },
+  {
+    "productId": "PID-2",
+    "productName": "Basic Pen",
+    "regularPrice": 321,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Pen"
+    }
+  },
+  {
+    "productId": "PID-3",
+    "productName": "Pro Notebook",
+    "regularPrice": 262,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 16,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Notebook"
+    }
+  },
+  {
+    "productId": "PID-4",
+    "productName": "Premium Ruler",
+    "regularPrice": 239,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Ruler"
+    }
+  },
+  {
+    "productId": "PID-5",
+    "productName": "Ultra Sketchbook",
+    "regularPrice": 407,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 24,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Sketchbook"
+    }
+  },
+  {
+    "productId": "PID-6",
+    "productName": "Basic Pen",
+    "regularPrice": 499,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 16,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Pen"
+    }
+  },
+  {
+    "productId": "PID-7",
+    "productName": "Eco Case",
+    "regularPrice": 350,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Case"
+    }
+  },
+  {
+    "productId": "PID-8",
+    "productName": "Mini Ruler",
+    "regularPrice": 167,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Ruler"
+    }
+  },
+  {
+    "productId": "PID-9",
+    "productName": "Eco Board",
+    "regularPrice": 333,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Board"
+    }
+  },
+  {
+    "productId": "PID-10",
+    "productName": "Smart Brush Set",
+    "regularPrice": 374,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Brush Set"
+    }
+  },
+  {
+    "productId": "PID-11",
+    "productName": "Pro Pencil",
+    "regularPrice": 160,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 6,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Pencil"
+    }
+  },
+  {
+    "productId": "PID-12",
+    "productName": "Premium Pen",
+    "regularPrice": 164,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Pen"
+    }
+  },
+  {
+    "productId": "PID-13",
+    "productName": "Classic Holder",
+    "regularPrice": 136,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 42,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Holder"
+    }
+  },
+  {
+    "productId": "PID-14",
+    "productName": "Mini Sharpener",
+    "regularPrice": 397,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Sharpener"
+    }
+  },
+  {
+    "productId": "PID-15",
+    "productName": "Ultra Holder",
+    "regularPrice": 336,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Holder"
+    }
+  },
+  {
+    "productId": "PID-16",
+    "productName": "Ultra Marker",
+    "regularPrice": 461,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 46,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Marker"
+    }
+  },
+  {
+    "productId": "PID-17",
+    "productName": "Premium Brush Set",
+    "regularPrice": 271,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 46,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Brush Set"
+    }
+  },
+  {
+    "productId": "PID-18",
+    "productName": "Smart Clip",
+    "regularPrice": 378,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 13,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Clip"
+    }
+  },
+  {
+    "productId": "PID-19",
+    "productName": "Max Glue",
+    "regularPrice": 444,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 10,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Glue"
+    }
+  },
+  {
+    "productId": "PID-20",
+    "productName": "Classic Brush Set",
+    "regularPrice": 323,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 18,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Brush Set"
+    }
+  },
+  {
+    "productId": "PID-21",
+    "productName": "Pro Sketchbook",
+    "regularPrice": 246,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 8,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Sketchbook"
+    }
+  },
+  {
+    "productId": "PID-22",
+    "productName": "Eco Eraser",
+    "regularPrice": 139,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 48,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Eraser"
+    }
+  },
+  {
+    "productId": "PID-23",
+    "productName": "Pro Notebook",
+    "regularPrice": 497,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Notebook"
+    }
+  },
+  {
+    "productId": "PID-24",
+    "productName": "Mini Pencil",
+    "regularPrice": 225,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Pencil"
+    }
+  },
+  {
+    "productId": "PID-25",
+    "productName": "Pro Folder",
+    "regularPrice": 175,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 24,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Folder"
+    }
+  },
+  {
+    "productId": "PID-26",
+    "productName": "Mini Brush Set",
+    "regularPrice": 115,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 40,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Brush Set"
+    }
+  },
+  {
+    "productId": "PID-27",
+    "productName": "Max Brush Set",
+    "regularPrice": 499,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Brush Set"
+    }
+  },
+  {
+    "productId": "PID-28",
+    "productName": "Ultra Notebook",
+    "regularPrice": 60,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Notebook"
+    }
+  },
+  {
+    "productId": "PID-29",
+    "productName": "Ultra Highlighter",
+    "regularPrice": 360,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Highlighter"
+    }
+  },
+  {
+    "productId": "PID-30",
+    "productName": "Basic Glue",
+    "regularPrice": 274,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 48,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Glue"
+    }
+  },
+  {
+    "productId": "PID-31",
+    "productName": "Basic Glue",
+    "regularPrice": 263,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 49,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Glue"
+    }
+  },
+  {
+    "productId": "PID-32",
+    "productName": "Eco Case",
+    "regularPrice": 499,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 8,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Case"
+    }
+  },
+  {
+    "productId": "PID-33",
+    "productName": "Classic Marker",
+    "regularPrice": 283,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 7,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Marker"
+    }
+  },
+  {
+    "productId": "PID-34",
+    "productName": "Pro Notebook",
+    "regularPrice": 431,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 9,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Notebook"
+    }
+  },
+  {
+    "productId": "PID-35",
+    "productName": "Premium Pen",
+    "regularPrice": 146,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 9,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Pen"
+    }
+  },
+  {
+    "productId": "PID-36",
+    "productName": "Basic Ruler",
+    "regularPrice": 475,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 7,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Ruler"
+    }
+  },
+  {
+    "productId": "PID-37",
+    "productName": "Premium Scissors",
+    "regularPrice": 34,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Scissors"
+    }
+  },
+  {
+    "productId": "PID-38",
+    "productName": "Smart Pencil",
+    "regularPrice": 53,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Pencil"
+    }
+  },
+  {
+    "productId": "PID-39",
+    "productName": "Slim Highlighter",
+    "regularPrice": 373,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 12,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Slim Highlighter"
+    }
+  },
+  {
+    "productId": "PID-40",
+    "productName": "Smart Brush Set",
+    "regularPrice": 60,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 10,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Brush Set"
+    }
+  },
+  {
+    "productId": "PID-41",
+    "productName": "Slim Folder",
+    "regularPrice": 108,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 13,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Slim Folder"
+    }
+  },
+  {
+    "productId": "PID-42",
+    "productName": "Eco Highlighter",
+    "regularPrice": 421,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Highlighter"
+    }
+  },
+  {
+    "productId": "PID-43",
+    "productName": "Ultra Folder",
+    "regularPrice": 188,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Folder"
+    }
+  },
+  {
+    "productId": "PID-44",
+    "productName": "Pro Case",
+    "regularPrice": 245,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 9,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Case"
+    }
+  },
+  {
+    "productId": "PID-45",
+    "productName": "Max Folder",
+    "regularPrice": 473,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Folder"
+    }
+  },
+  {
+    "productId": "PID-46",
+    "productName": "Mini Notebook",
+    "regularPrice": 238,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 9,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Notebook"
+    }
+  },
+  {
+    "productId": "PID-47",
+    "productName": "Basic Brush Set",
+    "regularPrice": 482,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 21,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Brush Set"
+    }
+  },
+  {
+    "productId": "PID-48",
+    "productName": "Classic Ruler",
+    "regularPrice": 60,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Ruler"
+    }
+  },
+  {
+    "productId": "PID-49",
+    "productName": "Max Paper",
+    "regularPrice": 473,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 6,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Paper"
+    }
+  },
+  {
+    "productId": "PID-50",
+    "productName": "Pro Sketchbook",
+    "regularPrice": 459,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Sketchbook"
+    }
+  },
+  {
+    "productId": "PID-51",
+    "productName": "Ultra Marker",
+    "regularPrice": 401,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 25,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Marker"
+    }
+  },
+  {
+    "productId": "PID-52",
+    "productName": "Basic Pen",
+    "regularPrice": 110,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Pen"
+    }
+  },
+  {
+    "productId": "PID-53",
+    "productName": "Basic Board",
+    "regularPrice": 65,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 25,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Board"
+    }
+  },
+  {
+    "productId": "PID-54",
+    "productName": "Ultra Clip",
+    "regularPrice": 179,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 40,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Clip"
+    }
+  },
+  {
+    "productId": "PID-55",
+    "productName": "Mini Sketchbook",
+    "regularPrice": 168,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Sketchbook"
+    }
+  },
+  {
+    "productId": "PID-56",
+    "productName": "Pro Folder",
+    "regularPrice": 352,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 13,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Folder"
+    }
+  },
+  {
+    "productId": "PID-57",
+    "productName": "Classic Glue",
+    "regularPrice": 427,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 21,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Glue"
+    }
+  },
+  {
+    "productId": "PID-58",
+    "productName": "Smart Scissors",
+    "regularPrice": 379,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 46,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Scissors"
+    }
+  },
+  {
+    "productId": "PID-59",
+    "productName": "Pro Ruler",
+    "regularPrice": 417,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 5,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Ruler"
+    }
+  },
+  {
+    "productId": "PID-60",
+    "productName": "Slim Paper",
+    "regularPrice": 133,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 15,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Slim Paper"
+    }
+  },
+  {
+    "productId": "PID-61",
+    "productName": "Smart Scissors",
+    "regularPrice": 204,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Scissors"
+    }
+  },
+  {
+    "productId": "PID-62",
+    "productName": "Classic Pad",
+    "regularPrice": 463,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Pad"
+    }
+  },
+  {
+    "productId": "PID-63",
+    "productName": "Max Board",
+    "regularPrice": 143,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 32,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Board"
+    }
+  },
+  {
+    "productId": "PID-64",
+    "productName": "Mini Brush Set",
+    "regularPrice": 174,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 44,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Brush Set"
+    }
+  },
+  {
+    "productId": "PID-65",
+    "productName": "Pro Ruler",
+    "regularPrice": 51,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Ruler"
+    }
+  },
+  {
+    "productId": "PID-66",
+    "productName": "Pro Ruler",
+    "regularPrice": 135,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Ruler"
+    }
+  },
+  {
+    "productId": "PID-67",
+    "productName": "Max Highlighter",
+    "regularPrice": 468,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 31,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Max Highlighter"
+    }
+  },
+  {
+    "productId": "PID-68",
+    "productName": "Eco Folder",
+    "regularPrice": 331,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 16,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Folder"
+    }
+  },
+  {
+    "productId": "PID-69",
+    "productName": "Eco Pencil",
+    "regularPrice": 474,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 9,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Pencil"
+    }
+  },
+  {
+    "productId": "PID-70",
+    "productName": "Eco Marker",
+    "regularPrice": 89,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Marker"
+    }
+  },
+  {
+    "productId": "PID-71",
+    "productName": "Classic Notebook",
+    "regularPrice": 232,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Notebook"
+    }
+  },
+  {
+    "productId": "PID-72",
+    "productName": "Pro Brush Set",
+    "regularPrice": 210,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 36,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Brush Set"
+    }
+  },
+  {
+    "productId": "PID-73",
+    "productName": "Ultra Marker",
+    "regularPrice": 262,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 24,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Marker"
+    }
+  },
+  {
+    "productId": "PID-74",
+    "productName": "Eco Sketchbook",
+    "regularPrice": 458,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Sketchbook"
+    }
+  },
+  {
+    "productId": "PID-75",
+    "productName": "Premium Pen",
+    "regularPrice": 58,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 22,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Pen"
+    }
+  },
+  {
+    "productId": "PID-76",
+    "productName": "Ultra Marker",
+    "regularPrice": 200,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Marker"
+    }
+  },
+  {
+    "productId": "PID-77",
+    "productName": "Slim Pen",
+    "regularPrice": 197,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 13,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Slim Pen"
+    }
+  },
+  {
+    "productId": "PID-78",
+    "productName": "Eco Paper",
+    "regularPrice": 173,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Paper"
+    }
+  },
+  {
+    "productId": "PID-79",
+    "productName": "Slim Scissors",
+    "regularPrice": 500,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 12,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Slim Scissors"
+    }
+  },
+  {
+    "productId": "PID-80",
+    "productName": "Pro Pad",
+    "regularPrice": 364,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Pad"
+    }
+  },
+  {
+    "productId": "PID-81",
+    "productName": "Ultra Glue",
+    "regularPrice": 410,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Glue"
+    }
+  },
+  {
+    "productId": "PID-82",
+    "productName": "Smart Holder",
+    "regularPrice": 290,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 10,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Smart Holder"
+    }
+  },
+  {
+    "productId": "PID-83",
+    "productName": "Eco Ruler",
+    "regularPrice": 392,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 18,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Ruler"
+    }
+  },
+  {
+    "productId": "PID-84",
+    "productName": "Pro Pen",
+    "regularPrice": 291,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 6,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Pen"
+    }
+  },
+  {
+    "productId": "PID-85",
+    "productName": "Mini Ruler",
+    "regularPrice": 354,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 44,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Mini Ruler"
+    }
+  },
+  {
+    "productId": "PID-86",
+    "productName": "Classic Pad",
+    "regularPrice": 332,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Pad"
+    }
+  },
+  {
+    "productId": "PID-87",
+    "productName": "Eco Marker",
+    "regularPrice": 438,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 7,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Eco Marker"
+    }
+  },
+  {
+    "productId": "PID-88",
+    "productName": "Classic Board",
+    "regularPrice": 442,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 32,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Board"
+    }
+  },
+  {
+    "productId": "PID-89",
+    "productName": "Slim Brush Set",
+    "regularPrice": 160,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Slim Brush Set"
+    }
+  },
+  {
+    "productId": "PID-90",
+    "productName": "Ultra Pencil",
+    "regularPrice": 299,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 18,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Ultra Pencil"
+    }
+  },
+  {
+    "productId": "PID-91",
+    "productName": "Premium Paper",
+    "regularPrice": 406,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Paper"
+    }
+  },
+  {
+    "productId": "PID-92",
+    "productName": "Classic Paper",
+    "regularPrice": 117,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 17,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Paper"
+    }
+  },
+  {
+    "productId": "PID-93",
+    "productName": "Pro Pad",
+    "regularPrice": 272,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 12,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Pro Pad"
+    }
+  },
+  {
+    "productId": "PID-94",
+    "productName": "Basic Scissors",
+    "regularPrice": 90,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 5,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Scissors"
+    }
+  },
+  {
+    "productId": "PID-95",
+    "productName": "Classic Notebook",
+    "regularPrice": 231,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Notebook"
+    }
+  },
+  {
+    "productId": "PID-96",
+    "productName": "Premium Brush Set",
+    "regularPrice": 246,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 16,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Premium Brush Set"
+    }
+  },
+  {
+    "productId": "PID-97",
+    "productName": "Basic Board",
+    "regularPrice": 70,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Board"
+    }
+  },
+  {
+    "productId": "PID-98",
+    "productName": "Classic Pencil",
+    "regularPrice": 384,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Pencil"
+    }
+  },
+  {
+    "productId": "PID-99",
+    "productName": "Classic Eraser",
+    "regularPrice": 285,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 11,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Classic Eraser"
+    }
+  },
+  {
+    "productId": "PID-100",
+    "productName": "Basic Holder",
+    "regularPrice": 185,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 8,
+    "discountFlat": 0,
+    "featuredImage": {
+      "imgUrl": "https://picsum.photos/seed/gallery-1-1/300/400?random=1",
+      "imgAlt": "Basic Holder"
+    }
+  }
+]

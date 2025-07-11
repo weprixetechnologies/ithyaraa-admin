@@ -1,0 +1,902 @@
+[
+  {
+    "productName": "Max Notebook",
+    "regularPrice": 65,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 28
+  },
+  {
+    "productName": "Basic Pen",
+    "regularPrice": 321,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Notebook",
+    "regularPrice": 262,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 16
+  },
+  {
+    "productName": "Premium Ruler",
+    "regularPrice": 239,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23
+  },
+  {
+    "productName": "Ultra Sketchbook",
+    "regularPrice": 407,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 24,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Pen",
+    "regularPrice": 499,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 16,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Case",
+    "regularPrice": 350,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Mini Ruler",
+    "regularPrice": 167,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Board",
+    "regularPrice": 333,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Smart Brush Set",
+    "regularPrice": 374,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47
+  },
+  {
+    "productName": "Pro Pencil",
+    "regularPrice": 160,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 6
+  },
+  {
+    "productName": "Premium Pen",
+    "regularPrice": 164,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Holder",
+    "regularPrice": 136,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 42
+  },
+  {
+    "productName": "Mini Sharpener",
+    "regularPrice": 397,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23
+  },
+  {
+    "productName": "Ultra Holder",
+    "regularPrice": 336,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Ultra Marker",
+    "regularPrice": 461,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 46
+  },
+  {
+    "productName": "Premium Brush Set",
+    "regularPrice": 271,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 46
+  },
+  {
+    "productName": "Smart Clip",
+    "regularPrice": 378,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 13,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Max Glue",
+    "regularPrice": 444,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 10
+  },
+  {
+    "productName": "Classic Brush Set",
+    "regularPrice": 323,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 18,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Sketchbook",
+    "regularPrice": 246,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 8,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Eraser",
+    "regularPrice": 139,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 48
+  },
+  {
+    "productName": "Pro Notebook",
+    "regularPrice": 497,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Mini Pencil",
+    "regularPrice": 225,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23
+  },
+  {
+    "productName": "Pro Folder",
+    "regularPrice": 175,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 24,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Mini Brush Set",
+    "regularPrice": 115,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 40
+  },
+  {
+    "productName": "Max Brush Set",
+    "regularPrice": 499,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47
+  },
+  {
+    "productName": "Ultra Notebook",
+    "regularPrice": 60,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Ultra Highlighter",
+    "regularPrice": 360,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Glue",
+    "regularPrice": 274,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 48
+  },
+  {
+    "productName": "Basic Glue",
+    "regularPrice": 263,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 49
+  },
+  {
+    "productName": "Eco Case",
+    "regularPrice": 499,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 8
+  },
+  {
+    "productName": "Classic Marker",
+    "regularPrice": 283,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 7
+  },
+  {
+    "productName": "Pro Notebook",
+    "regularPrice": 431,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 9
+  },
+  {
+    "productName": "Premium Pen",
+    "regularPrice": 146,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 9
+  },
+  {
+    "productName": "Basic Ruler",
+    "regularPrice": 475,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 7,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Premium Scissors",
+    "regularPrice": 34,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Smart Pencil",
+    "regularPrice": 53,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Slim Highlighter",
+    "regularPrice": 373,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 12,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Smart Brush Set",
+    "regularPrice": 60,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 10,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Slim Folder",
+    "regularPrice": 108,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 13,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Highlighter",
+    "regularPrice": 421,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Ultra Folder",
+    "regularPrice": 188,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Case",
+    "regularPrice": 245,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 9,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Max Folder",
+    "regularPrice": 473,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 23
+  },
+  {
+    "productName": "Mini Notebook",
+    "regularPrice": 238,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 9,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Brush Set",
+    "regularPrice": 482,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 21,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Ruler",
+    "regularPrice": 60,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Max Paper",
+    "regularPrice": 473,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 6
+  },
+  {
+    "productName": "Pro Sketchbook",
+    "regularPrice": 459,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Ultra Marker",
+    "regularPrice": 401,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 25,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Pen",
+    "regularPrice": 110,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Board",
+    "regularPrice": 65,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 25
+  },
+  {
+    "productName": "Ultra Clip",
+    "regularPrice": 179,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 40
+  },
+  {
+    "productName": "Mini Sketchbook",
+    "regularPrice": 168,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Folder",
+    "regularPrice": 352,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 13
+  },
+  {
+    "productName": "Classic Glue",
+    "regularPrice": 427,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 21,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Smart Scissors",
+    "regularPrice": 379,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 46
+  },
+  {
+    "productName": "Pro Ruler",
+    "regularPrice": 417,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 5
+  },
+  {
+    "productName": "Slim Paper",
+    "regularPrice": 133,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 15
+  },
+  {
+    "productName": "Smart Scissors",
+    "regularPrice": 204,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Pad",
+    "regularPrice": 463,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Max Board",
+    "regularPrice": 143,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 32
+  },
+  {
+    "productName": "Mini Brush Set",
+    "regularPrice": 174,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 44
+  },
+  {
+    "productName": "Pro Ruler",
+    "regularPrice": 51,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47
+  },
+  {
+    "productName": "Pro Ruler",
+    "regularPrice": 135,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Max Highlighter",
+    "regularPrice": 468,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 31
+  },
+  {
+    "productName": "Eco Folder",
+    "regularPrice": 331,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 16,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Pencil",
+    "regularPrice": 474,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 9,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Marker",
+    "regularPrice": 89,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 20,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Notebook",
+    "regularPrice": 232,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Brush Set",
+    "regularPrice": 210,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 36
+  },
+  {
+    "productName": "Ultra Marker",
+    "regularPrice": 262,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 24,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Sketchbook",
+    "regularPrice": 458,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Premium Pen",
+    "regularPrice": 58,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 22
+  },
+  {
+    "productName": "Ultra Marker",
+    "regularPrice": 200,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Slim Pen",
+    "regularPrice": 197,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 13,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Paper",
+    "regularPrice": 173,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Slim Scissors",
+    "regularPrice": 500,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 12,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Pad",
+    "regularPrice": 364,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 5,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Ultra Glue",
+    "regularPrice": 410,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Smart Holder",
+    "regularPrice": 290,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 10,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Eco Ruler",
+    "regularPrice": 392,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 18
+  },
+  {
+    "productName": "Pro Pen",
+    "regularPrice": 291,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 6
+  },
+  {
+    "productName": "Mini Ruler",
+    "regularPrice": 354,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 44
+  },
+  {
+    "productName": "Classic Pad",
+    "regularPrice": 332,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47
+  },
+  {
+    "productName": "Eco Marker",
+    "regularPrice": 438,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 7
+  },
+  {
+    "productName": "Classic Board",
+    "regularPrice": 442,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 32
+  },
+  {
+    "productName": "Slim Brush Set",
+    "regularPrice": 160,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 47
+  },
+  {
+    "productName": "Ultra Pencil",
+    "regularPrice": 299,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 18,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Premium Paper",
+    "regularPrice": 406,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 11,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Paper",
+    "regularPrice": 117,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "percent",
+    "discountPercent": 17,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Pro Pad",
+    "regularPrice": 272,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 12,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Scissors",
+    "regularPrice": 90,
+    "categoryName": "Art Supplies",
+    "categoryID": 103,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 5
+  },
+  {
+    "productName": "Classic Notebook",
+    "regularPrice": 231,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 23,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Premium Brush Set",
+    "regularPrice": 246,
+    "categoryName": "Stationery",
+    "categoryID": 101,
+    "discountType": "percent",
+    "discountPercent": 16,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Basic Board",
+    "regularPrice": 70,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "percent",
+    "discountPercent": 15,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Pencil",
+    "regularPrice": 384,
+    "categoryName": "Office Tools",
+    "categoryID": 104,
+    "discountType": "percent",
+    "discountPercent": 14,
+    "discountFlat": 0
+  },
+  {
+    "productName": "Classic Eraser",
+    "regularPrice": 285,
+    "categoryName": "Notebooks",
+    "categoryID": 102,
+    "discountType": "flat",
+    "discountPercent": 0,
+    "discountFlat": 11
+  },
+  {
+    "productName": "Basic Holder",
+    "regularPrice": 185,
+    "categoryName": "Markers",
+    "categoryID": 105,
+    "discountType": "percent",
+    "discountPercent": 8,
+    "discountFlat": 0
+  }
+]

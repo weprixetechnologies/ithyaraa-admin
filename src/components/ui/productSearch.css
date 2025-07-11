@@ -1,0 +1,134 @@
+/* Wrapper for the entire product search section */
+.product-search-wrapper {
+    padding: 20px;
+}
+
+/* Filter controls bar */
+.filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filters-bar input,
+.filters-bar select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.select-all-btn {
+    padding: 8px 14px;
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.select-all-btn:hover {
+    background-color: #004db8;
+}
+
+/* Product wrapper grid */
+.productwrapper-01 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+/* Individual product item wrapper */
+.product-item-wrapper {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+/* Product card */
+.product-item {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+}
+
+/* Product name style */
+.pname {
+    width: 80%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Optional class (if you're using it somewhere else) */
+.pname-i23 {
+    color: #676363;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.42px;
+}
+
+/* Image container with selection overlay */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.product-image {
+    width: 100%;
+    height: auto;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect */
+.product-item-wrapper:hover .product-image {
+    filter: blur(2px);
+}
+
+.product-item-wrapper:hover .add-btn {
+    opacity: 1;
+}
+
+/* Add button styling */
+.add-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    padding: 6px 10px;
+    background-color: #000000a0;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    opacity: 0;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Selected product blur and overlay */
+.image-container.selected .product-image {
+    filter: blur(2px);
+}
+
+.image-container.selected::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 255, 200, 0.3), rgba(0, 100, 255, 0.3));
+    z-index: 1;
+}
+
+/* Tick icon overlay for selected items */
+.tick-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: bold;
+    color: #00cc66;
+    z-index: 2;
+}

@@ -1,0 +1,602 @@
+[
+  {
+    
+    "productName": "Notebook 1",
+    "price": 12,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Eraser 2",
+    "price": 19,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Marker 3",
+    "price": 26,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Folder 4",
+    "price": 33,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Tape 5",
+    "price": 40,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Glue 6",
+    "price": 47,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Scissors 7",
+    "price": 54,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Paper 8",
+    "price": 61,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Brush 9",
+    "price": 68,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Pen 10",
+    "price": 75,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Notebook 11",
+    "price": 82,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Eraser 12",
+    "price": 89,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Marker 13",
+    "price": 96,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Folder 14",
+    "price": 103,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Tape 15",
+    "price": 110,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Glue 16",
+    "price": 117,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Scissors 17",
+    "price": 124,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Paper 18",
+    "price": 131,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Brush 19",
+    "price": 138,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Pen 20",
+    "price": 145,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Notebook 21",
+    "price": 152,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Eraser 22",
+    "price": 9,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Marker 23",
+    "price": 16,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Folder 24",
+    "price": 23,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Tape 25",
+    "price": 30,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Glue 26",
+    "price": 37,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Scissors 27",
+    "price": 44,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Paper 28",
+    "price": 51,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Brush 29",
+    "price": 58,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Pen 30",
+    "price": 65,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Notebook 31",
+    "price": 72,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Eraser 32",
+    "price": 79,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Marker 33",
+    "price": 86,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Folder 34",
+    "price": 93,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Tape 35",
+    "price": 100,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Glue 36",
+    "price": 107,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Scissors 37",
+    "price": 114,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Paper 38",
+    "price": 121,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Brush 39",
+    "price": 128,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Pen 40",
+    "price": 135,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Notebook 41",
+    "price": 142,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Eraser 42",
+    "price": 149,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Marker 43",
+    "price": 6,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Folder 44",
+    "price": 13,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Tape 45",
+    "price": 20,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Glue 46",
+    "price": 27,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Scissors 47",
+    "price": 34,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Paper 48",
+    "price": 41,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Brush 49",
+    "price": 48,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Pen 50",
+    "price": 55,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Notebook 51",
+    "price": 62,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Eraser 52",
+    "price": 69,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Marker 53",
+    "price": 76,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Folder 54",
+    "price": 83,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Tape 55",
+    "price": 90,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Glue 56",
+    "price": 97,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Scissors 57",
+    "price": 104,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Paper 58",
+    "price": 111,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Brush 59",
+    "price": 118,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Pen 60",
+    "price": 125,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Notebook 61",
+    "price": 132,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Eraser 62",
+    "price": 139,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Marker 63",
+    "price": 146,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Folder 64",
+    "price": 153,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Tape 65",
+    "price": 10,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Glue 66",
+    "price": 17,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Scissors 67",
+    "price": 24,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Paper 68",
+    "price": 31,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Brush 69",
+    "price": 38,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Pen 70",
+    "price": 45,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Notebook 71",
+    "price": 52,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Eraser 72",
+    "price": 59,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Marker 73",
+    "price": 66,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Folder 74",
+    "price": 73,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Tape 75",
+    "price": 80,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Glue 76",
+    "price": 87,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Scissors 77",
+    "price": 94,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Paper 78",
+    "price": 101,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Brush 79",
+    "price": 108,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Pen 80",
+    "price": 115,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Notebook 81",
+    "price": 122,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Eraser 82",
+    "price": 129,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Marker 83",
+    "price": 136,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Folder 84",
+    "price": 143,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Tape 85",
+    "price": 150,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Glue 86",
+    "price": 7,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Scissors 87",
+    "price": 14,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Paper 88",
+    "price": 21,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Brush 89",
+    "price": 28,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Pen 90",
+    "price": 35,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Notebook 91",
+    "price": 42,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Eraser 92",
+    "price": 49,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Marker 93",
+    "price": 56,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Folder 94",
+    "price": 63,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Tape 95",
+    "price": 70,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Glue 96",
+    "price": 77,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Scissors 97",
+    "price": 84,
+    "category": "Office Supplies"
+  },
+  {
+    
+    "productName": "Paper 98",
+    "price": 91,
+    "category": "Art Supplies"
+  },
+  {
+    
+    "productName": "Brush 99",
+    "price": 98,
+    "category": "Stationery"
+  },
+  {
+    
+    "productName": "Pen 100",
+    "price": 105,
+    "category": "Office Supplies"
+  }
+]
