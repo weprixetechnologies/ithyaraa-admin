@@ -117,9 +117,17 @@
     border-radius: 10px;
     font-weight: 500;
     color: #fff;
+    position: relative;
+    top: -5px;
+    left: -5px;
+    box-shadow: 5px 5px 0 #777777;
+
 }
 
 .save-attributes:hover {
+    top: 0;
+    left: 0;
+    box-shadow: none;
     background: #94BBE9;
     background: radial-gradient(circle, rgba(148, 187, 233, 1) 0%, rgba(238, 174, 202, 1) 100%);
 }

@@ -15,4 +15,4 @@ const Container = ({ title, children, classContainer, gap }) => {
     )
 }
 
-export default Container
+export default Container;

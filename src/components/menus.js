@@ -86,8 +86,8 @@ export const mainMenu = [
         icon: <RiGift2Line />,
         title: 'Combo',
         subMenu: [
-            { menuID: 'admin-5a', url: '/combo/add', icon: <RiAddLine />, title: 'Add Combo' },
-            { menuID: 'admin-5b', url: '/combo/make', icon: <RiAddLine />, title: 'Add Make Combo' },
+            { menuID: 'admin-5a', url: '/add-combo', icon: <RiAddLine />, title: 'Add Combo' },
+            { menuID: 'admin-5b', url: '/make-combo', icon: <RiAddLine />, title: 'Add Make Combo' },
             { menuID: 'admin-5c', url: '/combo/all-make', icon: <RiListUnordered />, title: 'All Make Combos' },
             { menuID: 'admin-5d', url: '/combo/prebuilt', icon: <RiListUnordered />, title: 'All Prebuilt Combo' },
         ],

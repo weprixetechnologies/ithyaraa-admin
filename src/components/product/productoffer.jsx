@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import InputCustomLabelled from '../ui/customLabelledField';
 import SelectCustomLabelled from '../ui/customSelect';
 
-const ProductOffer = ({ offers = [] }) => {
+const ProductOffer = ({ offers = [], onChange }) => {
     const [offerId, setOfferId] = useState('');
     const [selectedOffer, setSelectedOffer] = useState('');
 
@@ -14,6 +14,12 @@ const ProductOffer = ({ offers = [] }) => {
             setOfferId(selectedOffer);
         }
     }, [selectedOffer]);
+
+    useEffect(() => {
+        if (onChange) {
+            onChange(offerId)
+        }
+    }, [offerId])
 
     const handleConfirm = () => {
         console.log('Confirmed Offer ID:', offerId);

@@ -73,6 +73,54 @@ const ImageUpload = ({ maxImages = 5, placeholder = "Upload Image", prefilledIma
 
             setOldImages(images);
             setNewImages([]);
+        },
+        appendPrefilledImage: (input) => {
+            let images = [];
+
+            if (Array.isArray(input)) {
+                // input is an array of strings or objects
+                images = input.map(item => {
+                    if (typeof item === 'string') {
+                        return { imgUrl: item, imgAlt: '' };
+                    }
+                    return {
+                        imgUrl: item.imgUrl || '',
+                        imgAlt: item.imgAlt || ''
+                    };
+                });
+            } else if (typeof input === 'string') {
+                // input is a single URL string
+                images = [{ imgUrl: input, imgAlt: '' }];
+            } else if (typeof input === 'object' && input !== null) {
+                // input is a single object
+                images = [{
+                    imgUrl: input.imgUrl || '',
+                    imgAlt: input.imgAlt || ''
+                }];
+            }
+
+            setOldImages(prev => [...prev, ...images]);
+
+        },
+        removePrefilledImage: (input) => {
+            let toRemove = [];
+
+            if (Array.isArray(input)) {
+                toRemove = input.map(item => {
+                    if (typeof item === 'string') {
+                        return item; // string URL
+                    }
+                    return item.imgUrl || '';
+                });
+            } else if (typeof input === 'string') {
+                toRemove = [input];
+            } else if (typeof input === 'object' && input !== null) {
+                toRemove = [input.imgUrl || ''];
+            }
+
+            setOldImages(prev =>
+                prev.filter(img => !toRemove.includes(img.imgUrl))
+            );
         }
 
     }));
@@ -181,6 +229,8 @@ const ImageUpload = ({ maxImages = 5, placeholder = "Upload Image", prefilledIma
                     Maximum {maxImages} images allowed.
                 </p>
             )}
+
+
         </div>
     );
 };

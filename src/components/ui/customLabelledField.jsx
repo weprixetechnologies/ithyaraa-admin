@@ -6,7 +6,7 @@ const InputCustomLabelled = ({
     value,
     inputFunction = () => { },
     label,
-    placeholder,
+    placeholder = `Enter Your ${isLabel ? label : 'Data'}`,
     type = "text",
     labelClasses = "",
     pClasses = "",

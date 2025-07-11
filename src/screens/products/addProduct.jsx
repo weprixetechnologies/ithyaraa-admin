@@ -64,7 +64,7 @@ const AddProduct = () => {
 
     const updateName = (data) => {
         setName(data);
-        console.log(data);
+        // console.log(data);
     };
 
     const updateDescription = (data) => {
@@ -73,7 +73,7 @@ const AddProduct = () => {
 
     const getFinalAttr = (data) => {
         setFinalAtttr(data)
-        console.log(data);
+        // console.log(data);
 
     }
 

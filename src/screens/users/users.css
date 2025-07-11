@@ -1,0 +1,148 @@
+.left-auw,
+.right-auw {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.adduser-wrapper {
+    display: grid;
+    grid-template-columns: 6.5fr 3.5fr;
+    gap: 15px;
+}
+
+.logindata {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+}
+
+.logindata .child-logindata {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+.child-logindata-1 {
+    color: var(--dark-secondary-text);
+    font-family: var(--f2);
+    font-weight: 400;
+}
+
+.address-container {
+    padding: 15px;
+    /* background-color: var(--light-secondary-text); */
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #fff;
+}
+
+.addresstype {
+    font-weight: 500;
+    color: #fff;
+}
+
+.address-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.verificationContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profileimage {
+    width: 100%;
+    height: auto;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profileimage img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.ordersuser {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.ordersuser-child {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ordersuser-main-child {
+    margin: 5px 0px;
+    padding: 10px;
+}
+
+.order-details-dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.odw-child {
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.pfeatured {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+}
+
+.pname {
+    font-size: 18px;
+    color: #000;
+    font-weight: 500;
+}
+
+.psku {
+    font-size: 14px;
+    color: var(--dark-secondary-text);
+}
+
+.pprice {
+    font-size: 18px;
+    font-weight: 600;
+    color: red;
+}
+
+.poffer {
+    font-size: 12px;
+    color: green;
+}
+
+.orderDetails-pww {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.orderDetails-pww-child {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0px 10px;
+    /* border: 1px solid; */
+    align-items: center;
+}
