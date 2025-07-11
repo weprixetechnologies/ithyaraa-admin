@@ -29,7 +29,7 @@ const TransactionUser = () => {
     const filterByDate = (txn) => {
         if (!dateRange.from && !dateRange.to) return true;
 
-        const txnDate = new Date(txn.date.split('/').reverse().join('-')); // dd/mm/yyyy → yyyy-mm-dd
+        const txnDate = new Date(txn.date.split('/').reverse().join('-'));
         const from = dateRange.from ? new Date(dateRange.from) : null;
         const to = dateRange.to ? new Date(dateRange.to) : null;
 
@@ -50,15 +50,13 @@ const TransactionUser = () => {
     const handleNext = () => page < totalPages && setPage(page + 1);
 
     return (
-        <div className="transaction-container">
-            {/* <h2>Transaction History</h2> */}
-
-            <div className="filters-wrap">
-                <div className="filters">
+        <div className="txn-container">
+            <div className="txn-filters-wrap">
+                <div className="txn-filters">
                     {['All', 'TopUp', 'Order'].map(type => (
                         <button
                             key={type}
-                            className={filter === type ? 'active' : ''}
+                            className={filter === type ? 'txn-active' : ''}
                             onClick={() => { setFilter(type); setPage(1); }}
                         >
                             {type}
@@ -66,11 +64,11 @@ const TransactionUser = () => {
                     ))}
                 </div>
 
-                <div className="filters">
+                <div className="txn-filters">
                     {['All', 'Success', 'Pending', 'Refunded'].map(status => (
                         <button
                             key={status}
-                            className={statusFilter === status ? 'active' : ''}
+                            className={statusFilter === status ? 'txn-active' : ''}
                             onClick={() => { setStatusFilter(status); setPage(1); }}
                         >
                             {status}
@@ -78,7 +76,7 @@ const TransactionUser = () => {
                     ))}
                 </div>
 
-                <div className="date-range">
+                <div className="txn-date-range">
                     <label>From:
                         <input
                             type="date"
@@ -96,16 +94,16 @@ const TransactionUser = () => {
                 </div>
             </div>
 
-            <div className="transaction-list">
+            <div className="txn-list">
                 {paginated.length ? paginated.map((txn, idx) => (
-                    <div className={`transaction-card ${txn.isTopUp === 'TopUp' ? 'topup' : 'order'}`} key={idx}>
+                    <div className={`txn-card ${txn.isTopUp === 'TopUp' ? 'topup' : 'order'}`} key={idx}>
                         <div><strong>Date:</strong> {txn.date}</div>
                         <div><strong>Time:</strong> {txn.time}</div>
                         <div><strong>{txn.isTopUp === 'TopUp' ? 'Top Up' : 'Order'} ID:</strong> {txn.orderID}</div>
                         <div><strong>TXN ID:</strong> {txn.TXNID}</div>
                         <div>
                             <strong>Status:</strong>{' '}
-                            <span className={`status-badge ${txn.status.toLowerCase()}`}>
+                            <span className={`txn-badge ${txn.status.toLowerCase()}`}>
                                 {txn.status}
                             </span>
                         </div>
@@ -113,7 +111,7 @@ const TransactionUser = () => {
                 )) : <p style={{ textAlign: 'center', marginTop: 20 }}>No transactions found</p>}
             </div>
 
-            <div className="pagination">
+            <div className="txn-pagination">
                 <button onClick={handlePrev} disabled={page === 1}>Previous</button>
                 <span>Page {page} of {totalPages}</span>
                 <button onClick={handleNext} disabled={page === totalPages}>Next</button>

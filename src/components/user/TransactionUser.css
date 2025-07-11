@@ -1,5 +1,5 @@
-/* Container setup
-.transaction-container {
+/* Container setup */
+/* .txn-container {
     padding: 30px;
     max-width: 800px;
     margin: auto;
@@ -7,20 +7,20 @@
 } */
 
 /* Header */
-h2 {
+.txn-header {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Filters (TopUp / Order / All) */
-.filters {
+/* Filters */
+.txn-filters {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-bottom: 20px;
 }
 
-.filters button {
+.txn-filters button {
     padding: 10px 20px;
     border: none;
     background-color: #eee;
@@ -29,22 +29,22 @@ h2 {
     transition: background-color 0.3s ease;
 }
 
-.filters button:hover {
+.txn-filters button:hover {
     background-color: #dcdcdc;
 }
 
-.filters .active {
+.txn-filters .txn-active {
     background-color: #007bff;
     color: white;
 }
 
-/* Transaction card layout */
-.transaction-list {
+/* Transaction cards */
+.txn-list {
     display: grid;
     gap: 15px;
 }
 
-.transaction-card {
+.txn-card {
     background: #f9f9f9;
     border-left: 5px solid #ccc;
     padding: 15px;
@@ -56,21 +56,21 @@ h2 {
     gap: 5px;
 }
 
-.transaction-card:hover {
+.txn-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
-.transaction-card.topup {
+.txn-card.topup {
     border-left-color: #28a745;
 }
 
-.transaction-card.order {
+.txn-card.order {
     border-left-color: #dc3545;
 }
 
-/* Status badges */
-.status-badge {
+/* Status badge */
+.txn-badge {
     padding: 3px 8px;
     border-radius: 5px;
     font-size: 0.85rem;
@@ -79,23 +79,23 @@ h2 {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.status-badge.success {
+.txn-badge.success {
     background-color: #d4edda;
     color: #155724;
 }
 
-.status-badge.pending {
+.txn-badge.pending {
     background-color: #fff3cd;
     color: #856404;
 }
 
-.status-badge.refunded {
+.txn-badge.refunded {
     background-color: #f8d7da;
     color: #721c24;
 }
 
-/* Pagination controls */
-.pagination {
+/* Pagination */
+.txn-pagination {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -103,7 +103,7 @@ h2 {
     margin-top: 25px;
 }
 
-.pagination button {
+.txn-pagination button {
     padding: 8px 16px;
     border: none;
     background-color: #007bff;
@@ -113,31 +113,32 @@ h2 {
     transition: background-color 0.3s ease;
 }
 
-.pagination button:disabled {
+.txn-pagination button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
-.pagination span {
+.txn-pagination span {
     font-weight: 500;
     font-size: 0.95rem;
 }
 
-.filters-wrap {
+/* Filter wrapper */
+.txn-filters-wrap {
     display: flex;
     flex-direction: column;
     gap: 15px;
     margin-bottom: 20px;
 }
 
-.date-range {
+.txn-date-range {
     display: flex;
     justify-content: center;
     gap: 20px;
     flex-wrap: wrap;
 }
 
-.date-range label {
+.txn-date-range label {
     font-weight: 500;
     font-size: 0.9rem;
     display: flex;
@@ -145,7 +146,7 @@ h2 {
     gap: 5px;
 }
 
-.date-range input[type="date"] {
+.txn-date-range input[type="date"] {
     padding: 5px 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
