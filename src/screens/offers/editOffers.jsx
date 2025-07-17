@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Layout from '../../layout';
 import Container from '../../components/ui/container';
 import SelectCustomLabelled from '../../components/ui/customSelect';
@@ -7,8 +7,71 @@ import ImageUpload from '../../components/ui/imageUpload';
 import './offer.css'
 import ProductSearchSpecial from '../../components/ui/productSearch';
 import SelectedProductList from '../../components/ui/selectedProduct';
+import { useParams } from 'react-router-dom';
 
-const AddOffer = () => {
+const offerData = [
+    {
+        offerId: 'OFF001',
+        offerName: 'Buy 2 Get 1 Free - Stationery Special',
+        offerBanner: 'https://picsum.photos/seed/stationery/200/100',
+        offerLogic: 'Buy 2 products and get 1 free',
+        offerSlug: 'buy-2-get-1-free-stationery',
+        buyProducts: 'stationery',
+        buyAt: '',
+        buyNumber: '2',
+        getNumbers: '1',
+        promotionType: 'buyXgetY'
+    },
+    {
+        offerId: 'OFF002',
+        offerName: 'Notebooks @ ₹49 Each - Limited Time',
+        offerBanner: 'https://picsum.photos/seed/notebooks/200/100',
+        offerLogic: 'Buy up to 5 notebooks at ₹49 each',
+        offerSlug: 'notebooks-at-49-each',
+        buyProducts: 'notebooks',
+        buyAt: '49',
+        buyNumber: '5',
+        getNumbers: '',
+        promotionType: 'buyXgetFixed'
+    },
+    {
+        offerId: 'OFF003',
+        offerName: 'Get 2 Markers Free with Every 3 Pens',
+        offerBanner: 'https://picsum.photos/seed/pens/200/100',
+        offerLogic: 'Buy 3 pens and get 2 markers free',
+        offerSlug: 'buy-3-pens-get-2-markers',
+        buyProducts: 'pens',
+        buyAt: '',
+        buyNumber: '3',
+        getNumbers: '2',
+        promotionType: 'buyXgetY'
+    },
+    {
+        offerId: 'OFF004',
+        offerName: 'Color Pencils @ ₹99 for 3 Packs',
+        offerBanner: 'https://picsum.photos/seed/colorpencils/200/100',
+        offerLogic: 'Buy 3 color pencil packs at ₹99 each',
+        offerSlug: 'color-pencils-99-for-3',
+        buyProducts: 'color-pencils',
+        buyAt: '99',
+        buyNumber: '3',
+        getNumbers: '',
+        promotionType: 'buyXgetFixed'
+    },
+    {
+        offerId: 'OFF005',
+        offerName: 'Buy 4 Folders, Get 2 Free',
+        offerBanner: 'https://picsum.photos/seed/folders/200/100',
+        offerLogic: 'Buy 4 folders and get 2 more free',
+        offerSlug: 'buy-4-get-2-folders-free',
+        buyProducts: 'folders',
+        buyAt: '',
+        buyNumber: '4',
+        getNumbers: '2',
+        promotionType: 'buyXgetY'
+    }
+];
+const EditOffers = () => {
     const [offer, setOffer] = useState({
         offerName: '',
         offerBanner: '',
@@ -22,8 +85,24 @@ const AddOffer = () => {
         description: ''
     });
 
+    const { id } = useParams()
     const imageUploadRef = useRef();
     const [selectedProducts, setSelectedProducts] = useState([]);
+
+    useEffect(() => {
+        const existingOffer = offerData.find((i) => i.offerId === id);
+        console.log(id);
+
+        if (existingOffer) {
+            setOffer(existingOffer);
+            imageUploadRef.current?.appendPrefilledImage(existingOffer.offerBanner); // ✅ Append existing banner
+        }
+
+        console.log(offer);
+        console.log(existingOffer);
+    }, [id]);
+
+
 
     const handleSelectionUpdate = (updatedList) => {
         setSelectedProducts(updatedList);
@@ -35,21 +114,20 @@ const AddOffer = () => {
 
     const handleSubmit = async () => {
         const uploadedImages = await imageUploadRef.current.uploadImagetoDatabase();
-        const bannerUrl = uploadedImages?.[0]?.imgUrl || '';
+        const bannerUrl = uploadedImages?.[0]?.imgUrl || offer.offerBanner;
 
-        const selectedProductIds = selectedProducts.map((product) => product.productId); // or product.productId
+        const selectedProductIds = selectedProducts.map((product) => product.productId);
 
         const finalOfferData = {
             ...offer,
             offerBanner: bannerUrl,
-            buyProducts: selectedProductIds, // ⬅️ Add the product IDs here
+            buyProducts: selectedProductIds,
         };
-        console.log(selectedProducts);
 
         console.log("✅ Final Offer to Submit:", finalOfferData);
-
-        // You can now post finalOfferData to your database
+        // Submit to backend here
     };
+
     const handleRemoveProduct = (productId) => {
         setSelectedProducts((prev) => prev.filter((p) => p.productId !== productId));
     };
@@ -77,6 +155,7 @@ const AddOffer = () => {
                             isInput={false}
                             label="Offer Description"
                             htmlFor="offerDescription"
+                            height={100}
                             value={offer.description}
                             inputFunction={handleChange('description')}
                         />
@@ -178,4 +257,4 @@ const AddOffer = () => {
     );
 };
 
-export default AddOffer;
+export default EditOffers;

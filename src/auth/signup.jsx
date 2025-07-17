@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import './auth.css';
+import { auth } from '../firebase';
 
-const Login = () => {
+const Signup = () => {
     const navigate = useNavigate();
-    const auth = getAuth();
-
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -15,8 +14,8 @@ const Login = () => {
         e.preventDefault();
         setError('');
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            navigate('/'); // redirect on success
+            await createUserWithEmailAndPassword(auth, email, password);
+            navigate('/dashboard'); // Redirect after successful signup
         } catch (err) {
             setError(err.message);
         }
@@ -26,8 +25,8 @@ const Login = () => {
         <div className="login-container">
             <div className="login-box">
                 <div className="login-header">
-                    <h2>Welcome Back</h2>
-                    <p>Login to access your dashboard</p>
+                    <h2>Create an Account</h2>
+                    <p>Sign up to get started</p>
                 </div>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <label>
@@ -44,16 +43,16 @@ const Login = () => {
                         <span>Password</span>
                         <input
                             type="password"
-                            placeholder="Enter your password"
+                            placeholder="Create a password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </label>
                     {error && <p className="error-text">{error}</p>}
-                    <button type="submit">Login</button>
+                    <button type="submit">Sign Up</button>
                     <div className="login-footer">
-                        <p>Don't have an account? <a href="/signup">Sign Up</a></p>
+                        <p>Already have an account? <a href="/login">Login</a></p>
                     </div>
                 </form>
             </div>
@@ -61,4 +60,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Signup;

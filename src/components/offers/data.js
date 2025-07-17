@@ -1,4 +1,4 @@
-const offerData = [
+export default offerData = [
     {
         offerId: 'OFF001',
         offerName: 'Buy 2 Get 1 Free - Stationery Special',

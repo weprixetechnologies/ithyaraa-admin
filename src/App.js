@@ -12,34 +12,55 @@ import AddCombo from './screens/combo/addCombo';
 import PhoneLogin from './auth/loginphone';
 import MakeCombo from './screens/combo/makeCombo';
 import AddOffer from './screens/offers/addOffers';
+import AllOffer from './screens/offers/allOffer';
+import EditOffers from './screens/offers/editOffers';
+import Coupons from './screens/marketing/coupons';
+import PrivateRoute from './auth/ProtectedRoute';
+import Signup from './auth/signup';
+import Giftcard from './screens/giftcard/giftcard';
+// import AllGiftCards from './screens/giftcard/allGiftcard';
 
 function App() {
   return (
     <Routes>
-      <Route path='/' element={<Dashboard />}></Route>
+      {/* AUTH */}
+      <Route path='/login' element={<Login />} />
+      <Route path='/signup' element={<Signup />} />
+      <Route path='/login-phone' element={<PhoneLogin />} />
 
-      {/* PRODUCTS */}
-      <Route path='/add-product' element={<AddProduct />}></Route>
-      <Route path='/all-products' element={<AllProducts />}></Route>
-      <Route path='/all-products/:id' element={<EditProduct />}></Route>
-
-      {/* USER */}
-      <Route path='/all-users' element={<AllUsers />}></Route>
-      <Route path='/add-user' element={<AddUser />}></Route>
-
-      {/* CATEGORY */}
-      <Route path='/add-category' element={<AddCategory />}></Route>
-
-      {/* COMBO */}
-      <Route path='/combo' element={<AddCombo />} />
-      <Route path='/add-combo' element={<AddCombo />} />
-      <Route path='/make-combo' element={<MakeCombo />} />
-
-      {/* OFFERS */}
-      <Route path='/offers/add' element={<AddOffer />}></Route>
-      {/* AUTH PAGE */}
-      <Route path='/login' element={<Login />}></Route>
-      <Route path='/login-phone' element={<PhoneLogin />}></Route>
+      {/* PROTECTED ROUTES */}
+      <Route path='/' element={<PrivateRoute>   <Dashboard /> </PrivateRoute>}
+      />
+      <Route path='/add-product' element={<PrivateRoute>   <AddProduct /> </PrivateRoute>}
+      />
+      <Route path='/all-products' element={<PrivateRoute>   <AllProducts /> </PrivateRoute>}
+      />
+      <Route path='/all-products/:id' element={<PrivateRoute>   <EditProduct /> </PrivateRoute>}
+      />
+      <Route path='/all-users' element={<PrivateRoute>   <AllUsers /> </PrivateRoute>
+      }
+      />
+      <Route path='/add-user' element={<PrivateRoute>   <AddUser /> </PrivateRoute>}
+      />
+      <Route path='/add-category' element={<PrivateRoute>   <AddCategory /> </PrivateRoute>}
+      />
+      <Route path='/combo' element={<PrivateRoute>   <AddCombo /> </PrivateRoute>}
+      />
+      <Route path='/add-combo' element={<PrivateRoute>   <AddCombo /> </PrivateRoute>}
+      />
+      <Route path='/make-combo' element={<PrivateRoute>   <MakeCombo /> </PrivateRoute>}
+      />
+      <Route path='/offers/add' element={<PrivateRoute>   <AddOffer /> </PrivateRoute>}
+      />
+      <Route path='/offers/all' element={<PrivateRoute>   <AllOffer /> </PrivateRoute>}
+      />
+      <Route path='/offers/all/edit/:id' element={<PrivateRoute>   <EditOffers /> </PrivateRoute>}
+      />
+      <Route path='/marketing/coupons' element={<PrivateRoute>   <Coupons /> </PrivateRoute>}
+      />
+      <Route path='/giftcard/' element={<PrivateRoute>   <Giftcard /> </PrivateRoute>} />
+      {/* <Route path='/giftcards/all' element={<PrivateRoute>   <AllGiftCards /> </PrivateRoute>}
+      /> */}
     </Routes>
   );
 }

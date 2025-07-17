@@ -2,13 +2,14 @@ import React, { useMemo, useState, useEffect } from 'react';
 import './ui-component.css';
 
 const DataTable = ({
-    columns = [], // [{ label: 'Product ID', value: 'productid' }]
+    columns = [],
     data = [],
     searchQuery = '',
     searchColumn = '',
     defaultEntries = 6,
     actions = null,
-    isLoading = false // ✅ NEW
+    isLoading = false,
+    textDisplayMode = 'ellipsis' // 'ellipsis' | 'marquee' | 'double-line'
 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [entriesPerPage] = useState(defaultEntries);
@@ -35,7 +36,7 @@ const DataTable = ({
         setCurrentPage(1);
     }, [searchQuery, data, searchColumn, columns]);
 
-    const totalPages = Math.ceil(filteredData?.length / entriesPerPage);
+    const totalPages = Math.ceil(filteredData.length / entriesPerPage);
 
     const currentData = useMemo(() => {
         const start = (currentPage - 1) * entriesPerPage;
@@ -48,7 +49,7 @@ const DataTable = ({
                 <table className="datatable improved">
                     <thead>
                         <tr>
-                            {columns?.map((col, index) => (
+                            {columns.map((col, index) => (
                                 <th key={index}>{col.label}</th>
                             ))}
                             {actions && <th className="sticky-right">Actions</th>}
@@ -69,25 +70,47 @@ const DataTable = ({
                                     LOADING DATA...
                                 </td>
                             </tr>
-                        ) : currentData?.length > 0 ? (
-                            currentData.map((row, idx) => (
-                                <tr key={idx}>
-                                    {columns.map((col, i) => {
+                        ) : currentData.length > 0 ? (
+                            currentData.map((row, rowIndex) => (
+                                <tr key={rowIndex}>
+                                    {columns.map((col, colIndex) => {
                                         const value = row[col.value];
-                                        const tooltipText =
-                                            row[col.value + '_tooltip'] || // custom tooltip
-                                            (typeof value === 'string' ? value : '');
+                                        const tooltip = row[col.value + '_tooltip'] || String(value);
+                                        const isElement = React.isValidElement(value);
+
+                                        const modeClass =
+                                            textDisplayMode === 'marquee'
+                                                ? 'scrolling'
+                                                : textDisplayMode === 'double-line'
+                                                    ? 'double-line'
+                                                    : 'ellipsis';
 
                                         return (
-                                            <td key={i}>
+                                            <td
+                                                key={colIndex}
+                                                style={col.cellStyle || {}}
+                                                data-tooltip={tooltip}
+                                            >
                                                 <div
-                                                    title={tooltipText}
-                                                    data-tooltip={tooltipText}
-                                                    style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent:
+                                                            col.cellStyle?.textAlign === 'center'
+                                                                ? 'center'
+                                                                : col.cellStyle?.textAlign === 'right'
+                                                                    ? 'flex-end'
+                                                                    : 'flex-start',
+                                                        width: '100%'
+                                                    }}
                                                 >
-                                                    {React.isValidElement(value) || typeof value !== 'string'
-                                                        ? value
-                                                        : <span>{value}</span>}
+                                                    {isElement ? (
+                                                        value
+                                                    ) : (
+                                                        <span className={`table-cell-content ${modeClass}`}>
+                                                            {value}
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </td>
                                         );
@@ -101,10 +124,7 @@ const DataTable = ({
                             ))
                         ) : (
                             <tr>
-                                <td
-                                    colSpan={columns.length + (actions ? 1 : 0)}
-                                    style={{ textAlign: 'center' }}
-                                >
+                                <td colSpan={columns.length + (actions ? 1 : 0)} style={{ textAlign: 'center' }}>
                                     No data found
                                 </td>
                             </tr>
@@ -113,12 +133,8 @@ const DataTable = ({
                 </table>
             </div>
 
-            {/* Pagination */}
             <div className="pagination-controls">
-                <button
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((p) => p - 1)}
-                >
+                <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>
                     ‹
                 </button>
                 {[...Array(totalPages)].map((_, i) => (
@@ -130,10 +146,7 @@ const DataTable = ({
                         {i + 1}
                     </button>
                 ))}
-                <button
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((p) => p + 1)}
-                >
+                <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>
                     ›
                 </button>
             </div>

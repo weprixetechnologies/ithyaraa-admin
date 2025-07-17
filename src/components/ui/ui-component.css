@@ -37,7 +37,7 @@
     max-width: 100%;
     border: 1px solid #c0c0c0;
     padding: 10px;
-    font-family: -apple-system;
+    /* font-family: -apple-system; */
     font-size: 14px;
 
     border-radius: 8px;
@@ -53,7 +53,7 @@
 .textarea-custom {
     border: 1px solid #c0c0c0;
     padding: 10px;
-    font-family: -apple-system;
+    /* font-family: -apple-system; */
     font-size: 14px;
     margin-top: 8px;
     border-radius: 8px;
@@ -70,6 +70,48 @@
     border-collapse: collapse;
     width: 100%;
     margin-top: 10px;
+}
+
+.table-cell-content {
+    display: inline-block;
+    max-width: 100%;
+}
+
+/* Ellipsis (default) */
+.table-cell-content.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Marquee */
+.table-cell-content.scrolling {
+    white-space: nowrap;
+    overflow: hidden;
+    display: inline-block;
+    animation: scroll-text 8s linear infinite;
+}
+
+@keyframes scroll-text {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* Double line ellipsis */
+.table-cell-content.double-line {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    line-height: 1.2rem;
+    max-height: 2.5rem;
 }
 
 .datatable thead {
@@ -89,8 +131,6 @@
 .datatable td {
     padding: 10px;
     text-align: left;
-
-
     border-bottom: 1px solid #ddd;
 }
 
@@ -102,7 +142,6 @@ th {
 
 .datatable td {
     max-width: 150px;
-    /* adjust as needed */
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -149,6 +188,7 @@ th {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
 
 
 .customselect {

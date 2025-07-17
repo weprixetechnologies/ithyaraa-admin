@@ -2,6 +2,7 @@ import React from 'react';
 import './ui-component.css';
 
 const InputCustomLabelled = ({
+    disabled = false,
     isLabel = true,
     value,
     inputFunction = () => { },
@@ -34,6 +35,7 @@ const InputCustomLabelled = ({
                         onChange={(e) => inputFunction(e.target.value)}
                         placeholder={placeholder}
                         value={value}
+                        disabled={disabled}
                     />
                 ) : (
                     <textarea

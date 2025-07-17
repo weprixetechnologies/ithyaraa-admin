@@ -107,9 +107,9 @@ export const mainMenu = [
         icon: <RiGift2Line />,
         title: 'Giftcards',
         subMenu: [
-            { menuID: 'admin-6a', url: '/giftcards/add', icon: <RiAddLine />, title: 'Add Giftcard' },
+            { menuID: 'admin-6a', url: '/giftcard', icon: <RiAddLine />, title: 'Add Giftcard' },
             { menuID: 'admin-6b', url: '/giftcards/all', icon: <RiListUnordered />, title: 'All Giftcards' },
-            { menuID: 'admin-6c', url: '/giftcards/bulk', icon: <RiUpload2Line />, title: 'Bulk Giftcards' },
+            // { menuID: 'admin-6c', url: '/giftcards/bulk', icon: <RiUpload2Line />, title: 'Bulk Giftcards' },
         ],
     },
     {
@@ -180,13 +180,10 @@ export const mainMenu = [
     {
         menuID: 'admin-13',
         id: 13,
-        url: '/marketing',
+        url: '/marketing/coupons',
         icon: <RiMegaphoneLine />,
         title: 'Marketing',
-        subMenu: [
-            { menuID: 'admin-13a', url: '/marketing/add-coupons', icon: <RiAddLine />, title: 'Add Coupons' },
-            { menuID: 'admin-13b', url: '/marketing/all-coupons', icon: <RiListUnordered />, title: 'All Coupons' },
-        ],
+
     },
 ];
 
