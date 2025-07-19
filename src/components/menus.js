@@ -37,6 +37,7 @@ import {
     MdOutlineCardGiftcard,
     MdOutlineConfirmationNumber,
     MdOutlineCampaign,
+    MdOutlineRateReview,
 } from 'react-icons/md';
 
 
@@ -174,7 +175,7 @@ export const mainMenu = [
         title: 'Payment',
         subMenu: [
             { menuID: 'admin-12a', url: '/payment/add', icon: <RiAddLine />, title: 'Add Payment' },
-            { menuID: 'admin-12b', url: '/payment/all', icon: <RiListUnordered />, title: 'All Payment' },
+            { menuID: 'admin-12b', url: '/payments', icon: <RiListUnordered />, title: 'All Payment' },
         ],
     },
     {
@@ -183,6 +184,13 @@ export const mainMenu = [
         url: '/marketing/coupons',
         icon: <RiMegaphoneLine />,
         title: 'Marketing',
+
+    }, {
+        menuID: 'admin-14',
+        id: 14,
+        url: '/reviews',
+        icon: <MdOutlineRateReview />,
+        title: 'Review',
 
     },
 ];
