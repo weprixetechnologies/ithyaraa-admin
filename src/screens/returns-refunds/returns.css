@@ -1,0 +1,14 @@
+.return-detail-layout {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: 10px;
+}
+
+.inner-page-layout-left-return,
+.inner-page-layout-right-return {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

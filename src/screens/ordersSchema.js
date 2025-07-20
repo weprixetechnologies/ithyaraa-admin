@@ -20,7 +20,8 @@ export const orderDetailMain = {
     transactionDate: 'TXN21349NBSDF924B',
     amountPaid: '3797',
     paymentMode: 'Cash On Delivery',
-    orderItemCount: 4
+    orderItemCount: 4,
+    separateOrdersIDs: ['ITHY27B2O', 'ITHY27A2O', 'ITHY27C2O', 'ITHY27D2O']
 };
 
 export const orderItems = [
@@ -202,3 +203,203 @@ export const orderDetailsArray = [
         orderItemCount: 1,
     }
 ];
+
+export const returnDetailsMains = {
+    id: 'ORD0221',
+    customerReason: 'I am requesting a return for my recent order because the product did not meet my expectations. Although the item matched the description and images to some extent, the actual quality and finish were not as advertised. Additionally, the size I received was different from what I ordered, making it unusable for my needs. The packaging was also slightly damaged, which may have affected the condition of the product inside. I had intended this item for an upcoming event, but due to these issues, I will no longer be able to use it. I would appreciate it if the return could be processed promptly. I have not used the product, and all original tags and packaging are intact. I’m hoping for either a full refund or a replacement of the correct item. Thank you for understanding and assisting me with the return process.',
+    returnID: 'RND2840',
+    createdOn: '2025-07-19',
+    time: '15:45',
+    orderItemID: 'vvid24',
+    deliveryCompany: 'bluedart',
+    status: 'shipped', // other values: Pending, Delivered, Cancelled
+    deliveryTracking: 'BD123456789IN',
+    uid: 'user_99881',
+    username: 'Valid User',
+    user: 'ravi.sharma@example.com',
+    addressID: 'addr_1009',
+    orderPrice: 3797, // 1398 + 2399
+    discount: 300, // total discount across all items (optional field)
+    subTotal: 4097,
+    type: 'vendor', // vendor / in-house / hybrid
+    invoiceID: 'INV-2025-0719-001',
+    paymentStatus: 'cod', txnId: '',
+    transactionDate: 'TXN21349NBSDF924B',
+    amountPaid: '3797',
+    paymentMode: 'Cash On Delivery',
+    orderItemCount: 4,
+    ordersId: 'ODR2649',
+    returnImages: [
+        {
+            imgUrl: 'https://picsum.photos/400/300?random=1',
+            imgAlt: '',
+        }, {
+            imgUrl: 'https://picsum.photos/400/300?random=1',
+            imgAlt: '',
+        }, {
+            imgUrl: 'https://picsum.photos/400/300?random=1',
+            imgAlt: '',
+        }, {
+            imgUrl: 'https://picsum.photos/400/300?random=1',
+            imgAlt: '',
+        }
+    ],
+    returnVideo: 'https://storage.coverr.co/videos/coverr-a-peaceful-river-6368/1080p.mp4'
+};
+
+export const returnItems = {
+    id: 1,
+
+    sku: 'ITHY13', productID: 'cde223',
+    vendor: 'vendor_4',
+    featuredImage: 'https://picsum.photos/400/300?random=1',
+    categoryName: 'Biking',
+    orderItemID: 'vvid24', // common
+    name: 'Classic Biker T-Shirt - Black',
+    discount: 200, // flat ₹200 off
+    regularPrice: 799,
+    quantity: 2,
+    total: 1398, // (799 * 2) - 200
+    variationID: 'var-001',
+    variationSlug: 'black-m'
+}
+export const returnDetailsArray = [
+    {
+        id: 'ORD0221',
+        ordersId: 'ORD0221',
+        createdOn: '2025-07-19',
+        time: '15:45',
+        orderItemID: 'vvid24',
+        deliveryCompany: 'bluedart',
+        status: 'shipped',
+        deliveryTracking: 'BD123456789IN',
+        uid: 'user_99881',
+        username: 'Valid User',
+        user: 'ravi.sharma@example.com',
+        addressID: 'addr_1009',
+        orderPrice: 3797,
+        discount: 300,
+        subTotal: 4097,
+        type: 'vendor',
+        invoiceID: 'INV-2025-0719-001',
+        paymentStatus: 'cod',
+        txnId: '',
+        transactionDate: 'TXN21349NBSDF924B',
+        amountPaid: '3797',
+        paymentMode: 'Cash On Delivery',
+        orderItemCount: 4,
+    },
+    {
+        id: 'ORD0222',
+        ordersId: 'ORD0222',
+        createdOn: '2025-07-18',
+        time: '11:20',
+        orderItemID: 'vvid28',
+        deliveryCompany: 'delhivery',
+        status: 'Delivered',
+        deliveryTracking: 'DL123456789IN',
+        uid: 'user_12981',
+        username: 'Valid User',
+        user: 'neha.verma@example.com',
+        addressID: 'addr_1010',
+        orderPrice: 2299,
+        discount: 0,
+        subTotal: 2299,
+        type: 'in-house',
+        invoiceID: 'INV-2025-0718-003',
+        paymentStatus: 'paid',
+        txnId: 'TXN98213ABC',
+        transactionDate: '2025-07-18T11:25:00',
+        amountPaid: '2299',
+        paymentMode: 'UPI',
+        orderItemCount: 2,
+    },
+    {
+        id: 'ORD0223',
+        ordersId: 'ORD0223',
+        createdOn: '2025-07-17',
+        time: '09:00',
+        orderItemID: 'vvid29',
+        deliveryCompany: 'ekart',
+        status: 'Pending',
+        deliveryTracking: '',
+        uid: 'user_88712',
+        username: 'Valid User',
+        user: 'manish.kumar@example.com',
+        addressID: 'addr_1003',
+        orderPrice: 599,
+        discount: 50,
+        subTotal: 649,
+        type: 'hybrid',
+        invoiceID: 'INV-2025-0717-007',
+        paymentStatus: 'pending',
+        txnId: '',
+        transactionDate: '',
+        amountPaid: '0',
+        paymentMode: 'Cash On Delivery',
+        orderItemCount: 1,
+    },
+    {
+        id: 'ORD0224',
+        ordersId: 'ORD0224',
+        createdOn: '2025-07-16',
+        time: '13:35',
+        orderItemID: 'vvid31',
+        deliveryCompany: 'ecom',
+        status: 'Cancelled',
+        deliveryTracking: '',
+        uid: 'user_44210',
+        username: 'Valid User',
+        user: 'priya.mehta@example.com',
+        addressID: 'addr_1021',
+        orderPrice: 1450,
+        discount: 100,
+        subTotal: 1550,
+        type: 'vendor',
+        invoiceID: 'INV-2025-0716-005',
+        paymentStatus: 'cancelled',
+        txnId: 'TXN54542CANCL',
+        transactionDate: '2025-07-16T13:40:00',
+        amountPaid: '0',
+        paymentMode: 'UPI',
+        orderItemCount: 3,
+    },
+    {
+        id: 'ORD0225',
+        ordersId: 'ORD0225',
+        createdOn: '2025-07-15',
+        time: '17:50',
+        orderItemID: 'vvid34',
+        deliveryCompany: 'xpressbees',
+        status: 'shipped',
+        deliveryTracking: 'XB239847239IN',
+        uid: 'user_22447',
+        username: 'Valid User',
+        user: 'akash.jain@example.com',
+        addressID: 'addr_1050',
+        orderPrice: 899,
+        discount: 0,
+        subTotal: 899,
+        type: 'in-house',
+        invoiceID: 'INV-2025-0715-004',
+        paymentStatus: 'paid',
+        txnId: 'TXN7711882923',
+        transactionDate: '2025-07-15T17:55:00',
+        amountPaid: '899',
+        paymentMode: 'Credit Card',
+        orderItemCount: 1,
+    }
+];
+
+
+
+export const storeDetails = {
+    vendorName: 'XYZ Enterprise',
+    storeId: 'ST12345',
+    gstNumber: '27ABCDE1234F1Z5',
+    address: '123 Business Park, Mumbai, Maharashtra',
+    contactEmail: 'support@xyzenterprise.com',
+    contactPhone: '+91-9876543210',
+    website: 'https://xyzenterprise.com',
+    logoUrl: 'https://via.placeholder.com/150x50?text=XYZ+Logo'
+};

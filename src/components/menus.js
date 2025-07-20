@@ -42,14 +42,14 @@ export const mainMenu = [
         ],
     },
     {
-        menuID: 'admin-6',
+        menuID: 'returns-m',
         id: 6,
-        url: '/giftcards',
+        url: '/returns',
         icon: <RiGift2Line />,
-        title: 'Giftcards',
+        title: 'Return',
         subMenu: [
-            { menuID: 'admin-6a', url: '/giftcard', icon: <RiAddLine />, title: 'Add Giftcard' },
-            { menuID: 'admin-6b', url: '/giftcards/all', icon: <RiListUnordered />, title: 'All Giftcards' },
+            { menuID: 'admin-returns-all', url: '/returns', icon: <RiAddLine />, title: 'All Returns' },
+            // { menuID: 'admin-6b', url: '/giftcards/all', icon: <RiListUnordered />, title: 'All Giftcards' },
             // { menuID: 'admin-6c', url: '/giftcards/bulk', icon: <RiUpload2Line />, title: 'Bulk Giftcards' },
         ],
     }

@@ -7,6 +7,8 @@ import PrivateRoute from './auth/ProtectedRoute';
 import Signup from './auth/signup';
 import OrdersDetails from './screens/orders/ordersDetails';
 import OrderList from './screens/orders/orderList';
+import ReturnList from './screens/returns-refunds/returns';
+import ReturnDetails from './screens/returns-refunds/returnDetails';
 
 function App() {
   return (
@@ -20,7 +22,10 @@ function App() {
       <Route path='/' element={<PrivateRoute>   <Dashboard /> </PrivateRoute>}
       />
       <Route path='/orders' element={<PrivateRoute><OrderList /></PrivateRoute>}></Route>
-      <Route path='/orders/:id' element={<PrivateRoute><OrdersDetails /></PrivateRoute>}></Route> //details?orderID=vv24
+      <Route path='/orders/:id' element={<PrivateRoute><OrdersDetails /></PrivateRoute>}></Route>
+      <Route path='/returns' element={<PrivateRoute><ReturnList /></PrivateRoute>}></Route>
+      <Route path='/returns/:id' element={<PrivateRoute><ReturnDetails /></PrivateRoute>}></Route>
+
     </Routes>
   );
 }
