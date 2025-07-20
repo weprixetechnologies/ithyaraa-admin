@@ -134,7 +134,7 @@
     border-bottom: 1px solid #ddd;
 }
 
-th {
+.datatable th {
     font-weight: 600;
     font-family: var(--f2);
     color: #fff;
