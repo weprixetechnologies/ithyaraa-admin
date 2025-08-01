@@ -1,38 +1,60 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@theme {
+  --color-primary: #000;
+  --color-success: #28a745;
+  --color-failed: #dc3545;
+  --color-pending: #ffc107;
+  --color-dark: #2E4756;
+  --color-cool-grey: #9FA2B2;
+  --color-primary: #3D82E8;
+  --color-primary-light: #6696DC;
+  --color-unique: #0B4A77;
+  --color-light-secondary-text: #a4a8b5;
+  --color-dark-secondary-text: #353638;
+  --color-secondary-text: #6c757d;
+  --color-dark-text: #232323;
+  --color-cerulean-text: #3C7A89;
+  --color-light-cerulean-text: #9EC4D1;
+
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+*,
+::after,
+::before,
+::backdrop,
+::file-selector-button {
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+@font-face {
+  font-family: "Funnel Display", sans-serif;
+  src: url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
+}
+
+@font-face {
+  font-family: "Montserrat", sans-serif;
+  src: url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+  ;
+}
+
+@layer base {
+  h1 {
+    @apply text-center
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+@layer components {
+  .flex-center {
+    @apply flex justify-center items-center;
   }
-  to {
-    transform: rotate(360deg);
+
+  .primary-button {
+    @apply flex justify-center items-center border py-1.5 px-4 min-h-10 text-[14px] bg-blue-500 rounded-lg text-white font-semibold capitalize mt-2 cursor-pointer;
   }
+
 }
