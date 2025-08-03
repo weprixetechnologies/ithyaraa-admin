@@ -20,7 +20,9 @@ module.exports = {
         'primary-dark': '#2E4756',
         'dark-text': '#232323',
         'cool-grey': '#9FA2B2',
-        'unique': '#0B4A77'
+        'unique': '#0B4A77',
+        'secondary-primary': '#a1a1a1',
+        'light-grey': '#e5e5e5'
       },
     },
   },

@@ -4,7 +4,10 @@
 
 
 @theme {
+
+
   --color-primary: #000;
+  --color-light-grey: #e5e5e5;
   --color-success: #28a745;
   --color-failed: #dc3545;
   --color-pending: #ffc107;
@@ -19,7 +22,7 @@
   --color-dark-text: #232323;
   --color-cerulean-text: #3C7A89;
   --color-light-cerulean-text: #9EC4D1;
-
+  --color-secondary-primary: #a1a1a1
 }
 
 *,

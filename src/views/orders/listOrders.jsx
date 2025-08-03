@@ -6,6 +6,7 @@ import { MdEdit } from "react-icons/md";
 import { IoMdEye } from 'react-icons/io';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useNavigate } from 'react-router-dom';
+import InputUi from '@/components/ui/inputui';
 
 
 const ListOrders = () => {
@@ -157,6 +158,19 @@ const ListOrders = () => {
 
     return (
         <Layout active={'admin-orders-list'} title={'Orders List'}>
+            <Container containerclass={'bg-transaparent'}>
+                <div className="flex w-full items-center gap-4">
+                    <div className="grid grid-cols-3 gap-4 flex-grow w-full">
+                        <InputUi placeholder={'Enter Refresh ID / Name / Email ID'} />
+                        <InputUi placeholder={'Enter Phone Number / UID'} />
+                        <InputUi type='date' placeholder={'Enter UID'} />
+                    </div>
+                    <button className="shrink-0 px-4 py-2 bg-blue-600 text-white rounded text-[12px]">
+                        Filter On Search
+                    </button>
+                </div>
+
+            </Container>
             <Container containerclass="bg-transparent">
                 <Table className="border-separate border-spacing-y-2 ">
                     <TableHeader>

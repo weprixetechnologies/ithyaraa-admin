@@ -110,7 +110,9 @@ const AddUser = () => {
                                     src="https://picsum.photos/200/300"
                                     className="w-60 h-60 rounded-full transition-opacity duration-300"
                                     alt="profile"
-                                    onLoad={() => setIsLoaded(true)}
+                                    onLoad={() => {
+                                        setIsLoaded(true); console.log('image loaded');
+                                    }}
                                     style={{ opacity: isLoaded ? 1 : 0 }}
                                 />
                             </div>

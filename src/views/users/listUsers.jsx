@@ -8,9 +8,10 @@ import { IoMdEye } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import InputUi from '@/components/ui/inputui';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const ListUsersc = () => {
-
+    const [loadingImage, setLoading] = useState(true)
     const [userlist, setUserList] = useState([])
     const [loadingAPI, setLoadingAPI] = useState(true)
     useEffect(() => {
@@ -175,6 +176,9 @@ const ListUsersc = () => {
                                     <TableCell className="rounded-l-[10px] font-bold py-5 pl-5 ">{i.uid}</TableCell>
                                     <TableCell className="text-center py-5 pl-10">
                                         <div className="flex gap-2 justify-start items-center">
+                                            {loadingImage && (
+                                                <Skeleton className="absolute h-[35px] w-[35px]  rounded-full" />
+                                            )}
                                             <img src={i.profilePhoto} className="h-[35px] w-[35px]  rounded-full" />
                                             <div className="flex flex-col justify-start items-start text-right">
 

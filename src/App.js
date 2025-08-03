@@ -8,6 +8,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ListOrders from './views/orders/listOrders';
 import OrderDetail from './views/orders/orderDetail';
+import Login from './views/auth/login';
+import AddProduct from './views/products/addProduct';
 
 function App() {
   return (
@@ -27,6 +29,12 @@ function App() {
         {/* ORDER MANAGEMENT - ROUTES  */}
         <Route path='/orders/list' element={<ListOrders />} />
         <Route path='/orders/details' element={<OrderDetail />} />
+
+        {/* PRODUCTS */}
+        <Route path='/products/add' element={<AddProduct />}></Route>
+
+        {/* AUTH */}
+        <Route path='/login' element={<Login />} />
       </Routes>
     </>
   );

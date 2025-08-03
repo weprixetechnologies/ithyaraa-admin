@@ -4,7 +4,18 @@ import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
 import React, { useState } from 'react'
 import Layout from 'src/layout'
-
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 const OrderDetail = () => {
 
     const orderDetailMain = {
@@ -29,12 +40,14 @@ const OrderDetail = () => {
         txnId: '',
         transactionDate: 'TXN21349NBSDF924B',
         amountPaid: '3797',
+        couponsUsed: ['first50', 'flat90'],
         paymentMode: 'Cash On Delivery',
         orderItemCount: 4,
         separateOrdersIDs: ['ITHY27B2O', 'ITHY27A2O', 'ITHY27C2O', 'ITHY27D2O'],
         items: [
             {
                 id: 1,
+                couponUsed: 'first50',
                 status: 'pending',
                 sku: 'ITHY13',
                 productID: 'cde223',
@@ -53,6 +66,7 @@ const OrderDetail = () => {
             },
             {
                 id: 2,
+                couponUsed: 'flat90',
                 status: 'pending',
                 sku: 'ITHY13',
                 productID: 'xdfg23',
@@ -113,6 +127,7 @@ const OrderDetail = () => {
 
                             </div>
                         </Container>
+
                         <OrderItemTable items={order.items} />
                     </div>
                 </div>
@@ -132,14 +147,98 @@ const OrderDetail = () => {
                                 }
                             </div>
                             <div className="flex-row flex justify-end gap-2">
-                                <button className="primary-button">
-                                    Notify Sellers
-                                </button>
-                                <button className="primary-button">
-                                    Send Details
-                                </button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <button className="primary-button">
+                                            Notify Sellers
+                                        </button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="bg-white">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete your
+                                                account and remove your data from our servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction>Continue</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+
+
+                                <AlertDialog>
+                                    <AlertDialogTrigger>
+                                        <button className="primary-button">
+                                            Send Details
+                                        </button>
+
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="bg-white">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete your account
+                                                and remove your data from our servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction>Continue</AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
                             </div>
                         </Container>
+                        <Container label={'Coupons Used'}>
+                            <div className='flex flex-row justify-start gap-2'>
+                                {
+                                    order.couponsUsed.map((i, index) => (
+                                        <button className='bg-secondary-text text-white py-2 px-4 rounded-md'>{i}</button>
+
+                                    ))
+                                }    </div>
+                        </Container>
+                        <Container label={'Functions'}>
+                            <Select className="bg-white w-full">
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select an action" />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white" >
+                                    <SelectGroup style={{ fontFamily: 'var(--f2)' }}>
+                                        <SelectLabel>Select Action</SelectLabel>
+                                        <SelectItem value="senddetailstocustomer">Send Details to Customer</SelectItem>
+                                        <SelectItem value="generateinvoice">Generate Invoice</SelectItem>
+                                        <SelectItem value="notifysellers">Notify All Seller</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            <div className="flex justify-end my-3">
+                                <button className="primary-button">Take Action</button>
+                            </div>
+                        </Container>
+                        <div className="flex flex-row justify-end">
+                            <AlertDialog>
+                                <AlertDialogTrigger>
+                                    <button className="primary-button bg-violet-400 hover:bg-violet-600 transition-all duration-300 hover:px-5">Save Changes</button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="bg-white">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete your account
+                                            and remove your data from our servers.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction>Continue</AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
 
                     </div>
 

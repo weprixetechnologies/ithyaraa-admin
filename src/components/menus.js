@@ -39,5 +39,17 @@ export const mainMenu = [
             { menuID: 'admin-orders-list', url: '/orders/list', icon: <RiAddLine />, title: 'Order List' },
 
         ],
+    },
+    {
+        menuID: 'products-m',
+        id: 9,
+        url: '/products',
+        icon: <RiGift2Line />,
+        title: 'Products',
+        subMenu: [
+            { menuID: 'admin-products-add', url: '/products/add', icon: <RiAddLine />, title: 'Add Products' },
+
+
+        ],
     }
 ];
