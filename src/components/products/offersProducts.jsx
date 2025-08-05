@@ -24,7 +24,7 @@ const OfferProducts = ({ setProducts }) => {
             });
 
             if (response?.data?.result) {
-                const formatted = response.data.result.map((o, i) => ({
+                const formatted = response.data.result?.map((o, i) => ({
                     id: o.offerID?.toString() || `offer${i}`,
                     offername: o.offerName || 'Unnamed Offer'
                 }));
@@ -99,8 +99,8 @@ const OfferProducts = ({ setProducts }) => {
                 <SelectContent className="bg-white max-h-60 overflow-auto">
                     <SelectGroup>
                         <SelectLabel>Matching Offers</SelectLabel>
-                        {offers.length > 0 ? (
-                            offers.map((offer) => (
+                        {offers?.length > 0 ? (
+                            offers?.map((offer) => (
                                 <SelectItem key={offer.id} value={offer.id}>
                                     {offer.offername}
                                 </SelectItem>

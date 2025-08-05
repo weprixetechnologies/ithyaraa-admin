@@ -5,23 +5,16 @@ import React, {
     useImperativeHandle,
     forwardRef
 } from 'react';
-
 const UploadImages = forwardRef(
-    (
-        {
-            maxImages = 5,
-            defaultImages = [],
-            providedName = 'images'
-        },
-        ref
-    ) => {
+    ({ maxImages = 5, defaultImages = [], providedName = 'images' }, ref) => {
         const fileInputRef = useRef(null);
-        const [images, setImages] = useState([]);
+        const [oldImages, setOldImages] = useState([]);
+        const [newImages, setNewImages] = useState([]);
 
         const storageZone = 'ithyaraa';
         const storageRegion = 'sg.storage.bunnycdn.com';
         const pullZoneUrl = 'https://ithyaraa.b-cdn.net';
-        const apiKey = '7017f7c4-638b-48ab-add3858172a8-f520-4b88'; // ⚠️ Only for dev/test
+        const apiKey = '7017f7c4-638b-48ab-add3858172a8-f520-4b88'; // ⚠️ Dev only
 
         const uploadToBunny = async (file) => {
             const fileName = encodeURIComponent(file.name);
@@ -37,77 +30,51 @@ const UploadImages = forwardRef(
                 body: file
             });
 
-            if (!res.ok) {
-                throw new Error(`Upload failed: ${res.status}`);
-            }
-
-            return {
-                imgUrl: publicUrl,
-                imgAlt: file.name
-            };
+            if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
+            return { imgUrl: publicUrl, imgAlt: file.name };
         };
 
         useImperativeHandle(ref, () => ({
-            openUploadDialog: () => {
-                fileInputRef.current?.click();
-            },
+            openUploadDialog: () => fileInputRef.current?.click(),
 
             uploadImageFunction: async () => {
                 const uploaded = [];
 
-                for (const img of images) {
-                    if (img.isOld || img.isUploaded) {
-                        uploaded.push({ imgUrl: img.imgUrl, imgAlt: img.imgAlt });
-                        console.log('Pushing Old');
-                    } else if (img.file) {
+                // Push old ones
+                for (const img of oldImages) {
+                    uploaded.push({ imgUrl: img.imgUrl, imgAlt: img.imgAlt });
+                }
+
+                // Upload new ones
+                for (const img of newImages) {
+                    if (!img.isUploaded && img.file) {
                         try {
                             const uploadedUrl = await uploadToBunny(img.file);
                             uploaded.push(uploadedUrl);
-                            console.log('Pushing New');
                         } catch (err) {
                             console.error(`Failed uploading ${img.imgAlt}:`, err);
                         }
                     }
                 }
 
-                console.log(uploaded);
-
-                // ✅ Don't use `await` here — `map` is synchronous
-                const updated = images.map((img) => {
-                    const match = uploaded.find((u) => u.imgAlt === img.imgAlt);
-                    if (match) {
-                        return {
-                            ...img,
-                            imgUrl: match.imgUrl,
-                            isUploaded: true
-                        };
-                    }
-                    return img;
-                });
-
-                console.log('update', updated);
-
-                setImages(updated);
-
                 return uploaded;
             }
-
         }));
 
         useEffect(() => {
-            if (defaultImages.length > 0) {
+            if (defaultImages?.length > 0) {
                 const formatted = defaultImages.map((img, i) => ({
                     imgUrl: typeof img === 'string' ? img : img.imgUrl,
                     imgAlt: img.imgAlt || `image-${i + 1}`,
                     isOld: true
                 }));
-                setImages(formatted);
+                setOldImages(formatted);
             }
-        }, []);
+        }, [defaultImages]);
 
         const handleFilesChange = (e) => {
             const files = Array.from(e.target.files);
-            const availableSlots = maxImages - images.length;
+            const availableSlots = maxImages - oldImages.length - newImages.length;
             const selected = files.slice(0, availableSlots);
 
             const localPreviews = selected.map((file) => ({
@@ -118,25 +85,29 @@ const UploadImages = forwardRef(
                 file
             }));
 
-            setImages((prev) => [...prev, ...localPreviews]);
+            setNewImages((prev) => [...prev, ...localPreviews]);
         };
 
-        const handleImageRemove = (index) => {
-            if (window.confirm('Remove this image?')) {
-                setImages((prev) => prev.filter((_, i) => i !== index));
+        const handleImageRemove = (index, isOld) => {
+            if (!window.confirm('Remove this image?')) return;
+            if (isOld) {
+                setOldImages((prev) => prev.filter((_, i) => i !== index));
+            } else {
+                setNewImages((prev) => prev.filter((_, i) => i !== index));
             }
         };
 
+        const allImages = [...oldImages, ...newImages];
+
         return (
             <div className="w-full">
-
                 <div
                     onClick={() => fileInputRef.current?.click()}
-                    className={`flex flex-col items-center justify-center h-20 border-dashed border-blue-500 w-full border rounded-lg cursor-pointer ${images.length >= maxImages ? 'opacity-50 pointer-events-none' : ''
+                    className={`flex flex-col items-center justify-center h-20 border-dashed border-blue-500 w-full border rounded-lg cursor-pointer ${allImages.length >= maxImages ? 'opacity-50 pointer-events-none' : ''
                         }`}
                 >
                     <p className="text-blue-500">
-                        {images.length >= maxImages
+                        {allImages.length >= maxImages
                             ? 'Max images uploaded'
                             : 'Click to Upload Image'}
                     </p>
@@ -152,13 +123,17 @@ const UploadImages = forwardRef(
                 />
 
                 <div className="flex gap-2 mt-4 flex-wrap">
-                    {images.map((img, index) => (
+                    {allImages.map((img, index) => (
                         <div
                             key={index}
                             className="w-24 h-24 border rounded overflow-hidden relative group cursor-pointer"
-                            onClick={() => handleImageRemove(index)}
+                            onClick={() =>
+                                handleImageRemove(
+                                    index < oldImages.length ? index : index - oldImages.length,
+                                    index < oldImages.length
+                                )
+                            }
                         >
-
                             <img
                                 src={img.imgUrl}
                                 alt={img.imgAlt}

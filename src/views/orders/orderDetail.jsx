@@ -137,7 +137,7 @@ const OrderDetail = () => {
                         <Container label={'Vendor Details'} gap={10}>
                             <div className="flex flex-col gap-2">
                                 {
-                                    order.items.map((i, index) => (
+                                    order.items?.map((i, index) => (
                                         <div className='py-3 px-4 border rounded-md bg-dark-text' key={index}>
                                             <p className='text-white'>
                                                 {i.vendor}
@@ -195,7 +195,7 @@ const OrderDetail = () => {
                         <Container label={'Coupons Used'}>
                             <div className='flex flex-row justify-start gap-2'>
                                 {
-                                    order.couponsUsed.map((i, index) => (
+                                    order.couponsUsed?.map((i, index) => (
                                         <button className='bg-secondary-text text-white py-2 px-4 rounded-md'>{i}</button>
 
                                     ))

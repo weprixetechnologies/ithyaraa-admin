@@ -157,7 +157,7 @@ const ListUsersc = () => {
                     <TableBody className="bg-white">
 
                         {
-                            loadingAPI && userlist.length === 0 && <TableRow>
+                            loadingAPI && userlist?.length === 0 && <TableRow>
                                 <TableCell colSpan={6} className='rounded-[10px]'>
 
                                     <DotLottieReact
@@ -170,7 +170,7 @@ const ListUsersc = () => {
                             </TableRow>
                         }
 
-                        {userlist.length > 0 && !loadingAPI &&
+                        {userlist?.length > 0 && !loadingAPI &&
                             userlist?.map((i, index) => (
                                 <TableRow key={index} className="rounded-full bg-white  shadow-lg shadow-cyan-500/50">
                                     <TableCell className="rounded-l-[10px] font-bold py-5 pl-5 ">{i.uid}</TableCell>
@@ -203,7 +203,7 @@ const ListUsersc = () => {
                                 </TableRow>
                             ))
                         }
-                        {!loadingAPI && userlist.length === 0 && (
+                        {!loadingAPI && userlist?.length === 0 && (
                             <TableRow>
                                 <TableCell colSpan={6}>
                                     <div className="text-center py-8 text-lg text-muted-foreground">

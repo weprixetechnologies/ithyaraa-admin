@@ -28,8 +28,8 @@ const OrderTable = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {orderitems.length > 0 ? (
-                        orderitems.map((i, index) => (
+                    {orderitems?.length > 0 ? (
+                        orderitems?.map((i, index) => (
                             <TableRow key={i.id} className="py-2">
                                 <TableCell>#{i.id}</TableCell>
                                 <TableCell>

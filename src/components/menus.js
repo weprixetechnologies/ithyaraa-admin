@@ -42,12 +42,13 @@ export const mainMenu = [
     },
     {
         menuID: 'products-m',
-        id: 9,
+        id: 10,
         url: '/products',
         icon: <RiGift2Line />,
         title: 'Products',
         subMenu: [
             { menuID: 'admin-products-add', url: '/products/add', icon: <RiAddLine />, title: 'Add Products' },
+            { menuID: 'admin-products-list', url: '/products/list', icon: <RiAddLine />, title: 'List Products' },
 
 
         ],

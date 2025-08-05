@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select"
 import GenerateVariations from './generateVariations'
 
-const VariationsComponent = ({ setProducts, products }) => {
+const VariationsComponent = ({ setProducts, products, defaultValue, defaultVariation }) => {
     const predefinedAttributes = [
         { name: 'Size', values: ['S', 'M', 'L'] },
         { name: 'Color', values: ['Red', 'Green', 'Blue'] },
@@ -19,9 +19,19 @@ const VariationsComponent = ({ setProducts, products }) => {
     ]
 
     const [attributes, setAttributes] = useState([])
+
     const [newAttribute, setNewAttribute] = useState('')
     const [selectedAttribute, setSelectedAttribute] = useState('')
     const [valueInputs, setValueInputs] = useState({}) // { size: '', color: '' }
+
+    useEffect(() => {
+        console.log('defaultValue', defaultValue);
+        if (Array.isArray(defaultValue)) {
+            setAttributes(defaultValue);
+        } else {
+            setAttributes([]); // fallback to empty array
+        }
+    }, [defaultValue]);
 
 
     useEffect(() => {
@@ -52,7 +62,7 @@ const VariationsComponent = ({ setProducts, products }) => {
         if (!value) return
 
         setAttributes(prev =>
-            prev.map(attr =>
+            prev?.map(attr =>
                 attr.name === attributeName && !attr.values.includes(value)
                     ? { ...attr, values: [...attr.values, value] }
                     : attr
@@ -64,7 +74,7 @@ const VariationsComponent = ({ setProducts, products }) => {
 
     const handleRemoveValue = (attributeName, value) => {
         setAttributes(prev =>
-            prev.map(attr =>
+            prev?.map(attr =>
                 attr.name === attributeName
                     ? { ...attr, values: attr.values.filter(v => v !== value) }
                     : attr
@@ -93,7 +103,7 @@ const VariationsComponent = ({ setProducts, products }) => {
                     <SelectContent className="bg-white">
                         <SelectGroup>
                             <SelectLabel>Existing Attributes</SelectLabel>
-                            {predefinedAttributes.map((attr, index) => (
+                            {predefinedAttributes?.map((attr, index) => (
                                 <SelectItem key={index} value={attr.name}>
                                     {attr.name}
                                 </SelectItem>
@@ -126,7 +136,7 @@ const VariationsComponent = ({ setProducts, products }) => {
             </div>
 
             {/* Render Each Attribute Section */}
-            {attributes.map((attr, index) => (
+            {attributes?.map((attr, index) => (
                 <div key={index} className="grid grid-cols-6 gap-2 items-start">
                     {/* Attribute Name with Remove Button */}
                     <div className="col-span-2">
@@ -140,8 +150,8 @@ const VariationsComponent = ({ setProducts, products }) => {
                     <div className="col-span-4">
                         {/* Display Added Values */}
                         <div className="bg-secondary-text w-full min-h-10 rounded-lg p-2 flex flex-wrap gap-2">
-                            {attr.values.length > 0 ? (
-                                attr.values.map((val, i) => (
+                            {attr.values?.length > 0 ? (
+                                attr.values?.map((val, i) => (
                                     <div
                                         key={i}
                                         className="text-base px-3 py-1 bg-white rounded-lg flex items-center gap-2"
@@ -192,7 +202,7 @@ const VariationsComponent = ({ setProducts, products }) => {
             ))}
 
             <section className='flex flex-col gap-2 mt-5'>
-                <GenerateVariations attributes={attributes} setProducts={setProducts} products={products} />
+                <GenerateVariations defaultVariation={defaultVariation} attributes={attributes} setProducts={setProducts} products={products} />
             </section>
 
         </div>

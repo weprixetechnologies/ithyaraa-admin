@@ -10,6 +10,8 @@ import ListOrders from './views/orders/listOrders';
 import OrderDetail from './views/orders/orderDetail';
 import Login from './views/auth/login';
 import AddProduct from './views/products/addProduct';
+import ListProducts from './views/products/listProducts';
+import EditProduct from './views/products/editProduct';
 
 function App() {
   return (
@@ -32,6 +34,8 @@ function App() {
 
         {/* PRODUCTS */}
         <Route path='/products/add' element={<AddProduct />}></Route>
+        <Route path='/products/list' element={<ListProducts />}></Route>
+        <Route path='/products/details/:productID' element={<EditProduct />}></Route>
 
         {/* AUTH */}
         <Route path='/login' element={<Login />} />

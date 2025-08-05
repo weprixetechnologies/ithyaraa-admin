@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const GenerateVariations = ({ attributes = [], setProducts, products }) => {
-    const [variations, setVariations] = useState([]);
+const GenerateVariations = ({ attributes = [], setProducts, products, defaultVariation }) => {
+    const [variations, setVariations] = useState(defaultVariation ? defaultVariation : []);
 
     useEffect(() => {
         setProducts(prev => ({
@@ -10,26 +10,33 @@ const GenerateVariations = ({ attributes = [], setProducts, products }) => {
         }));
     }, [variations]);
 
+    useEffect(() => {
+        console.log('variation', defaultVariation);
+        setVariations(defaultVariation)
+    }, [defaultVariation])
+
     const generateCombinations = () => {
-        if (!attributes.length) return;
+        if (!attributes?.length) return;
 
-        const attrValues = attributes.map(attr => attr.values || []);
-        const attrNames = attributes.map(attr => attr.name);
+        const attrValues = attributes?.map(attr => attr.values || []);
+        const attrNames = attributes?.map(attr => attr.name);
 
-        if (attrValues.some(values => values.length === 0)) {
+        if (attrValues.some(values => values?.length === 0)) {
             alert("Each attribute must have at least one value.");
             return;
         }
 
         const cartesian = (arr) =>
-            arr.reduce((acc, curr) => acc.flatMap(d => curr.map(e => [...d, e])), [[]]);
+            arr.reduce((acc, curr) => acc.flatMap(d => curr?.map(e => [...d, e])), [[]]);
 
         const combos = cartesian(attrValues);
 
-        const formatted = combos.map((combo) => {
-            const variationValues = combo.map((val, index) => ({
+        const formatted = combos?.map((combo) => {
+            const variationValues = combo?.map((val, index) => ({
                 [attrNames[index]]: val,
             }));
+            console.log(variationValues);
+
 
             const slug = combo.join('_').toLowerCase();
             const id = `VARI${slug.replace(/_/g, '')}vvid`;
@@ -61,7 +68,7 @@ const GenerateVariations = ({ attributes = [], setProducts, products }) => {
         if (value === null) return;
 
         setVariations(prev =>
-            prev.map(variation => ({
+            prev?.map(variation => ({
                 ...variation,
                 [fieldName]: value
             }))
@@ -85,7 +92,7 @@ const GenerateVariations = ({ attributes = [], setProducts, products }) => {
                 Generate Variations
             </button>
 
-            {variations.length > 0 && (
+            {variations?.length > 0 && (
                 <>
                     <div className="grid grid-cols-3 gap-2">
                         <button
@@ -109,11 +116,11 @@ const GenerateVariations = ({ attributes = [], setProducts, products }) => {
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 mt-4">
-                        {variations.map((variation, index) => (
+                        {variations?.map((variation, index) => (
                             <div key={index} className="bg-gray-100 text-sm rounded-md px-4 py-3 space-y-3">
                                 <div className="flex flex-wrap gap-2 justify-between items-center">
                                     <div className="flex flex-wrap gap-2">
-                                        {variation.variationValues.map((pair, i) => {
+                                        {variation?.variationValues?.map((pair, i) => {
                                             const [key, val] = Object.entries(pair)[0];
                                             return (
                                                 <span key={i} className="bg-dark-text text-white px-3 py-1 rounded-lg">
