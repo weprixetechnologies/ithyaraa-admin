@@ -7,20 +7,32 @@ export const getPaginatedProducts = async ({ page = 1, limit = 10, filters = {} 
     params.append('limit', limit);
 
     for (const key in filters) {
-        if (filters[key] !== undefined && filters[key] !== '') {
-            params.append(key, filters[key]);
+        const value = filters[key];
+
+        if (
+            value !== undefined &&
+            value !== null &&
+            !(typeof value === 'string' && value.trim() === '')
+        ) {
+            params.append(key, value);
         }
     }
 
-    const response = await axiosInstance.get(`/products/all-products?${params.toString()}`);
+    const queryUrl = `/products/all-products?${params.toString()}`;
+    console.log('GET:', queryUrl); // ✅ Logs the actual query used
+    console.log('Filters:', filters); // 🔍 Also logs the filters object
+
+    const response = await axiosInstance.get(queryUrl);
     console.log(response);
 
     return response.data;
 };
 
+
+
+
 export const getProductCount = async (filters = {}) => {
     const params = new URLSearchParams();
-
     for (const key in filters) {
         if (filters[key] !== undefined && filters[key] !== '') {
             params.append(key, filters[key]);

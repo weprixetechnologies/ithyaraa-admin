@@ -1,19 +1,20 @@
-import CategoryProduct from '@/components/products/categoryProduct'
-import OfferProducts from '@/components/products/offersProducts'
-import Pricing from '@/components/products/pricing'
-import VariationsComponent from '@/components/products/variations'
+import React, { useCallback, useRef, useState } from 'react'
+import Layout from 'src/layout'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
 import UploadImages from '@/components/ui/uploadImages'
-import React, { useRef, useState } from 'react'
 import { toast } from 'react-toastify'
-import Layout from 'src/layout'
+import Pricing from '@/components/products/pricing'
+import CategoryProduct from '@/components/products/categoryProduct'
+import OfferProducts from '@/components/products/offersProducts'
+import SelectProducts from '@/components/ui/selectProducts'
 
-const AddProduct = () => {
+const AddMakeCombo = () => {
     const uploadRef = useRef();
     const galleryRef = useRef();
 
-    const [product, setProduct] = useState({ type: 'variable' })
+    const [selectedProducts, setSelectedProductsState] = useState([])
+    const [product, setProduct] = useState({ type: 'make_combo' })
 
     const updateFunction = (data, name) => {
         setProduct(prev => ({
@@ -21,49 +22,60 @@ const AddProduct = () => {
             [name]: data.target.value
         }));
         console.log(product);
-
     };
 
 
-        const handleUpload = async () => {
-            try {
-                const finalImages = await uploadRef.current?.uploadImageFunction();
-                const galleryupload = await galleryRef.current?.uploadImageFunction();
+    const handleUpload = async () => {
+        try {
+            const finalImages = await uploadRef.current?.uploadImageFunction();
+            const galleryupload = await galleryRef.current?.uploadImageFunction();
 
-                const fullProductData = {
-                    ...product,
-                    featuredImage: finalImages,
-                    galleryImage: galleryupload
-                };
+            const fullProductData = {
+                ...product,
 
-                console.log('🚀 Full product with images:', fullProductData); // ✅ this has images
+                featuredImage: finalImages,
+                galleryImage: galleryupload,
+                products: selectedProducts
+            };
+            console.log(fullProductData);
 
-                const response = await fetch('http://localhost:3300/api/products/add-product', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(fullProductData),
-                });
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to add product');
-                }
+            console.log('🚀 Full product with images:', fullProductData); // ✅ this has images
 
-                const result = await response.json();
-                console.log('Product added successfully:', result);
-                toast.success('Product Added')
+            const response = await fetch('http://localhost:3300/api/make-combo/create-make-combo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(fullProductData),
+            });
 
-            } catch (error) {
-                console.error('Error uploading or posting product:', error.message);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to add product');
             }
-        };
 
+            const result = await response.json();
+            console.log('Product added successfully:', result);
+            toast.success('Product Added')
+
+        } catch (error) {
+            console.error('Error uploading or posting product:', error.message);
+        }
+    };
+    const handleToggleProductParent = (productID) => {
+
+        setSelectedProductsState((prev) =>
+            prev.includes(productID)
+                ? prev.filter((id) => id !== productID)
+                : [...prev, productID]
+        );
+        console.log(selectedProducts);
+    };
 
 
     return (
-        <Layout active={'admin-products-add'} title={'Add Product'}>
+        <Layout active={'admin-mcombo-add'} title={'Create Make Combo'}>
             <div className="grid grid-cols-6 gap-2">
                 <div className="col-span-4 gap-2">
                     <div className="flex flex-col gap-2">
@@ -81,9 +93,14 @@ const AddProduct = () => {
                         <Container gap={3} label={'Pricing & Discount'}>
                             <Pricing setProducts={setProduct} products={product} />
                         </Container>
-                        <Container gap={3} label={'Variation & Stocking'}>
-                            <VariationsComponent setProducts={setProduct} products={product} />
+                        <Container>
+                            <SelectProducts
+                                onProductToggle={handleToggleProductParent}
+                                initialSelected={selectedProducts}
+                            />
+
                         </Container>
+
                     </div>
 
                 </div>
@@ -114,8 +131,8 @@ const AddProduct = () => {
                     </div>
                 </div>
             </div>
-        </Layout >
+        </Layout>
     )
 }
 
-export default AddProduct
+export default AddMakeCombo

@@ -9,6 +9,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import Layout from 'src/layout'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import CategoryProduct from '@/components/products/categoryProduct'
 
 const EditProduct = () => {
     const { productID } = useParams()
@@ -31,6 +32,7 @@ const EditProduct = () => {
                         ...variation,
                         variationValues: parseJSONSafe(variation.variationValues),
                     })) : [],
+                    categories: parseJSONSafe(data.categories),
                 };
 
                 setProduct(parsedProduct);
@@ -112,7 +114,7 @@ const EditProduct = () => {
             <div className="grid grid-cols-6 gap-2">
                 <div className="col-span-4 gap-2">
                     <div className="flex flex-col gap-2">
-                        <Container gap={15} label={'Basic Information'}>
+                        <Container gap={3} label={'Basic Information'}>
 
                             <InputUi label={'Product Title'} value={product.name} datafunction={(e) => updateFunction(e, 'name')} />
                             <InputUi label={'Product Description'} value={product.description} isInput={false} datafunction={(e) => updateFunction(e, 'description')} fieldClass='h-[200px]' />
@@ -123,10 +125,10 @@ const EditProduct = () => {
 
                             </div>
                         </Container>
-                        <Container gap={10} label={'Pricing & Discount'}>
+                        <Container gap={3} label={'Pricing & Discount'}>
                             <Pricing setProducts={setProduct} products={product} />
                         </Container>
-                        <Container gap={10} label={'Variation & Stocking'}>
+                        <Container gap={3} label={'Variation & Stocking'}>
                             <VariationsComponent defaultValue={product.productAttributes} defaultVariation={product.variations} setProducts={setProduct} products={product} />
                         </Container>
                     </div>
@@ -134,23 +136,25 @@ const EditProduct = () => {
                 </div>
                 <div className="col-span-2">
                     <div className="flex flex-col gap-2">
-                        {/* <Container containerclass={'bg-dark-text'}>
+                        <Container containerclass={'bg-dark-text'}>
                             <div className="overflow-x-auto">
                                 <pre className="col-span-2 mt-4 p-2 text-white rounded text-xs whitespace-pre max-w-full">
-                                    {JSON.stringify(product, null, 2)}
+                                    {JSON.stringify(product, null, 3)}
                                 </pre>
                             </div>
-                        </Container> */}
+                        </Container>
 
-
-                        <Container gap={10} label={'Offers & Promotions'}>
+                        <Container label={'Categories'}>
+                            <CategoryProduct setProducts={setProduct} products={product} isEditable={true} oldValue={product.categories} />
+                        </Container>
+                        <Container gap={3} label={'Offers & Promotions'}>
                             <OfferProducts setProducts={setProduct} products={product} />
                         </Container>
-                        <Container gap={10} label={'Featured Images'}>
-                            <UploadImages ref={uploadRef} maxImages={2} defaultImages={product.featuredImage} setProducts={setProduct} products={product} providedName='featuredImages' />
+                        <Container gap={3} label={'Featured Images'}>
+                            <UploadImages ref={uploadRef} maxImages={2} defaultImages={product.featuredImage} />
                         </Container>
-                        <Container gap={10} label={'Gallery Images'}>
-                            <UploadImages ref={galleryRef} maxImages={8} setProducts={setProduct} products={product} providedName='galleryImages' />
+                        <Container gap={3} label={'Gallery Images'}>
+                            <UploadImages ref={galleryRef} maxImages={8} />
                         </Container>
                         <button className='primary-button' onClick={handleUpload}>Upload Product</button>
 

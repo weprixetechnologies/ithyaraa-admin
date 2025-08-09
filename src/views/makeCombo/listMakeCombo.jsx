@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { getPaginatedProducts, getProductCount } from './../../lib/api/productsApi';
 import InputUi from '@/components/ui/inputui';
 
-const ListProducts = () => {
+const ListMakeCombo = () => {
     const navigate = useNavigate();
 
     const [products, setProducts] = useState([]);
@@ -19,9 +19,7 @@ const ListProducts = () => {
     const [filters, setFilters] = useState({
         name: '',
         productID: '',
-        type: '',
-        categoryID: '',
-        categoryName: ''
+        type: 'make_combo'
     });
 
     const limit = 10;
@@ -33,8 +31,6 @@ const ListProducts = () => {
     const fetchProductCount = async () => {
         try {
             const { totalItems } = await getProductCount(filters);
-            console.log(totalItems);
-
             setTotalPages(Math.ceil(totalItems / limit));
         } catch (error) {
             console.error('Error counting products:', error);
@@ -78,13 +74,12 @@ const ListProducts = () => {
     }, [page, filters]); // Add filters to dependency array if you want real-time filtering
 
     return (
-        <Layout title="Product List" active="admin-products-list">
+        <Layout title="Product List" active="admin-mcombo-list">
             <Container containerclass="bg-transparent">
                 {/* 🔍 Filters */}
                 <div className="flex gap-4 mb-4 items-center">
                     <InputUi placeholder={'Enter Product Name'} datafunction={(e) => handleChange(e, 'name')} />
                     <InputUi placeholder={'Enter Product ID'} datafunction={(e) => handleChange(e, 'productID')} />
-                    <InputUi placeholder={'Enter Product Type'} datafunction={(e) => handleChange(e, 'type')} />
                     <InputUi placeholder={'Enter Category ID'} datafunction={(e) => handleChange(e, 'categoryID')} />
                     <InputUi placeholder={'Enter Category Name'} datafunction={(e) => handleChange(e, 'categoryName')} />
                     <button
@@ -148,7 +143,7 @@ const ListProducts = () => {
                                             <button className="bg-green-600 text-white p-2 rounded-full" onClick={() => navigate('/orders/details')}>
                                                 <MdEdit size={16} />
                                             </button>
-                                            <button className="bg-blue-600 text-white p-2 rounded-full" onClick={() => navigate(`/products/details/${product.productID}`)}>
+                                            <button className="bg-blue-600 text-white p-2 rounded-full" onClick={() => navigate(`/make-combo/detail/${product.productID}`)}>
                                                 <IoMdEye size={16} />
                                             </button>
                                         </div>
@@ -181,4 +176,4 @@ const ListProducts = () => {
     );
 };
 
-export default ListProducts;
+export default ListMakeCombo;

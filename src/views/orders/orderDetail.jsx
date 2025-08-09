@@ -116,7 +116,7 @@ const OrderDetail = () => {
             <div className="grid-cols-6 grid gap-2">
                 <div className="col-span-4">
                     <div className="flex flex-col gap-2">
-                        <Container label={'Order Information'} gap={10}>
+                        <Container label={'Order Information'} gap={3}>
                             <div className="grid grid-cols-2 gap-2">
                                 <InputUi label={'Order ID'} value={order.ordersId} />
                                 <InputUi label={'Username'} value={order.username} />
@@ -134,7 +134,7 @@ const OrderDetail = () => {
                 <div className="col-span-2">
                     <div className="flex flex-col gap-2">
                         <AddressList addressprop={order.address} />
-                        <Container label={'Vendor Details'} gap={10}>
+                        <Container label={'Vendor Details'} gap={3}>
                             <div className="flex flex-col gap-2">
                                 {
                                     order.items?.map((i, index) => (

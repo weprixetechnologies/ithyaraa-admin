@@ -44,7 +44,7 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
                 return (
                     <div key={menu.menuID} className='menu-item'>
                         <div
-                            className={`menu-title ${isParentActive ? 'active-menu' : ''}`}
+                            className={`border menu-title ${isParentActive ? 'active-menu' : ''}`}
                             onClick={() => handleToggle(menu)}
                         >
                             <div className="left">

@@ -56,7 +56,7 @@ const AddUser = () => {
             <div className="grid grid-cols-6 gap-6 h-full">
                 <section className='col-span-4 w-full'>
                     <div className="flex flex-col gap-3">
-                        <Container gap={10} label={'Basic Information'}>
+                        <Container gap={3} label={'Basic Information'}>
                             <div className="grid grid-cols-2 gap-3">
                                 <InputUi value={user.firstname} label={'First Name'} datafunction={(e) => updateFunction(e, 'firstname')} />
                                 <InputUi value={user.lastname} label={'Last Name'} datafunction={(e) => updateFunction(e, 'lastname')} />
@@ -67,7 +67,7 @@ const AddUser = () => {
                             </div>
 
                         </Container>
-                        <Container gap={10} label={'Security Section'}>
+                        <Container gap={3} label={'Security Section'}>
                             <div className="grid grid-cols-2 gap-3">
                                 <InputUi value={password} label={'Enter Password'} datafunction={(e) => setPassword(e.target.value)} />
                                 <InputUi value={user.confirmPassword} label={'Confirm Password'} datafunction={(e) => setConfirmPassword(e.target.value)} />

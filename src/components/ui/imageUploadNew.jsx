@@ -2,20 +2,23 @@ import React, {
     useRef,
     useState,
     useEffect,
-    useImperativeHandle,
-    forwardRef
+    forwardRef,
+    useImperativeHandle
 } from 'react';
-const UploadImages = forwardRef(
+
+const UploadImagesNew = forwardRef(
     ({ maxImages = 5, defaultImages = [], providedName = 'images' }, ref) => {
         const fileInputRef = useRef(null);
         const [oldImages, setOldImages] = useState([]);
         const [newImages, setNewImages] = useState([]);
 
+        // BunnyCDN config
         const storageZone = 'ithyaraa';
         const storageRegion = 'sg.storage.bunnycdn.com';
         const pullZoneUrl = 'https://ithyaraa.b-cdn.net';
-        const apiKey = '7017f7c4-638b-48ab-add3858172a8-f520-4b88'; // ⚠️ Dev only
+        const apiKey = '7017f7c4-638b-48ab-add3858172a8-f520-4b88'; // ⚠️ Dev-only key
 
+        // Upload a single file to BunnyCDN
         const uploadToBunny = async (file) => {
             const fileName = encodeURIComponent(file.name);
             const uploadUrl = `https://${storageRegion}/${storageZone}/${fileName}`;
@@ -25,79 +28,79 @@ const UploadImages = forwardRef(
                 method: 'PUT',
                 headers: {
                     AccessKey: apiKey,
-                    'Content-Type': file.type
+                    'Content-Type': file.type,
                 },
-                body: file
+                body: file,
             });
 
             if (!res.ok) throw new Error(`Upload failed: ${res.status}`);
             return { imgUrl: publicUrl, imgAlt: file.name };
         };
 
+        // Expose public methods to parent via ref
         useImperativeHandle(ref, () => ({
             openUploadDialog: () => fileInputRef.current?.click(),
-            reset: () => {
-                console.log('reseting');
 
+            reset: () => {
                 setOldImages([]);
                 setNewImages([]);
             },
+
             uploadImageFunction: async () => {
-                const uploaded = [];
+                const finalImages = [];
 
-                // Push old ones
+                // Push already uploaded old images
                 for (const img of oldImages) {
-                    uploaded.push({ imgUrl: img.imgUrl, imgAlt: img.imgAlt });
+                    finalImages.push({ imgUrl: img.imgUrl, imgAlt: img.imgAlt });
                 }
-                console.log('Uploaded Old', uploaded);
 
-                // Upload new ones
+                // Upload new images
                 for (const img of newImages) {
                     if (!img.isUploaded && img.file) {
                         try {
-                            const uploadedUrl = await uploadToBunny(img.file);
-                            uploaded.push(uploadedUrl);
+                            const uploaded = await uploadToBunny(img.file);
+                            finalImages.push(uploaded);
                         } catch (err) {
-                            console.error(`Failed uploading ${img.imgAlt}:`, err);
+                            console.error(`Error uploading ${img.imgAlt}:`, err);
                         }
                     }
                 }
-                console.log('Uploaded New', uploaded);
-                return uploaded;
-            }
+
+                return finalImages;
+            },
         }));
 
+        // Format and set default (old) images on mount
         useEffect(() => {
-            if (defaultImages?.length > 0) {
+            if (defaultImages?.length) {
                 const formatted = defaultImages.map((img, i) => ({
                     imgUrl: typeof img === 'string' ? img : img.imgUrl,
-                    imgAlt: img.imgAlt || `image-${i + 1}`,
-                    isOld: true
+                    imgAlt: img?.imgAlt || `image-${i + 1}`,
                 }));
-                console.log('formating', formatted);
-
                 setOldImages(formatted);
             }
         }, [defaultImages]);
 
+        // Handle new image selection
         const handleFilesChange = (e) => {
             const files = Array.from(e.target.files);
             const availableSlots = maxImages - oldImages.length - newImages.length;
             const selected = files.slice(0, availableSlots);
 
-            const localPreviews = selected.map((file) => ({
+            const newUploads = selected.map((file) => ({
                 imgUrl: URL.createObjectURL(file),
                 imgAlt: file.name,
-                isOld: false,
                 isUploaded: false,
-                file
+                file,
             }));
 
-            setNewImages((prev) => [...prev, ...localPreviews]);
+            setNewImages((prev) => [...prev, ...newUploads]);
         };
 
-        const handleImageRemove = (index, isOld) => {
-            if (!window.confirm('Remove this image?')) return;
+        // Remove image from state
+        const handleRemoveImage = (index, isOld) => {
+            if (!window.confirm('Are you sure you want to remove this image?')) return;
+
             if (isOld) {
                 setOldImages((prev) => prev.filter((_, i) => i !== index));
             } else {
@@ -109,10 +112,11 @@ const UploadImages = forwardRef(
 
         return (
             <div className="w-full">
+                {/* Upload Box */}
                 <div
+                    className={`flex flex-col items-center justify-center h-20 border-dashed border-blue-500 w-full border rounded-lg cursor-pointer 
+                        ${allImages.length >= maxImages ? 'opacity-50 pointer-events-none' : ''}`}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`flex flex-col items-center justify-center h-20 border-dashed border-blue-500 w-full border rounded-lg cursor-pointer ${allImages.length >= maxImages ? 'opacity-50 pointer-events-none' : ''
-                        }`}
                 >
                     <p className="text-blue-500">
                         {allImages.length >= maxImages
@@ -122,23 +126,24 @@ const UploadImages = forwardRef(
                 </div>
 
                 <input
+                    ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     multiple
-                    ref={fileInputRef}
-                    onChange={handleFilesChange}
                     className="hidden"
+                    onChange={handleFilesChange}
                 />
 
+                {/* Image Preview List */}
                 <div className="flex gap-2 mt-4 flex-wrap">
-                    {allImages.map((img, index) => (
+                    {allImages.map((img, i) => (
                         <div
-                            key={index}
+                            key={i}
                             className="w-24 h-24 border rounded overflow-hidden relative group cursor-pointer"
                             onClick={() =>
-                                handleImageRemove(
-                                    index < oldImages.length ? index : index - oldImages.length,
-                                    index < oldImages.length
+                                handleRemoveImage(
+                                    i < oldImages.length ? i : i - oldImages.length,
+                                    i < oldImages.length
                                 )
                             }
                         >
@@ -158,4 +163,4 @@ const UploadImages = forwardRef(
     }
 );
 
-export default UploadImages;
+export default UploadImagesNew;
