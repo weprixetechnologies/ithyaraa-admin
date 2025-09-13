@@ -67,18 +67,22 @@ const UploadImages = forwardRef(
             }
         }));
 
-        useEffect(() => {
-            if (defaultImages?.length > 0) {
-                const formatted = defaultImages.map((img, i) => ({
-                    imgUrl: typeof img === 'string' ? img : img.imgUrl,
-                    imgAlt: img.imgAlt || `image-${i + 1}`,
-                    isOld: true
-                }));
-                console.log('formating', formatted);
+ useEffect(() => {
+    if (!defaultImages?.length) return; // skip if undefined or empty
 
-                setOldImages(formatted);
-            }
-        }, [defaultImages]);
+    const formatted = defaultImages
+        .filter(img => img) // remove undefined/null items
+        .map((img, i) => ({
+            imgUrl: typeof img === 'string' ? img : img?.imgUrl || '', // fallback empty string
+            imgAlt: img?.imgAlt || `image-${i + 1}`,
+            isOld: true
+        }));
+
+    console.log('formatting', formatted);
+    setOldImages(formatted);
+}, [defaultImages]);
+
+
 
         const handleFilesChange = (e) => {
             const files = Array.from(e.target.files);
@@ -143,8 +147,8 @@ const UploadImages = forwardRef(
                             }
                         >
                             <img
-                                src={img.imgUrl}
-                                alt={img.imgAlt}
+                                src={img.imgUrl || ''}
+                                alt={img.imgAlt || 'Loading...'}
                                 className="w-full h-full object-cover"
                             />
                             <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs transition-opacity">

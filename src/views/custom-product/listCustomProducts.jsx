@@ -2,27 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Container from '@/components/ui/container';
 import Layout from 'src/layout';
-import { MdEdit, MdDelete } from 'react-icons/md';
+import { MdEdit } from 'react-icons/md';
 import { IoMdEye } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import { getPaginatedProducts, getProductCount, deleteProduct } from './../../lib/api/productsApi';
+import { getPaginatedProducts, getProductCount } from './../../lib/api/productsApi';
 import InputUi from '@/components/ui/inputui';
-import { toast } from 'react-toastify';
 
-const ListProducts = () => {
+const CustomProductList = () => {
     const navigate = useNavigate();
 
     const [products, setProducts] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const [deleteLoading, setDeleteLoading] = useState(false);
-    const [productToDelete, setProductToDelete] = useState(null);
 
     const [filters, setFilters] = useState({
         name: '',
         productID: '',
-        type: '',
+        type: 'customproduct',
         categoryID: '',
         categoryName: ''
     });
@@ -73,39 +70,6 @@ const ListProducts = () => {
         setPage(newPage);
     };
 
-    // Handle delete product
-    const handleDeleteProduct = async (productID) => {
-        try {
-            setDeleteLoading(true);
-            const response = await deleteProduct(productID);
-
-            if (response.success) {
-                toast.success('Product deleted successfully');
-                // Refresh the product list
-                await fetchProductCount();
-                await fetchProducts();
-            } else {
-                toast.error(response.message || 'Failed to delete product');
-            }
-        } catch (error) {
-            console.error('Error deleting product:', error);
-            toast.error('Error deleting product');
-        } finally {
-            setDeleteLoading(false);
-            setProductToDelete(null);
-        }
-    };
-
-    // Show delete confirmation
-    const confirmDelete = (product) => {
-        setProductToDelete(product);
-    };
-
-    // Cancel delete
-    const cancelDelete = () => {
-        setProductToDelete(null);
-    };
-
     // Initial load and when filters/page change
     useEffect(() => {
         const loadData = async () => {
@@ -147,6 +111,8 @@ const ListProducts = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
+                        {products.length == 0 && 'No Products Available'}
+
                         {products?.map((product) => {
                             let imgUrl = '';
                             try {
@@ -183,18 +149,11 @@ const ListProducts = () => {
                                     <TableCell className="text-center">{new Date(product.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell className="rounded-r-[10px] text-center pr-5">
                                         <div className="flex-center gap-2">
-                                            <button className="bg-green-600 text-white p-2 rounded-full" onClick={() => navigate(`/products/details/${product.productID}`)}>
+                                            <button className="bg-green-600 text-white p-2 rounded-full" onClick={() => navigate('/orders/details')}>
                                                 <MdEdit size={16} />
                                             </button>
                                             <button className="bg-blue-600 text-white p-2 rounded-full" onClick={() => navigate(`/products/details/${product.productID}`)}>
                                                 <IoMdEye size={16} />
-                                            </button>
-                                            <button
-                                                className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700"
-                                                onClick={() => confirmDelete(product)}
-                                                disabled={deleteLoading}
-                                            >
-                                                <MdDelete size={16} />
                                             </button>
                                         </div>
                                     </TableCell>
@@ -222,39 +181,8 @@ const ListProducts = () => {
                     </button>
                 </div>
             </Container>
-
-            {/* Delete Confirmation Modal */}
-            {productToDelete && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                            Confirm Delete
-                        </h3>
-                        <p className="text-gray-600 mb-6">
-                            Are you sure you want to delete the product "{productToDelete.name}"?
-                            This action cannot be undone.
-                        </p>
-                        <div className="flex gap-3 justify-end">
-                            <button
-                                onClick={cancelDelete}
-                                className="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300"
-                                disabled={deleteLoading}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={() => handleDeleteProduct(productToDelete.productID)}
-                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
-                                disabled={deleteLoading}
-                            >
-                                {deleteLoading ? 'Deleting...' : 'Delete'}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </Layout>
     );
 };
 
-export default ListProducts;
+export default CustomProductList;

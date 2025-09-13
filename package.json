@@ -17,6 +17,7 @@
     "axios": "^1.11.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "history": "^5.3.0",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.534.0",
     "react": "^19.1.1",
@@ -31,12 +32,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
+    "start": "  react-app-rewired start",
+    "build": " react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
+   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"

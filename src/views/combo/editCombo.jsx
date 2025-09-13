@@ -1,3 +1,4 @@
+import axiosInstance from '@/lib/axiosInstance';
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from 'src/layout';
@@ -8,10 +9,10 @@ import SelectProducts from '@/components/ui/selectProducts';
 import OfferProducts from '@/components/products/offersProducts';
 import Pricing from '@/components/products/pricing';
 import CategoryProduct from '@/components/products/categoryProduct';
-import axiosInstance from 'src/lib/axiosInstance';
 import { toast } from 'react-toastify';
+import { getComboDetails } from '../../lib/api/comboApi';
 
-const EditMakeCombo = () => {
+const EditCombo = () => {
     const { comboID } = useParams();
     const uploadRef = useRef();
     const galleryRef = useRef();
@@ -35,8 +36,9 @@ const EditMakeCombo = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const res = await axiosInstance.get(`/make-combo/detail/${comboID}`);
-                const data = res.data;
+                const res = await getComboDetails(comboID);
+                const data = res.data
+
 
                 const parsedProduct = {
                     ...data,
@@ -45,16 +47,10 @@ const EditMakeCombo = () => {
                     tab1: data.tab1 ?? '',
                     tab2: data.tab2 ?? '',
                     featuredImage: parseJSONSafe(data.featuredImage) ?? [],
-                    galleryImage: parseJSONSafe(data.galleryImage) ?? [],
                     productAttributes: parseJSONSafe(data.productAttributes) ?? [],
-                    variations: Array.isArray(data.variations)
-                        ? data.variations.map(variation => ({
-                            ...variation,
-                            variationValues: parseJSONSafe(variation.variationValues),
-                        }))
-                        : [],
                     categories: parseJSONSafe(data.categories) ?? [],
                     products: parseJSONSafe(data.products) ?? [],
+                    galleryImage: parseJSONSafe(data.galleryImage) ?? [],
                 };
 
                 setProduct(parsedProduct);
@@ -71,6 +67,11 @@ const EditMakeCombo = () => {
 
         if (comboID) fetchProduct();
     }, [comboID]);
+
+    useEffect(() => {
+        console.log(product);
+
+    }, [product])
 
     const parseJSONSafe = (value) => {
         if (typeof value === 'string') {
@@ -113,9 +114,8 @@ const EditMakeCombo = () => {
                 comboID, // include comboID for editing
             };
 
-            const response = await axiosInstance.put(`/make-combo/edit/${comboID}`, fullProductData);
-            const result = response.data;
-            if (response.status !== 200) throw new Error(result.message || 'Failed to edit product');
+            const response = await axiosInstance.put(`/combo/edit/${comboID}`, fullProductData);
+            console.log('Edit combo response:', response.data);
             toast.success('Combo updated successfully!');
         } catch (error) {
             console.error('Error uploading or posting product:', error.message);
@@ -126,7 +126,7 @@ const EditMakeCombo = () => {
     if (loading) return <div className="p-5 text-lg">Loading combo...</div>;
 
     return (
-        <Layout active={'admin-mcombo-list'} title={'Edit Make Combo'}>
+        <Layout active={'admin-products-add'} title={'Edit Make Combo'}>
             <div className="grid grid-cols-6 gap-2">
                 <div className="col-span-4 flex flex-col gap-2">
                     <Container gap={3} label={'Basic Information'}>
@@ -166,6 +166,7 @@ const EditMakeCombo = () => {
 
                     <Container gap={3} label={'Select Products'}>
                         <SelectProducts
+                            initialFilters={{ type: 'variable' }}
                             initialSelected={selectedProductIDs}
                             onProductToggle={handleToggleProductParent}
                         />
@@ -173,13 +174,13 @@ const EditMakeCombo = () => {
                 </div>
 
                 <div className="col-span-2 flex flex-col gap-2">
-                    {/* <Container containerclass={'bg-dark-text'}>
+                    <Container containerclass={'bg-dark-text'}>
                         <div className="overflow-x-auto">
                             <pre className="col-span-2 mt-4 p-2 text-white rounded text-xs whitespace-pre max-w-full">
                                 {JSON.stringify(product, null, 3)}
                             </pre>
                         </div>
-                    </Container> */}
+                    </Container>
 
                     <Container label={'Categories'}>
                         <CategoryProduct
@@ -211,4 +212,4 @@ const EditMakeCombo = () => {
     );
 };
 
-export default EditMakeCombo;
+export default EditCombo;

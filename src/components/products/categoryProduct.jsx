@@ -13,7 +13,11 @@ const CategoryProduct = ({ setProducts, products, isEditable = false, oldValue =
                 const [catRes] = await Promise.all([
                     getPaginatedCategories({ limit: '1000' }),
                 ]);
-                setCategories(catRes.data || []);
+                // Accept multiple response shapes: {data: [...]}, {result: [...]}, or array
+                const incoming = Array.isArray(catRes)
+                    ? catRes
+                    : (catRes?.data || catRes?.result || []);
+                setCategories(incoming || []);
             } catch (err) {
                 console.error('Failed to load categories', err);
             }
@@ -32,14 +36,23 @@ const CategoryProduct = ({ setProducts, products, isEditable = false, oldValue =
         ) {
             hasSyncedOldValues.current = true;
 
-            const selectedIDs = oldValue.map(cat => String(cat.categoryID));
+            // Support both ID arrays and object arrays
+            const selectedIDs = oldValue
+                .map(item => {
+                    if (item && typeof item === 'object') {
+                        return String(item.categoryID ?? item.categoryId ?? item.id ?? item.value);
+                    }
+                    return String(item);
+                })
+                .filter(Boolean);
+
             setSelected(selectedIDs);
 
             const selectedObjects = categories
-                .filter(cat => selectedIDs.includes(String(cat.categoryID)))
+                .filter(cat => selectedIDs.includes(String(cat.categoryID ?? cat.categoryId ?? cat.id)))
                 .map(cat => ({
-                    categoryID: cat.categoryID,
-                    categoryName: cat.categoryName,
+                    categoryID: cat.categoryID ?? cat.categoryId ?? cat.id,
+                    categoryName: cat.categoryName ?? cat.name,
                 }));
 
             setProducts(prev => ({
@@ -57,10 +70,10 @@ const CategoryProduct = ({ setProducts, products, isEditable = false, oldValue =
         setSelected(updatedSelected);
 
         const selectedObjects = categories
-            .filter(cat => updatedSelected.includes(String(cat.categoryID)))
+            .filter(cat => updatedSelected.includes(String(cat.categoryID ?? cat.categoryId ?? cat.id)))
             .map(cat => ({
-                categoryID: cat.categoryID,
-                categoryName: cat.categoryName,
+                categoryID: cat.categoryID ?? cat.categoryId ?? cat.id,
+                categoryName: cat.categoryName ?? cat.name,
             }));
 
         setProducts(prev => ({
@@ -72,13 +85,13 @@ const CategoryProduct = ({ setProducts, products, isEditable = false, oldValue =
     return (
         <div className="flex flex-col gap-2">
             {categories.map(cat => (
-                <label key={cat.categoryID} className="flex items-center gap-2">
+                <label key={cat.categoryID ?? cat.categoryId ?? cat.id} className="flex items-center gap-2">
                     <input
                         type="checkbox"
-                        checked={selected.includes(String(cat.categoryID))}
-                        onChange={() => handleCheckboxChange(String(cat.categoryID))}
+                        checked={selected.includes(String(cat.categoryID ? String(cat.categoryID) : String(cat.categoryId ?? cat.id)))}
+                        onChange={() => handleCheckboxChange(String(cat.categoryID ?? cat.categoryId ?? cat.id))}
                     />
-                    {cat.categoryName}
+                    {cat.categoryName ?? cat.name}
                 </label>
             ))}
         </div>

@@ -1,5 +1,5 @@
+import axiosInstance from '@/lib/axiosInstance';
 import React, { useCallback, useRef, useState } from 'react'
-import axiosInstance from 'src/lib/axiosInstance'
 import Layout from 'src/layout'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
@@ -10,12 +10,12 @@ import CategoryProduct from '@/components/products/categoryProduct'
 import OfferProducts from '@/components/products/offersProducts'
 import SelectProducts from '@/components/ui/selectProducts'
 
-const AddMakeCombo = () => {
+const AddCombo = () => {
     const uploadRef = useRef();
     const galleryRef = useRef();
 
     const [selectedProducts, setSelectedProductsState] = useState([])
-    const [product, setProduct] = useState({ type: 'make_combo' })
+    const [product, setProduct] = useState({ type: 'combo' })
 
     const updateFunction = (data, name) => {
         setProduct(prev => ({
@@ -28,6 +28,11 @@ const AddMakeCombo = () => {
 
     const handleUpload = async () => {
         try {
+            if (selectedProducts.length > 3) {
+                toast.error('More than 3 Items selected.')
+                return;
+            }
+
             const finalImages = await uploadRef.current?.uploadImageFunction();
             const galleryupload = await galleryRef.current?.uploadImageFunction();
 
@@ -43,9 +48,8 @@ const AddMakeCombo = () => {
 
             console.log('🚀 Full product with images:', fullProductData); // ✅ this has images
 
-            const response = await axiosInstance.post('/make-combo/create-make-combo', fullProductData);
-            const result = response.data;
-            console.log('Product added successfully:', result);
+            const response = await axiosInstance.post('/combo/create-combo', fullProductData);
+            console.log('Product added successfully:', response.data);
             toast.success('Product Added')
 
         } catch (error) {
@@ -86,6 +90,7 @@ const AddMakeCombo = () => {
                             <SelectProducts
                                 onProductToggle={handleToggleProductParent}
                                 initialSelected={selectedProducts}
+                                initialFilters={{ type: 'variable' }}
                             />
 
                         </Container>
@@ -95,13 +100,13 @@ const AddMakeCombo = () => {
                 </div>
                 <div className="col-span-2">
                     <div className="flex flex-col gap-2">
-                        {/* <Container containerclass={'bg-dark-text'}>
+                        <Container containerclass={'bg-dark-text'}>
                             <div className="overflow-x-auto">
                                 <pre className="col-span-2 mt-4 p-2 text-white rounded text-xs whitespace-pre max-w-full">
-                                    {JSON.stringify(product, null, 2)}
+                                    {JSON.stringify(product, null, 3)}
                                 </pre>
                             </div>
-                        </Container> */}
+                        </Container>
                         <Container label={'Categories'}>
                             <CategoryProduct setProducts={setProduct} products={product} />
                         </Container>
@@ -124,4 +129,4 @@ const AddMakeCombo = () => {
     )
 }
 
-export default AddMakeCombo
+export default AddCombo

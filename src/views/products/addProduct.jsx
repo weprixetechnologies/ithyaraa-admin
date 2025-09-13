@@ -5,6 +5,7 @@ import VariationsComponent from '@/components/products/variations'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
 import UploadImages from '@/components/ui/uploadImages'
+import axiosInstance from '../../lib/axiosInstance'
 import React, { useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import Layout from 'src/layout'
@@ -13,7 +14,7 @@ const AddProduct = () => {
     const uploadRef = useRef();
     const galleryRef = useRef();
 
-    const [product, setProduct] = useState({ type: 'variable' })
+    const [product, setProduct] = useState({ type: 'variable', brand: 'inhouse' })
 
     const updateFunction = (data, name) => {
         setProduct(prev => ({
@@ -25,40 +26,31 @@ const AddProduct = () => {
     };
 
 
-        const handleUpload = async () => {
-            try {
-                const finalImages = await uploadRef.current?.uploadImageFunction();
-                const galleryupload = await galleryRef.current?.uploadImageFunction();
+    const handleUpload = async () => {
+        try {
+            const finalImages = await uploadRef.current?.uploadImageFunction();
+            const galleryupload = await galleryRef.current?.uploadImageFunction();
 
-                const fullProductData = {
-                    ...product,
-                    featuredImage: finalImages,
-                    galleryImage: galleryupload
-                };
+            const fullProductData = {
+                ...product,
+                featuredImage: finalImages,
+                galleryImage: galleryupload
+            };
 
-                console.log('🚀 Full product with images:', fullProductData); // ✅ this has images
+            console.log('🚀 Full product with images:', fullProductData); // ✅ has images
 
-                const response = await fetch('http://localhost:3300/api/products/add-product', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(fullProductData),
-                });
+            const { data: result } = await axiosInstance.post(
+                '/products/add-product',
+                fullProductData
+            );
 
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || 'Failed to add product');
-                }
-
-                const result = await response.json();
-                console.log('Product added successfully:', result);
-                toast.success('Product Added')
-
-            } catch (error) {
-                console.error('Error uploading or posting product:', error.message);
-            }
-        };
+            console.log('Product added successfully:', result);
+            toast.success('Product Added');
+        } catch (error) {
+            console.error('Error uploading or posting product:', error.response?.data || error.message);
+            toast.error(error.response?.data?.message || 'Failed to add product');
+        }
+    };
 
 
 

@@ -228,11 +228,11 @@ const ProductCard = ({ product, isSelected, onToggle }) => (
                 </div>
             </div>
         )}
-        <div className="aspect-square bg-gray-100 rounded overflow-hidden">
+        <div className="bg-gray-100 rounded overflow-hidden flex items-center justify-center" style={{height: '96px', width: '100%'}}>
             <img
                 src={product.featuredImage?.[0]?.imgUrl || '/placeholder.png'}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="max-h-24 w-auto object-contain"
                 loading="lazy"
             />
         </div>

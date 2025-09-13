@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from '../ui/container';
-import { MdEdit } from "react-icons/md";
-import { IoMdEye } from 'react-icons/io';
+// import { MdEdit } from "react-icons/md";
+// import { IoMdEye } from 'react-icons/io';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useNavigate } from 'react-router-dom';
 

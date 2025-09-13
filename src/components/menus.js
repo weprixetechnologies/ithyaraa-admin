@@ -1,3 +1,4 @@
+import React from 'react';
 // Remix Icons (RI) – react-icons/ri
 import {
     RiUser3Line,        // Users
@@ -11,10 +12,18 @@ import {
     RiFolderAddLine,    // Add Product
     RiListUnordered,    // List Product / List Anything
     RiStackLine,        // Categories
+    RiMoneyDollarCircleLine, // Payout
 } from 'react-icons/ri';
 
 
 export const mainMenu = [
+    {
+        menuID: 'dashboard-m',
+        id: 6,
+        url: '/',
+        icon: <RiUser3Line />,
+        title: 'Dashboard',
+    },
     {
         menuID: 'users-m',
         id: 7,
@@ -98,6 +107,35 @@ export const mainMenu = [
         subMenu: [
             { menuID: 'admin-mcombo-add', url: '/make-combo/add', icon: <RiFolderAddLine />, title: 'Add Make Combo' },
             { menuID: 'admin-mcombo-list', url: '/make-combo/list', icon: <RiListUnordered />, title: 'List Make Combo' },
+        ],
+    }, {
+        menuID: 'combo-m',
+        id: 15,
+        url: '/combo',
+        icon: <RiStackLine />,
+        title: 'Combo',
+        subMenu: [
+            { menuID: 'admin-combo-add', url: '/combo/add', icon: <RiFolderAddLine />, title: 'Add Combo' },
+            { menuID: 'admin-combo-list', url: '/combo/list', icon: <RiListUnordered />, title: 'List Combo' },
+        ],
+    }, {
+        menuID: 'custom-product-m',
+        id: 16,
+        url: '/custom-product',
+        icon: <RiStackLine />,
+        title: 'Custom Product',
+        subMenu: [
+            { menuID: 'admin-custom-product-add', url: '/custom-product/add', icon: <RiFolderAddLine />, title: 'Add Custom Product' },
+            { menuID: 'admin-custom-product-list', url: '/custom-product/list', icon: <RiListUnordered />, title: 'List Custom Product' },
+        ],
+    }, {
+        menuID: 'payout-m',
+        id: 17,
+        url: '/payout',
+        icon: <RiMoneyDollarCircleLine />,
+        title: 'Payout Approval',
+        subMenu: [
+            { menuID: 'admin-payout-list', url: '/payout/list', icon: <RiListUnordered />, title: 'Payout Requests' },
         ],
     }
 ];

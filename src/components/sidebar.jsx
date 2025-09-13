@@ -16,6 +16,16 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
         navigate(link);
     };
 
+
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('_at');
+        sessionStorage.removeItem('_rt');
+        sessionStorage.removeItem('isLoggedIn');
+        navigate('/login');
+    };
+
+
     useEffect(() => {
         const matched = keymenu.find(menu =>
             menu.menuID === activeMenu ||
@@ -84,6 +94,15 @@ const SidebarMenu = ({ keymenu, activeMenu }) => {
 
 
 const Sidebar = ({ activeMenu }) => {
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        document.cookie = '_at=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = '_rt=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        document.cookie = '_iil=false; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+        navigate('/login');
+    };
 
 
     return (
@@ -104,7 +123,7 @@ const Sidebar = ({ activeMenu }) => {
             </div>
             <div className="bottom-sidebar">
                 <button className='primary-button-gta'>Go to Admin</button>
-                <button className='logout-button'>Logout</button>
+                <button className='logout-button' onClick={() => handleLogout()}>Logout</button>
 
             </div>
         </aside>

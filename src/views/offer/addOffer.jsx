@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react'
+import axiosInstance from 'src/lib/axiosInstance'
 import Layout from 'src/layout'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
@@ -54,26 +55,19 @@ const AddOffer = () => {
             };
 
             console.log('Submitting offer:', payload);
+    
 
-            const res = await fetch('http://localhost:3300/api/offer/add-offer', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
+            const res = await axiosInstance.post('/offer/add-offer', JSON.stringify(payload));
+            const data = res.data;
 
             if (data.success) {
                 console.log('Offer created successfully');
                 console.log(data);
-                toast.success('Offer is Live')
+                toast.success('Offer is Live');
                 // Optionally reset form or show toast
             } else {
                 console.error('Failed to create offer:', data.message);
-                toast.success('Offer Upload Issue')
-
+                toast.success('Offer Upload Issue');
             }
         } catch (error) {
             console.error('Error submitting offer:', error);

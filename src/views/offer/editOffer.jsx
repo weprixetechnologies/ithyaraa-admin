@@ -6,6 +6,7 @@ import InputUi from '@/components/ui/inputui';
 import UploadImages from '@/components/ui/uploadImages';
 import SelectProducts from '@/components/ui/selectProducts';
 import { toast } from 'react-toastify';
+import axiosInstance from 'src/lib/axiosInstance';
 
 const EditOffer = () => {
     const { offerID } = useParams();
@@ -30,31 +31,24 @@ const EditOffer = () => {
 
     useEffect(() => {
         const fetchOffer = async () => {
+            setLoading(true);
             try {
-                const res = await fetch(`http://localhost:3300/api/offer/detail/${offerID}`);
-                const data = await res.json();
+                const res = await axiosInstance.get(`offer/detail/${offerID}`);
+                const data = res.data;
 
                 if (data.success) {
                     const fetched = data.data;
-                    console.log(fetched);
-
-
                     const parsedProducts = Array.isArray(fetched.products)
                         ? fetched.products
                         : typeof fetched.products === 'string'
                             ? JSON.parse(fetched.products)
                             : [];
-
-                    console.log('🧩 Parsed Products:', parsedProducts); // ✅ Log parsed data
-
                     setOffer({
                         offerType: 'buy_x_get_y', // fallback default
                         ...fetched,
                         products: parsedProducts,
                     });
-
                     setSelectedProductsState(parsedProducts);
-                    console.log('✅ Full fetched object:', fetched);
                 } else {
                     toast.error('Failed to fetch offer');
                 }
@@ -65,7 +59,6 @@ const EditOffer = () => {
                 setLoading(false);
             }
         };
-
         fetchOffer();
     }, [offerID]);
 
@@ -81,14 +74,12 @@ const EditOffer = () => {
     }, [selectedProducts])
 
     const handleSubmit = async () => {
-        // const start = performance.now(); // start time
-
+        setLoading(true);
         try {
             const [mobileBanner, desktopBanner] = await Promise.all([
                 mobileBannerRef.current?.uploadImageFunction(),
                 desktopBannerRef.current?.uploadImageFunction(),
             ]);
-
             const payload = {
                 ...offer,
                 offerID,
@@ -98,22 +89,9 @@ const EditOffer = () => {
                 offerMobileBanner: mobileBanner?.[0]?.imgUrl || '',
                 offerBanner: desktopBanner?.[0]?.imgUrl || '',
                 products: selectedProducts
-
             };
-
-            console.log(payload);
-
-
-            const res = await fetch(`http://localhost:3300/api/offer/edit-offer/${offerID}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await res.json();
-
+            const res = await axiosInstance.put(`/offer/edit-offer/${offerID}`, payload);
+            const data = res.data;
             if (data.success) {
                 toast.success('Offer updated successfully');
             } else {
@@ -122,11 +100,9 @@ const EditOffer = () => {
         } catch (error) {
             console.error('Error updating offer:', error);
             toast.error('Offer update failed');
+        } finally {
+            setLoading(false);
         }
-        // } finally {
-        //     // const end = performance.now(); // end time
-        //     // console.log(`Offer update request took ${(end - start).toFixed(2)} ms`);
-        // }
     };
 
     const handleToggleProductParent = (productID) => {

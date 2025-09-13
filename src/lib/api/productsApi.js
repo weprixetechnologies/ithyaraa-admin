@@ -19,11 +19,15 @@ export const getPaginatedProducts = async ({ page = 1, limit = 10, filters = {} 
     }
 
     const queryUrl = `/products/all-products?${params.toString()}`;
-    console.log('GET:', queryUrl); // ✅ Logs the actual query used
-    console.log('Filters:', filters); // 🔍 Also logs the filters object
+    console.log('GET:', queryUrl);
+    console.log('Filters:', filters);
 
+    const start = performance.now(); // start timing
     const response = await axiosInstance.get(queryUrl);
+    const end = performance.now();   // end timing
+
     console.log(response);
+    console.log(`⏱ Request took ${(end - start).toFixed(2)} ms`);
 
     return response.data;
 };
@@ -50,4 +54,9 @@ export const getProductCount = async (filters = {}) => {
 export const getProductDetails = async (productID) => {
     const response = await axiosInstance.get(`/products/details/${productID}`);
     return response.data.product; // adjust if your response structure differs
+};
+
+export const deleteProduct = async (productID) => {
+    const response = await axiosInstance.delete(`/products/delete/${productID}`);
+    return response.data;
 };

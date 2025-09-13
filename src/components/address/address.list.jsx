@@ -14,7 +14,7 @@ const AddressList = ({ addressprop }) => {
 
             {
                 addresslist?.map((i, index) => (
-                    <section key={index} className='p-3 bg bg-primary-dark rounded-lg'>
+                    <section key={index} className='p-3 bg-primary-dark rounded-lg'>
                         <p className='font-medium text-white text-lg'>{i.type}</p>
                         <section className='flex flex-col gap-1'>
                             <div className="flex justify-start gap-1 items-start">

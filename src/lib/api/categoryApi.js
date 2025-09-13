@@ -46,7 +46,7 @@ export const uploadCategory = async (categoryData) => {
 
 export const getCategoryByID = async (categoryID) => {
     try {
-        const response = await axiosInstance.get(`/categories/${categoryID}`);
+        const response = await axiosInstance.get(`/categories/detail/${categoryID}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching category:", error);

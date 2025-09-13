@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import axiosInstance from '@/lib/axiosInstance';
 import {
     Select,
     SelectContent,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import InputUi from '../ui/inputui';
 
-const OfferProducts = ({ setProducts }) => {
+const OfferProducts = ({ setProducts, products }) => {
     const [offerName, setOfferName] = useState('');
     const [offers, setOffers] = useState([]);
     const [selectedOffer, setSelectedOffer] = useState(null);
@@ -19,7 +19,7 @@ const OfferProducts = ({ setProducts }) => {
     // Fetch offers based on input
     const fetchOffers = useCallback(async (name) => {
         try {
-            const response = await axios.get('http://localhost:3300/api/offer/search-by-name', {
+            const response = await axiosInstance.get('/offer/search-by-name', {
                 params: { name: name.trim() }
             });
 
@@ -35,16 +35,33 @@ const OfferProducts = ({ setProducts }) => {
         }
     }, []);
 
+    // Initialize from current product's applied offer (for edit screen)
+    useEffect(() => {
+        const currentOfferIdRaw = products?.offerID ?? products?.offerId;
+        const currentOfferName = products?.offerName ?? products?.offer?.offerName;
+
+        const currentOfferId = currentOfferIdRaw?.toString?.();
+        const isValidOfferId = (val) => {
+            if (val === undefined || val === null) return false;
+            const s = String(val).trim().toLowerCase();
+            return s !== '' && s !== 'undefined' && s !== 'null' && s !== '0';
+        };
+
+        if (isValidOfferId(currentOfferId) || (currentOfferName && currentOfferName.trim() !== '')) {
+            setSelectedOffer({
+                id: isValidOfferId(currentOfferId) ? currentOfferId : '',
+                offername: currentOfferName || 'Unnamed Offer',
+            });
+        } else {
+            setSelectedOffer(null);
+        }
+    }, [products?.offerID, products?.offerId, products?.offerName]);
+
     // Debounce offerName input
     useEffect(() => {
         if (!offerName.trim()) {
             setOffers([]);
-            setSelectedOffer(null); // Reset selected offer
-            setProducts(prev => ({
-                ...prev,
-                offerID: '',
-                offerName: '',
-            }));
+            // Do not auto-clear the applied offer when simply emptying the search input
             return;
         }
 
@@ -61,10 +78,20 @@ const OfferProducts = ({ setProducts }) => {
             setSelectedOffer(offer);
             setProducts(prev => ({
                 ...prev,
-                offerId: offer.id,
+                offerID: offer.id,
                 offerName: offer.offername,
             }));
         }
+    };
+
+    const handleRemoveOffer = () => {
+        setSelectedOffer(null);
+        setOfferName('');
+        setProducts(prev => ({
+            ...prev,
+            offerID: '',
+            offerName: '',
+        }));
     };
 
     const handleSearchChange = (e) => {
@@ -74,12 +101,21 @@ const OfferProducts = ({ setProducts }) => {
 
     return (
         <div className="flex flex-col gap-3">
-            {
-                selectedOffer && <div className="w-full py-5 px-5 bg-secondary-text rounded-lg text-white">
-                    <p>Offer ID : <b>{selectedOffer?.id}</b></p>
-                    <p>Offer Name : <b>{selectedOffer?.offername}</b></p>
+            {selectedOffer && (
+                <div className="w-full py-5 px-5 bg-secondary-text rounded-lg text-white flex items-center justify-between gap-4">
+                    <div>
+                        <p>Offer ID : <b>{selectedOffer?.id}</b></p>
+                        <p>Offer Name : <b>{selectedOffer?.offername}</b></p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={handleRemoveOffer}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded"
+                    >
+                        Remove offer
+                    </button>
                 </div>
-            }
+            )}
 
 
             <InputUi

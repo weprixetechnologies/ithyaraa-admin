@@ -5,7 +5,8 @@ import Container from '@/components/ui/container';
 import UploadImages from '@/components/ui/uploadImages';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
-import { getCategoryByID } from '@/lib/api/categoryApi';
+import { getCategoryByID } from '../../lib/api/categoryApi';
+import axiosInstance from '../../lib/axiosInstance';
 
 const EditCategory = () => {
     const { categoryID } = useParams();
@@ -42,7 +43,7 @@ const EditCategory = () => {
         setCategory(prev => ({ ...prev, [name]: e.target.value }));
     };
 
-    const handleSubmit = async () => {
+   const handleSubmit = async () => {
         try {
             const [featured, banner] = await Promise.all([
                 categoryImageRef.current?.uploadImageFunction(),
@@ -57,17 +58,10 @@ const EditCategory = () => {
                 categoryBanner: banner?.[0]?.imgUrl || '',
             };
 
-            const res = await fetch('http://localhost:3300/api/categories/edit', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-            });
-
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.message || 'Failed to update category');
+            const res = await axiosInstance.put(`/categories/edit/${categoryID}`, payload);
+            if (res.status !== 200) {
+                throw new Error(res.data?.message || 'Failed to update category');
             }
-
             toast.success('Category updated successfully');
         } catch (err) {
             console.error('Error updating category:', err);
@@ -77,7 +71,7 @@ const EditCategory = () => {
 
 
     return (
-        <Layout title="Edit Category" active="admin-categories">
+        <Layout title="Edit Category" active="admin-category-list">
             <div className="grid grid-cols-6 gap-5">
                 <div className="col-span-4">
                     <div className="flex flex-col gap-3">
