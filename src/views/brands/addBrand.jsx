@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import Layout from './../../layout'
 import InputUi from '../../components/ui/inputui'
 import Container from '../../components/ui/container'
-import AddressList from '../../components/address/address.list'
-import OrderTable from '@/components/usersComponents/orderstable.component'
-import { Skeleton } from "@/components/ui/skeleton"
 import UploadImages from '@/components/ui/uploadImages'
 import {
     AlertDialog,
@@ -19,70 +16,57 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { toast } from 'react-toastify'
-import ApexChartComponent from '@/components/usersComponents/apexchartcomponent'
 import axiosInstance from '@/lib/axiosInstance'
 
-
-const AddUser = () => {
+const AddBrand = () => {
     const navigate = useNavigate()
     const uploadRef = useRef()
-    const [isLoaded, setIsLoaded] = useState(false)
     const [loading, setLoading] = useState(false)
 
-    const [user, setUser] = useState({
-        firstname: '',
-        lastname: '',
-        phonenumber: '',
+    const [brand, setBrand] = useState({
+        name: '',
         email: '',
-        wallet: '0',
-        uid: '',
-        profilePhoto: ''
+        password: '',
+        confirmPassword: '',
+        gstin: '',
+        brandID: ''
     })
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
+
     const [errors, setErrors] = useState({})
 
     // Form validation
     const validateForm = () => {
         const newErrors = {}
 
-        if (!user.firstname.trim()) {
-            newErrors.firstname = 'First name is required'
+        if (!brand.name.trim()) {
+            newErrors.name = 'Brand name is required'
         }
-        if (!user.lastname.trim()) {
-            newErrors.lastname = 'Last name is required'
-        }
-        if (!user.email.trim()) {
+        if (!brand.email.trim()) {
             newErrors.email = 'Email is required'
-        } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+        } else if (!/\S+@\S+\.\S+/.test(brand.email)) {
             newErrors.email = 'Email is invalid'
         }
-        if (!user.phonenumber.trim()) {
-            newErrors.phonenumber = 'Phone number is required'
-        } else if (!/^\d{10}$/.test(user.phonenumber)) {
-            newErrors.phonenumber = 'Phone number must be 10 digits'
-        }
-        if (!password) {
+        if (!brand.password) {
             newErrors.password = 'Password is required'
-        } else if (password.length < 6) {
+        } else if (brand.password.length < 6) {
             newErrors.password = 'Password must be at least 6 characters'
         }
-        if (password !== confirmPassword) {
+        if (brand.password !== brand.confirmPassword) {
             newErrors.confirmPassword = 'Passwords do not match'
         }
-        if (user.wallet && isNaN(parseFloat(user.wallet))) {
-            newErrors.wallet = 'Wallet balance must be a number'
+        if (brand.gstin && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/.test(brand.gstin)) {
+            newErrors.gstin = 'Invalid GSTIN format'
         }
 
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
 
-    // Update user data
-    const updateFunction = (data, name) => {
-        setUser(prev => ({
+    // Update brand data
+    const updateFunction = (e, name) => {
+        setBrand(prev => ({
             ...prev,
-            [name]: data.target.value
+            [name]: e.target.value
         }))
 
         // Clear error when user starts typing
@@ -94,8 +78,8 @@ const AddUser = () => {
         }
     }
 
-    // Create user function
-    const createUser = async () => {
+    // Create brand function
+    const createBrand = async () => {
         if (!validateForm()) {
             toast.error('Please fix the form errors')
             return
@@ -104,52 +88,47 @@ const AddUser = () => {
         try {
             setLoading(true)
 
-            // Upload profile photo if there are new images
-            let profilePhotoUrl = ''
+            // Upload brand logo if there are new images
+            let brandLogoUrl = ''
             if (uploadRef.current) {
                 try {
                     const uploadedImages = await uploadRef.current.uploadImageFunction()
                     if (uploadedImages && uploadedImages.length > 0) {
-                        profilePhotoUrl = uploadedImages[0].imgUrl
-                        console.log('Profile photo uploaded:', profilePhotoUrl)
+                        brandLogoUrl = uploadedImages[0].imgUrl
+                        console.log('Brand profile photo uploaded:', brandLogoUrl)
                     }
                 } catch (uploadError) {
-                    console.error('Error uploading profile photo:', uploadError)
-                    toast.error('Failed to upload profile photo')
+                    console.error('Error uploading brand profile photo:', uploadError)
+                    toast.error('Failed to upload brand profile photo')
                     return
                 }
             }
 
-            const userData = {
-                name: `${user.firstname} ${user.lastname}`.trim(),
-                email: user.email,
-                phonenumber: user.phonenumber,
-                password: password,
-                wallet: parseFloat(user.wallet) || 0,
-                referCode: 'ITHY-ADMIN',
-                profilePhoto: profilePhotoUrl
+            const brandData = {
+                name: brand.name,
+                email: brand.email,
+                password: brand.password,
+                gstin: brand.gstin || null,
+                profilePhoto: brandLogoUrl // Store only as profilePhoto
             }
 
-            console.log('Creating user with data:', userData)
+            console.log('Creating brand with data:', brandData)
 
-            const response = await axiosInstance.post('/user/create-user', userData)
+            const response = await axiosInstance.post('/admin/brands', brandData)
 
             if (response.data.success) {
-                toast.success('User created successfully!')
-                toast.info('Verification email sent to user')
+                toast.success('Brand created successfully!')
+                toast.info('Verification email sent to brand')
 
                 // Reset form
-                setUser({
-                    firstname: '',
-                    lastname: '',
-                    phonenumber: '',
+                setBrand({
+                    name: '',
                     email: '',
-                    wallet: '0',
-                    uid: '',
-                    profilePhoto: ''
+                    password: '',
+                    confirmPassword: '',
+                    gstin: '',
+                    brandID: ''
                 })
-                setPassword('')
-                setConfirmPassword('')
                 setErrors({})
 
                 // Reset upload component
@@ -157,32 +136,22 @@ const AddUser = () => {
                     uploadRef.current.reset()
                 }
 
-                // Navigate to users list
-                navigate('/users/list')
+                // Navigate to brands list
+                navigate('/brands/list')
             } else {
-                toast.error(response.data.message || 'Failed to create user')
+                toast.error(response.data.message || 'Failed to create brand')
             }
         } catch (error) {
-            console.error('Error creating user:', error)
-            const errorMessage = error.response?.data?.message || 'Failed to create user'
+            console.error('Error creating brand:', error)
+            const errorMessage = error.response?.data?.message || 'Failed to create brand'
             toast.error(errorMessage)
         } finally {
             setLoading(false)
         }
     }
 
-    const updateSecurityFunction = () => {
-        if (confirmPassword === password) {
-            toast.success('Password Update Success')
-            toast.warning('Update Email Sent')
-        } else {
-            toast.error('Password Mismatch !')
-        }
-    }
-
     return (
-        <Layout active={'admin-users-add'} title={'Add User'}>
-
+        <Layout active={'admin-brands-add'} title={'Add Brand'}>
             <div className="grid grid-cols-6 gap-6 h-full">
                 <section className='col-span-4 w-full'>
                     <div className="flex flex-col gap-3">
@@ -190,32 +159,15 @@ const AddUser = () => {
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <InputUi
-                                        value={user.firstname}
-                                        label={'First Name'}
-                                        datafunction={(e) => updateFunction(e, 'firstname')}
+                                        value={brand.name}
+                                        label={'Brand Name'}
+                                        datafunction={(e) => updateFunction(e, 'name')}
                                     />
-                                    {errors.firstname && <p className="text-red-500 text-sm mt-1">{errors.firstname}</p>}
+                                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
                                 </div>
                                 <div>
                                     <InputUi
-                                        value={user.lastname}
-                                        label={'Last Name'}
-                                        datafunction={(e) => updateFunction(e, 'lastname')}
-                                    />
-                                    {errors.lastname && <p className="text-red-500 text-sm mt-1">{errors.lastname}</p>}
-                                </div>
-                                <div>
-                                    <InputUi
-                                        value={user.phonenumber}
-                                        label={'Phone Number'}
-                                        type='number'
-                                        datafunction={(e) => updateFunction(e, 'phonenumber')}
-                                    />
-                                    {errors.phonenumber && <p className="text-red-500 text-sm mt-1">{errors.phonenumber}</p>}
-                                </div>
-                                <div>
-                                    <InputUi
-                                        value={user.email}
+                                        value={brand.email}
                                         label={'Email ID'}
                                         type='email'
                                         datafunction={(e) => updateFunction(e, 'email')}
@@ -224,35 +176,37 @@ const AddUser = () => {
                                 </div>
                                 <div>
                                     <InputUi
-                                        value={user.wallet}
-                                        label={'Wallet Balance'}
-                                        type='number'
-                                        datafunction={(e) => updateFunction(e, 'wallet')}
+                                        value={brand.gstin}
+                                        label={'GSTIN (Optional)'}
+                                        type='text'
+                                        placeholder='e.g., 27AABCU9603R1ZX'
+                                        datafunction={(e) => updateFunction(e, 'gstin')}
                                     />
-                                    {errors.wallet && <p className="text-red-500 text-sm mt-1">{errors.wallet}</p>}
+                                    {errors.gstin && <p className="text-red-500 text-sm mt-1">{errors.gstin}</p>}
+                                    <p className="text-gray-500 text-xs mt-1">Format: 27AAAAA0000A1Z5</p>
                                 </div>
                                 <div>
                                     <InputUi
-                                        value={user.uid}
-                                        label={'UID (Auto-generated)'}
+                                        value={brand.brandID}
+                                        label={'Brand ID (Auto-generated)'}
                                         type='text'
                                         disabled={true}
-                                        datafunction={(e) => updateFunction(e, 'uid')}
+                                        datafunction={(e) => updateFunction(e, 'brandID')}
                                     />
-                                    <p className="text-gray-500 text-xs mt-1">UID will be auto-generated</p>
+                                    <p className="text-gray-500 text-xs mt-1">Brand ID will be auto-generated</p>
                                 </div>
                             </div>
-
                         </Container>
+
                         <Container gap={3} label={'Security Section'}>
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <InputUi
-                                        value={password}
+                                        value={brand.password}
                                         label={'Enter Password'}
                                         type='password'
                                         datafunction={(e) => {
-                                            setPassword(e.target.value)
+                                            setBrand(prev => ({ ...prev, password: e.target.value }))
                                             if (errors.password) {
                                                 setErrors(prev => ({ ...prev, password: '' }))
                                             }
@@ -262,11 +216,11 @@ const AddUser = () => {
                                 </div>
                                 <div>
                                     <InputUi
-                                        value={confirmPassword}
+                                        value={brand.confirmPassword}
                                         label={'Confirm Password'}
                                         type='password'
                                         datafunction={(e) => {
-                                            setConfirmPassword(e.target.value)
+                                            setBrand(prev => ({ ...prev, confirmPassword: e.target.value }))
                                             if (errors.confirmPassword) {
                                                 setErrors(prev => ({ ...prev, confirmPassword: '' }))
                                             }
@@ -277,7 +231,7 @@ const AddUser = () => {
                             </div>
                             <div className="flex items-center justify-end gap-3">
                                 <button
-                                    onClick={() => navigate('/users')}
+                                    onClick={() => navigate('/brands/list')}
                                     className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
                                     disabled={loading}
                                 >
@@ -290,38 +244,36 @@ const AddUser = () => {
                                             className='primary-button'
                                             disabled={loading}
                                         >
-                                            {loading ? 'Creating User...' : 'Create User'}
+                                            {loading ? 'Creating Brand...' : 'Create Brand'}
                                         </button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent className="bg-white dark:bg-black dark:text-white">
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>Create New User</AlertDialogTitle>
+                                            <AlertDialogTitle>Create New Brand</AlertDialogTitle>
                                             <AlertDialogDescription style={{ fontFamily: 'var(--f2)' }}>
-                                                Are you sure you want to create this user? A verification email will be sent to the user's email address.
+                                                Are you sure you want to create this brand? A verification email will be sent to the brand's email address.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                                             <AlertDialogAction
                                                 className="text-white dark:bg-cyan-500"
-                                                onClick={createUser}
+                                                onClick={createBrand}
                                                 disabled={loading}
                                             >
-                                                {loading ? 'Creating...' : 'Create User'}
+                                                {loading ? 'Creating...' : 'Create Brand'}
                                             </AlertDialogAction>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
                             </div>
                         </Container>
-
-
                     </div>
-
                 </section>
+
                 <section className='col-span-2 gap-2'>
                     <div className="flex flex-col gap-2">
-                        <Container label={'Profile Photo'}>
+                        <Container label={'Brand Profile Photo'}>
                             <div className="w-full">
                                 <UploadImages
                                     ref={uploadRef}
@@ -330,51 +282,38 @@ const AddUser = () => {
                                     providedName="profilePhoto"
                                 />
                                 <p className="text-sm text-gray-500 mt-2">
-                                    Click to upload a profile photo. Only one image allowed.
+                                    Click to upload a brand profile photo. Only one image allowed.
                                 </p>
                             </div>
                         </Container>
-                        <Container label={'Address'}>
-                            <AddressList addressprop={[]} loading={false} />
-                        </Container>
-                        <Container label={'User Information'} containerclass={'mb-10 bg-white'}>
-                            <div className="flex flex-col gap-2">
 
+                        <Container label={'Brand Information'} containerclass={'mb-10 bg-white'}>
+                            <div className="flex flex-col gap-2">
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Full Name</p>
+                                    <p className="w-40 text-black font-semibold">Brand Name</p>
                                     <p className="text-secondary-text">
-                                        {user.firstname && user.lastname
-                                            ? `${user.firstname} ${user.lastname}`
-                                            : 'Not provided'
-                                        }
+                                        {brand.name || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
                                     <p className="w-40 text-black font-semibold">Email</p>
                                     <p className="text-secondary-text max-w-[70%] truncate">
-                                        {user.email || 'Not provided'}
+                                        {brand.email || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Phone</p>
+                                    <p className="w-40 text-black font-semibold">GSTIN</p>
                                     <p className="text-secondary-text">
-                                        {user.phonenumber || 'Not provided'}
-                                    </p>
-                                </section>
-
-                                <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Wallet Balance</p>
-                                    <p className="text-secondary-text">
-                                        ₹{user.wallet || '0'}
+                                        {brand.gstin || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
                                     <p className="w-40 text-black font-semibold">Status</p>
                                     <p className="text-green-500">
-                                        New User
+                                        New Brand
                                     </p>
                                 </section>
 
@@ -384,10 +323,8 @@ const AddUser = () => {
                                         Pending
                                     </p>
                                 </section>
-
                             </div>
                         </Container>
-
                     </div>
                 </section>
             </div>
@@ -395,4 +332,5 @@ const AddUser = () => {
     )
 }
 
-export default AddUser
+export default AddBrand
+

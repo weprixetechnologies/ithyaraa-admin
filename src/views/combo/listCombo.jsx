@@ -85,7 +85,7 @@ const ListCombo = () => {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`http://localhost:3300/api/combo/delete/${comboID}`, {
+            const res = await fetch(`http://72.60.219.181:8800/api/combo/delete/${comboID}`, {
                 method: "DELETE",
             });
 

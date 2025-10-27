@@ -2,6 +2,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import AddUser from './views/users/addUser';
+import EditUser from './views/users/editUser';
 import ListUsers from './views/users/listUsers';
 import VendorDetails from './views/users/vendorDetails';
 import { ToastContainer } from 'react-toastify';
@@ -29,9 +30,15 @@ import ListCombo from './views/combo/listCombo';
 import EditCombo from './views/combo/editCombo';
 import ProtectedRoute from './views/protectedRoute';
 import AddCustomProduct from './views/custom-product/addcustomProduct';
+import EditCustomProduct from './views/custom-product/editCustomProduct';
 import CustomProductList from './views/custom-product/listCustomProducts';
 import Dashboard from './views/dashboard/dashboard';
 import ListPayouts from './views/payout/listPayouts';
+import ListReviews from './views/reviews/listReviews';
+import ListBrands from './views/brands/listBrands';
+import AddBrand from './views/brands/addBrand';
+import EditBrand from './views/brands/editBrand';
+import ListBankDetails from './views/banks/listBankDetails';
 
 // Simple 404 component
 export const NotFound = () => (
@@ -53,6 +60,7 @@ function App() {
         <Route path="/" element={<ProtectedRoute>     <Dashboard />   </ProtectedRoute>} />
         <Route path="/users/list" element={<ProtectedRoute>     <ListUsers />   </ProtectedRoute>} />
         <Route path="/users/add" element={<ProtectedRoute>     <AddUser />   </ProtectedRoute>} />
+        <Route path="/users/edit/:uid" element={<ProtectedRoute>     <EditUser />   </ProtectedRoute>} />
         <Route path="/vendors/add" element={<ProtectedRoute>     <VendorDetails />   </ProtectedRoute>} />
         <Route path="/orders/list" element={<ProtectedRoute>     <ListOrders />   </ProtectedRoute>} />
         <Route path="/orders/details/:orderId" element={<ProtectedRoute>     <OrderDetail />   </ProtectedRoute>} />
@@ -81,13 +89,22 @@ function App() {
         <Route path="/combo/list" element={<ProtectedRoute>     <ListCombo />   </ProtectedRoute>} />
         <Route path="/combo/detail/:comboID" element={<ProtectedRoute>     <EditCombo />   </ProtectedRoute>} />
 
-        <Route path='/custom-product/add' element={<AddCustomProduct />} />
-        <Route path='/custom-product/list' element={<CustomProductList />} />
+        <Route path='/custom-product/add' element={<ProtectedRoute><AddCustomProduct /></ProtectedRoute>} />
+        <Route path='/custom-product/edit/:productID' element={<ProtectedRoute><EditCustomProduct /></ProtectedRoute>} />
+        <Route path='/custom-product/list' element={<ProtectedRoute><CustomProductList /></ProtectedRoute>} />
 
-        <Route path="/payout/list" element={<ProtectedRoute>     <ListPayouts />   </ProtectedRoute>} />
+        <Route path="/payout/list" element={<ProtectedRoute><ListPayouts /></ProtectedRoute>} />
+
+        <Route path="/reviews/list" element={<ProtectedRoute><ListReviews /></ProtectedRoute>} />
+
+        <Route path="/brands/list" element={<ProtectedRoute><ListBrands /></ProtectedRoute>} />
+        <Route path="/brands/add" element={<ProtectedRoute><AddBrand /></ProtectedRoute>} />
+        <Route path="/brands/edit/:uid" element={<ProtectedRoute><EditBrand /></ProtectedRoute>} />
+
+        <Route path="/banks/list" element={<ProtectedRoute><ListBankDetails /></ProtectedRoute>} />
 
         {/* 404 - catch all other routes */}
-        <Route path="*" element={<ProtectedRoute>     <NotFound />   </ProtectedRoute>} />
+        <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
       </Routes>
     </>
   );

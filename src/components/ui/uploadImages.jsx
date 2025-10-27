@@ -67,20 +67,20 @@ const UploadImages = forwardRef(
             }
         }));
 
- useEffect(() => {
-    if (!defaultImages?.length) return; // skip if undefined or empty
+        useEffect(() => {
+            if (!defaultImages?.length) return; // skip if undefined or empty
 
-    const formatted = defaultImages
-        .filter(img => img) // remove undefined/null items
-        .map((img, i) => ({
-            imgUrl: typeof img === 'string' ? img : img?.imgUrl || '', // fallback empty string
-            imgAlt: img?.imgAlt || `image-${i + 1}`,
-            isOld: true
-        }));
+            const formatted = defaultImages
+                .filter(img => img) // remove undefined/null items
+                .map((img, i) => ({
+                    imgUrl: typeof img === 'string' ? img : img?.imgUrl || '', // fallback empty string
+                    imgAlt: img?.imgAlt || `image-${i + 1}`,
+                    isOld: true
+                }));
 
-    console.log('formatting', formatted);
-    setOldImages(formatted);
-}, [defaultImages]);
+            console.log('formatting', formatted);
+            setOldImages(formatted);
+        }, [defaultImages]);
 
 
 

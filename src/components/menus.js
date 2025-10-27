@@ -13,6 +13,9 @@ import {
     RiListUnordered,    // List Product / List Anything
     RiStackLine,        // Categories
     RiMoneyDollarCircleLine, // Payout
+    RiSettings3Line,    // Custom Products
+    RiStarSmileLine,    // Reviews
+    RiStarLine,         // Brands
 } from 'react-icons/ri';
 
 
@@ -43,6 +46,18 @@ export const mainMenu = [
         title: 'Vendors',
         subMenu: [
             { menuID: 'vendors-users-add', url: '/vendors/add', icon: <RiStore2Line />, title: 'Add Vendor' },
+        ],
+    },
+    {
+        menuID: 'brand-m',
+        id: 19,
+        url: '/brands',
+        icon: <RiStarLine />,
+        title: 'Brands',
+        subMenu: [
+            { menuID: 'admin-brands-list', url: '/brands/list', icon: <RiListUnordered />, title: 'All Brands' },
+            { menuID: 'admin-brands-add', url: '/brands/add', icon: <RiFolderAddLine />, title: 'Add Brand' },
+            { menuID: 'admin-bank-details', url: '/banks/list', icon: <RiMoneyDollarCircleLine />, title: 'Bank Details' },
         ],
     },
     {
@@ -122,7 +137,7 @@ export const mainMenu = [
         menuID: 'custom-product-m',
         id: 16,
         url: '/custom-product',
-        icon: <RiStackLine />,
+        icon: <RiSettings3Line />,
         title: 'Custom Product',
         subMenu: [
             { menuID: 'admin-custom-product-add', url: '/custom-product/add', icon: <RiFolderAddLine />, title: 'Add Custom Product' },
@@ -136,6 +151,15 @@ export const mainMenu = [
         title: 'Payout Approval',
         subMenu: [
             { menuID: 'admin-payout-list', url: '/payout/list', icon: <RiListUnordered />, title: 'Payout Requests' },
+        ],
+    }, {
+        menuID: 'reviews-m',
+        id: 18,
+        url: '/reviews',
+        icon: <RiStarSmileLine />,
+        title: 'Reviews',
+        subMenu: [
+            { menuID: 'admin-reviews-list', url: '/reviews/list', icon: <RiListUnordered />, title: 'All Reviews' },
         ],
     }
 ];

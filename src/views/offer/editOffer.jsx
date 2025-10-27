@@ -99,7 +99,7 @@ const EditOffer = () => {
             }
         } catch (error) {
             console.error('Error updating offer:', error);
-            toast.error('Offer update failed');
+            toast.error(error.response?.data?.message || 'Failed to update offer');
         } finally {
             setLoading(false);
         }
@@ -175,10 +175,16 @@ const EditOffer = () => {
                         </Container>
 
                         <Container label={'Offer Mobile Banner'}>
-                            <UploadImages ref={mobileBannerRef} defaultImages={[offer.offerMobileBanner]} />
+                            <UploadImages
+                                ref={mobileBannerRef}
+                                defaultImages={offer.offerMobileBanner ? [{ imgUrl: offer.offerMobileBanner, imgAlt: 'Mobile Banner' }] : []}
+                            />
                         </Container>
                         <Container label={'Offer Desktop Banner'}>
-                            <UploadImages ref={desktopBannerRef} defaultImages={[offer.offerBanner]} />
+                            <UploadImages
+                                ref={desktopBannerRef}
+                                defaultImages={offer.offerBanner ? [{ imgUrl: offer.offerBanner, imgAlt: 'Desktop Banner' }] : []}
+                            />
                         </Container>
 
                         <button onClick={handleSubmit} className="primary-button">

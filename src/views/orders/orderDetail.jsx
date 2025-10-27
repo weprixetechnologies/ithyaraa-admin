@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Layout from 'src/layout'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useParams, useNavigate } from 'react-router-dom'
-import { getOrderDetails, updateOrderStatus, updatePaymentStatus, downloadInvoice, emailInvoice } from '@/lib/api/ordersApi'
+import { getOrderDetails, updateOrderStatus, updatePaymentStatus, downloadInvoice, emailInvoice, updateOrderItemsTracking } from '@/lib/api/ordersApi'
 import { FaDownload, FaTruck, FaCreditCard, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhone, FaSpinner } from 'react-icons/fa'
 const OrderDetail = () => {
     const { orderId } = useParams()
@@ -17,6 +17,10 @@ const OrderDetail = () => {
     const [emailing, setEmailing] = useState(false)
     const [newOrderStatus, setNewOrderStatus] = useState('')
     const [newPaymentStatus, setNewPaymentStatus] = useState('')
+    const [selectedItem, setSelectedItem] = useState(null)
+    const [showItemModal, setShowItemModal] = useState(false)
+    const [editedItems, setEditedItems] = useState({})
+    const [savingTracking, setSavingTracking] = useState(false)
 
     const fetchOrderDetails = useCallback(async () => {
         try {
@@ -26,6 +30,20 @@ const OrderDetail = () => {
                 setOrder(response.data)
                 setNewOrderStatus(response.data.orderStatus || '')
                 setNewPaymentStatus(response.data.paymentStatus || '')
+                // Initialize editedItems with current tracking data
+                const initial = {}
+                if (response.data.items) {
+                    response.data.items.forEach((it, idx) => {
+                        initial[idx] = {
+                            name: it.name,
+                            variationName: it.variationName || '',
+                            trackingCode: it.trackingCode || '',
+                            deliveryCompany: it.deliveryCompany || '',
+                            itemStatus: it.itemStatus || 'pending'
+                        }
+                    })
+                }
+                setEditedItems(initial)
             } else {
                 alert('Order not found')
                 navigate('/orders/list')
@@ -115,6 +133,54 @@ const OrderDetail = () => {
         }
     }
 
+    const handleChangeItem = (index, field, value) => {
+        setEditedItems(prev => ({
+            ...prev,
+            [index]: {
+                ...prev[index],
+                [field]: value
+            }
+        }))
+    }
+
+    const handleSaveTracking = async () => {
+        try {
+            setSavingTracking(true)
+            const payloadItems = Object.values(editedItems).map(it => ({
+                name: it.name,
+                variationName: it.variationName || undefined,
+                trackingCode: it.trackingCode || null,
+                deliveryCompany: it.deliveryCompany || null,
+                itemStatus: it.itemStatus || undefined
+            }))
+
+            console.log('Saving tracking with payload:', payloadItems)
+
+            const response = await updateOrderItemsTracking(orderId, payloadItems)
+
+            if (response.success) {
+                // Update the order items with new tracking info
+                setOrder(prev => ({
+                    ...prev,
+                    items: (prev.items || []).map((it, idx) => ({
+                        ...it,
+                        trackingCode: editedItems[idx]?.trackingCode || '',
+                        deliveryCompany: editedItems[idx]?.deliveryCompany || '',
+                        itemStatus: editedItems[idx]?.itemStatus || it.itemStatus
+                    }))
+                }))
+                alert(`Tracking info saved successfully! Updated ${response.updatedCount || payloadItems.length} items.`)
+            } else {
+                alert(response.message || 'Failed to save tracking info')
+            }
+        } catch (error) {
+            console.error('Error saving tracking:', error)
+            alert(error.response?.data?.message || 'Failed to save tracking info. Please check console for details.')
+        } finally {
+            setSavingTracking(false)
+        }
+    }
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('en-IN', {
             year: 'numeric',
@@ -150,6 +216,16 @@ const OrderDetail = () => {
             case 'refunded': return 'bg-purple-100 text-purple-800'
             default: return 'bg-gray-100 text-gray-800'
         }
+    }
+
+    const handleItemClick = (item) => {
+        setSelectedItem(item)
+        setShowItemModal(true)
+    }
+
+    const closeItemModal = () => {
+        setShowItemModal(false)
+        setSelectedItem(null)
     }
 
     if (loading) {
@@ -202,6 +278,29 @@ const OrderDetail = () => {
 
                         {/* Order Items */}
                         <Container label={'Order Items'} gap={3}>
+                            <div className="flex justify-between items-center mb-3">
+                                <h3 className="font-semibold text-gray-900">Items</h3>
+                                <button
+                                    onClick={handleSaveTracking}
+                                    disabled={savingTracking}
+                                    className={`px-4 py-2 rounded flex items-center gap-2 text-sm ${savingTracking
+                                        ? 'bg-gray-400 cursor-not-allowed'
+                                        : 'bg-blue-600 hover:bg-blue-700'
+                                        } text-white`}
+                                >
+                                    {savingTracking ? (
+                                        <>
+                                            <FaSpinner className="animate-spin" />
+                                            Saving...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaTruck />
+                                            Save Tracking Info
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full">
                                     <thead>
@@ -210,12 +309,17 @@ const OrderDetail = () => {
                                             <th className="text-center py-3 px-4 font-medium text-gray-700">Quantity</th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-700">Price</th>
                                             <th className="text-right py-3 px-4 font-medium text-gray-700">Total</th>
+                                            <th className="text-left py-3 px-4 font-medium text-gray-700">Tracking Code</th>
+                                            <th className="text-left py-3 px-4 font-medium text-gray-700">Delivery Company</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {order.items?.map((item, index) => (
-                                            <tr key={index} className="border-b">
-                                                <td className="py-4 px-4">
+                                            <tr
+                                                key={index}
+                                                className="border-b hover:bg-gray-50 transition-colors"
+                                            >
+                                                <td className="py-4 px-4 cursor-pointer" onClick={() => handleItemClick(item)}>
                                                     <div className="flex items-center space-x-3">
                                                         <img
                                                             src={item.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
@@ -240,6 +344,26 @@ const OrderDetail = () => {
                                                 </td>
                                                 <td className="py-4 px-4 text-right font-medium">
                                                     {formatPrice(item.lineTotalAfter || (item.salePrice || item.regularPrice || 0) * item.quantity)}
+                                                </td>
+                                                <td className="py-4 px-4 text-left">
+                                                    <input
+                                                        type="text"
+                                                        value={(editedItems[index]?.trackingCode || '')}
+                                                        onChange={(e) => handleChangeItem(index, 'trackingCode', e.target.value)}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        placeholder="Enter tracking code"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </td>
+                                                <td className="py-4 px-4 text-left">
+                                                    <input
+                                                        type="text"
+                                                        value={(editedItems[index]?.deliveryCompany || '')}
+                                                        onChange={(e) => handleChangeItem(index, 'deliveryCompany', e.target.value)}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        placeholder="Enter delivery company"
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
                                                 </td>
                                             </tr>
                                         ))}
@@ -443,6 +567,155 @@ const OrderDetail = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Item Details Modal */}
+            {showItemModal && selectedItem && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-2xl font-bold">Product Details</h2>
+                            <button
+                                onClick={closeItemModal}
+                                className="text-gray-500 hover:text-gray-700 text-2xl"
+                            >
+                                ×
+                            </button>
+                        </div>
+
+                        {/* Product Info */}
+                        <div className="mb-6 border-b pb-4">
+                            <div className="flex gap-4">
+                                <img
+                                    src={selectedItem.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
+                                    alt={selectedItem.name}
+                                    className="w-24 h-24 object-cover rounded"
+                                />
+                                <div>
+                                    <h3 className="text-lg font-semibold">{selectedItem.name}</h3>
+                                    <p className="text-gray-600">Quantity: {selectedItem.quantity}</p>
+                                    <p className="text-gray-600">Price: {formatPrice(selectedItem.salePrice || selectedItem.regularPrice || 0)}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Variations for Variable Products */}
+                        {selectedItem.variation && (
+                            <div className="mb-6">
+                                <h4 className="text-lg font-semibold mb-3 text-blue-600">Selected Variation Details</h4>
+                                <div className="bg-blue-50 p-4 rounded-lg space-y-2">
+                                    <p className="font-medium text-blue-900">Variation Name: {selectedItem.variation.variationName}</p>
+                                    {selectedItem.variation.variationValues && selectedItem.variation.variationValues.length > 0 && (
+                                        <div className="mt-3 pt-3 border-t border-blue-200">
+                                            <p className="text-sm font-medium text-blue-700 mb-2">Attributes:</p>
+                                            <div className="space-y-1">
+                                                {selectedItem.variation.variationValues.map((attr, index) =>
+                                                    Object.entries(attr).map(([key, value]) => (
+                                                        <div key={`${index}-${key}`} className="flex gap-2">
+                                                            <span className="font-medium text-blue-800 capitalize">{key}:</span>
+                                                            <span className="text-blue-900">{value}</span>
+                                                        </div>
+                                                    ))
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {selectedItem.variation.variationPrice && (
+                                        <p className="text-sm text-blue-700 mt-2">
+                                            Price: ₹{selectedItem.variation.variationPrice}
+                                            {selectedItem.variation.variationSalePrice && selectedItem.variation.variationSalePrice !== selectedItem.variation.variationPrice && (
+                                                <span className="ml-2 text-green-600">
+                                                    (Sale: ₹{selectedItem.variation.variationSalePrice})
+                                                </span>
+                                            )}
+                                        </p>
+                                    )}
+                                    {selectedItem.variation.variationStock !== undefined && (
+                                        <p className="text-sm text-blue-700">Stock: {selectedItem.variation.variationStock}</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                        {/* Fallback for old variationName only */}
+                        {!selectedItem.variation && selectedItem.variationName && (
+                            <div className="mb-6">
+                                <h4 className="text-lg font-semibold mb-3 text-blue-600">Selected Variation</h4>
+                                <div className="bg-blue-50 p-4 rounded-lg">
+                                    <p className="font-medium">{selectedItem.variationName}</p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Custom Inputs for Custom Products */}
+                        {selectedItem.custom_inputs && selectedItem.custom_inputs !== null && Object.keys(selectedItem.custom_inputs).length > 0 && (
+                            <div className="mb-6">
+                                <h4 className="text-lg font-semibold mb-3 text-purple-600">Custom Product Details</h4>
+                                <div className="space-y-3">
+                                    {selectedItem.productCustomInputs && Array.isArray(selectedItem.productCustomInputs) ? (
+                                        // Use field definitions to show proper labels
+                                        selectedItem.productCustomInputs.map((field) => {
+                                            const fieldValue = selectedItem.custom_inputs[field.id];
+                                            if (fieldValue) {
+                                                return (
+                                                    <div key={field.id} className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                                                        <p className="text-sm font-medium text-purple-700 uppercase">{field.label}</p>
+                                                        <p className="text-gray-900 mt-1">{fieldValue}</p>
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        }).filter(Boolean)
+                                    ) : (
+                                        // Fallback to showing IDs if field definitions not available
+                                        Object.entries(selectedItem.custom_inputs).map(([key, value]) => (
+                                            <div key={key} className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+                                                <p className="text-sm font-medium text-purple-700 uppercase">Field {key}</p>
+                                                <p className="text-gray-900 mt-1">{value}</p>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Combo Items */}
+                        {selectedItem.comboItems && selectedItem.comboItems.length > 0 && (
+                            <div className="mb-6">
+                                <h4 className="text-lg font-semibold mb-3 text-green-600">Combo Items</h4>
+                                <div className="space-y-3">
+                                    {selectedItem.comboItems.map((comboItem, index) => (
+                                        <div key={index} className="bg-green-50 p-4 rounded-lg border border-green-200">
+                                            <div className="flex gap-3">
+                                                <img
+                                                    src={comboItem.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
+                                                    alt={comboItem.name}
+                                                    className="w-16 h-16 object-cover rounded"
+                                                />
+                                                <div>
+                                                    <p className="font-medium">{comboItem.name}</p>
+                                                    <p className="text-sm text-gray-600">
+                                                        {comboItem.variationName || 'No variation'}
+                                                    </p>
+                                                    <p className="text-sm text-gray-500">Combo Item - Free</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Close Button */}
+                        <div className="flex justify-end mt-6">
+                            <button
+                                onClick={closeItemModal}
+                                className="px-6 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     )
 }

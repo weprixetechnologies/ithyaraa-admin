@@ -149,10 +149,18 @@ const CustomProductList = () => {
                                     <TableCell className="text-center">{new Date(product.createdAt).toLocaleDateString()}</TableCell>
                                     <TableCell className="rounded-r-[10px] text-center pr-5">
                                         <div className="flex-center gap-2">
-                                            <button className="bg-green-600 text-white p-2 rounded-full" onClick={() => navigate('/orders/details')}>
+                                            <button
+                                                className="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition-colors"
+                                                onClick={() => navigate(`/custom-product/edit/${product.productID}`)}
+                                                title="Edit Custom Product"
+                                            >
                                                 <MdEdit size={16} />
                                             </button>
-                                            <button className="bg-blue-600 text-white p-2 rounded-full" onClick={() => navigate(`/products/details/${product.productID}`)}>
+                                            <button
+                                                className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition-colors"
+                                                onClick={() => navigate(`/products/details/${product.productID}`)}
+                                                title="View Product Details"
+                                            >
                                                 <IoMdEye size={16} />
                                             </button>
                                         </div>

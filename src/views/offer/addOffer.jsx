@@ -55,9 +55,9 @@ const AddOffer = () => {
             };
 
             console.log('Submitting offer:', payload);
-    
 
-            const res = await axiosInstance.post('/offer/add-offer', JSON.stringify(payload));
+
+            const res = await axiosInstance.post('/offer/add-offer', payload);
             const data = res.data;
 
             if (data.success) {
@@ -67,12 +67,11 @@ const AddOffer = () => {
                 // Optionally reset form or show toast
             } else {
                 console.error('Failed to create offer:', data.message);
-                toast.success('Offer Upload Issue');
+                toast.error(data.message || 'Failed to create offer');
             }
         } catch (error) {
             console.error('Error submitting offer:', error);
-            toast.success('Offer Upload Issue')
-
+            toast.error(error.response?.data?.message || 'Failed to create offer');
         }
     };
 

@@ -39,7 +39,7 @@ const Login = () => {
             setLoading(true);
 
             const response = await axios.post(
-                'http://localhost:3300/api/auth/login',
+                'http://72.60.219.181:8800/api/auth/login',
                 loginForm,
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -57,7 +57,7 @@ const Login = () => {
             toast.success('Logged in successfully');
 
             // Store login state + tokens in cookies
-            setCookie('isLoggedIn', 'true', 7); // 7 days
+            setCookie('_iil', 'true', 7); // 7 days
             setCookie('_at', accessToken, 7);
             setCookie('_rt', refreshToken, 7);
 

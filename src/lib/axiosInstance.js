@@ -13,7 +13,7 @@ const redirectToLogin = () => {
 };
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:3300/api',
+    baseURL: 'http://72.60.219.181:8800/api',
     headers: { 'Content-Type': 'application/json' },
 });
 
@@ -114,8 +114,14 @@ axiosInstance.interceptors.response.use(
             } catch (refreshError) {
                 isRefreshing = false;
                 console.log('[Response interceptor] Token refresh failed, redirecting to login', refreshError);
-                toast.error('Session expired. Please login again.');
-                redirectToLogin();
+
+                // Only redirect to login if it's a real authentication error, not a network error
+                if (refreshError.response?.status === 401 || refreshError.response?.status === 403) {
+                    toast.error('Session expired. Please login again.');
+                    redirectToLogin();
+                } else {
+                    toast.error('Network error. Please try again.');
+                }
                 return Promise.reject(refreshError);
             }
         }

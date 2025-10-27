@@ -93,3 +93,14 @@ export const emailInvoice = async (orderId) => {
         throw error;
     }
 };
+
+// Update order items tracking
+export const updateOrderItemsTracking = async (orderId, items) => {
+    try {
+        const response = await axiosInstance.put(`/order/admin/update-items-tracking/${orderId}`, { items });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating order items tracking:', error);
+        throw error;
+    }
+};

@@ -23,7 +23,7 @@ const EditProduct = () => {
         const fetchProduct = async () => {
             try {
                 const data = await getProductDetails(productID);
-console.log('Fetching');
+                console.log('Fetching');
 
                 // Safely parse JSON fields
                 const parsedProduct = {
@@ -46,7 +46,7 @@ console.log('Fetching');
             }
         };
 
-         fetchProduct();
+        fetchProduct();
     }, []);
 
     // helper function
@@ -146,7 +146,7 @@ console.log('Fetching');
                             <UploadImages ref={uploadRef} maxImages={2} defaultImages={product.featuredImage} />
                         </Container>
                         <Container gap={3} label={'Gallery Images'}>
-                            <UploadImages ref={galleryRef} maxImages={8} defaultImages={product.galleryImage}/>
+                            <UploadImages ref={galleryRef} maxImages={8} defaultImages={product.galleryImage} />
                         </Container>
                         <button className='primary-button' onClick={handleUpload}>Upload Product</button>
 
