@@ -45,7 +45,7 @@ const AddCoupon = () => {
             const response = await createCoupon(payload);
 
             if (response.result?.success) {
-                toast.success('Coupon created successfully!');
+                // toast.success('Coupon created successfully!');
                 setFormData({
                     couponCode: '',
                     assignedUser: '',

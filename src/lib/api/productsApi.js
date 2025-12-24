@@ -60,3 +60,33 @@ export const deleteProduct = async (productID) => {
     const response = await axiosInstance.delete(`/products/delete/${productID}`);
     return response.data;
 };
+
+export const bulkDeleteProducts = async (productIDs) => {
+    const response = await axiosInstance.post('/products/bulk-delete', { productIDs });
+    return response.data;
+};
+
+export const bulkSaleUpdate = async ({ productIDs, discountType, discountValue, updateSalePrice = false }) => {
+    const response = await axiosInstance.post('/products/bulk-sale-update', {
+        productIDs,
+        discountType,
+        discountValue,
+        updateSalePrice
+    });
+    return response.data;
+};
+
+export const bulkAssignSection = async ({ productIDs, sectionid }) => {
+    const response = await axiosInstance.post('/products/bulk-assign-section', {
+        productIDs,
+        sectionid
+    });
+    return response.data;
+};
+
+export const bulkRemoveSection = async ({ productIDs }) => {
+    const response = await axiosInstance.post('/products/bulk-remove-section', {
+        productIDs
+    });
+    return response.data;
+};

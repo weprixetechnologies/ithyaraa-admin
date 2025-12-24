@@ -104,3 +104,14 @@ export const updateOrderItemsTracking = async (orderId, items) => {
         throw error;
     }
 };
+
+// Re-check payment status with PhonePe API
+export const recheckOrderPaymentStatus = async (orderId) => {
+    try {
+        const response = await axiosInstance.get(`/phonepe/order/${orderId}/status`);
+        return response.data;
+    } catch (error) {
+        console.error('Error re-checking order payment status:', error);
+        throw error;
+    }
+};

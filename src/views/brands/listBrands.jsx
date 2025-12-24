@@ -55,7 +55,7 @@ const ListBrands = () => {
         try {
             const { data } = await axiosInstance.post('/admin/brands', newBrand)
             if (data.success) {
-                toast.success('Brand created successfully')
+                // toast.success('Brand created successfully')
                 setShowAddModal(false)
                 setNewBrand({ name: '', email: '', password: '' })
                 fetchBrands()
@@ -77,7 +77,7 @@ const ListBrands = () => {
         try {
             const { data } = await axiosInstance.delete(`/admin/brands/${uid}`)
             if (data.success) {
-                toast.success('Brand deleted successfully')
+                // toast.success('Brand deleted successfully')
                 fetchBrands()
             } else {
                 toast.error(data.message || 'Failed to delete brand')

@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ListOrders from './views/orders/listOrders';
 import OrderDetail from './views/orders/orderDetail';
+import BrandOrders from './views/orders/brandOrders';
 import Login from './views/auth/login';
 import AddProduct from './views/products/addProduct';
 import ListProducts from './views/products/listProducts';
@@ -36,9 +37,22 @@ import Dashboard from './views/dashboard/dashboard';
 import ListPayouts from './views/payout/listPayouts';
 import ListReviews from './views/reviews/listReviews';
 import ListBrands from './views/brands/listBrands';
+import ListAffiliateBankAccounts from './views/affiliate-bank-accounts/listAffiliateBankAccounts';
 import AddBrand from './views/brands/addBrand';
 import EditBrand from './views/brands/editBrand';
 import ListBankDetails from './views/banks/listBankDetails';
+import ListCoins from './views/coins/listCoins';
+import ListFlashSales from './views/flashSale/listFlashSales';
+import AddFlashSale from './views/flashSale/addFlashSale';
+import EditFlashSale from './views/flashSale/editFlashSale';
+import AddPresaleProduct from './views/presale/addPresaleProduct';
+import EditPresaleProduct from './views/presale/editPresaleProduct';
+import ListPresaleProducts from './views/presale/listPresaleProducts';
+import AddPresaleGroup from './views/presale/addPresaleGroup';
+import EditPresaleGroup from './views/presale/editPresaleGroup';
+import ListPresaleGroups from './views/presale/listPresaleGroups';
+import ListPresaleBookings from './views/presale-bookings/listPresaleBookings';
+import PresaleBookingDetail from './views/presale-bookings/presaleBookingDetail';
 
 // Simple 404 component
 export const NotFound = () => (
@@ -63,6 +77,7 @@ function App() {
         <Route path="/users/edit/:uid" element={<ProtectedRoute>     <EditUser />   </ProtectedRoute>} />
         <Route path="/vendors/add" element={<ProtectedRoute>     <VendorDetails />   </ProtectedRoute>} />
         <Route path="/orders/list" element={<ProtectedRoute>     <ListOrders />   </ProtectedRoute>} />
+        <Route path="/orders/brand-orders" element={<ProtectedRoute>     <BrandOrders />   </ProtectedRoute>} />
         <Route path="/orders/details/:orderId" element={<ProtectedRoute>     <OrderDetail />   </ProtectedRoute>} />
 
         <Route path="/products/add" element={<ProtectedRoute>     <AddProduct />   </ProtectedRoute>} />
@@ -95,6 +110,8 @@ function App() {
 
         <Route path="/payout/list" element={<ProtectedRoute><ListPayouts /></ProtectedRoute>} />
 
+        <Route path="/affiliate-bank-accounts/list" element={<ProtectedRoute><ListAffiliateBankAccounts /></ProtectedRoute>} />
+
         <Route path="/reviews/list" element={<ProtectedRoute><ListReviews /></ProtectedRoute>} />
 
         <Route path="/brands/list" element={<ProtectedRoute><ListBrands /></ProtectedRoute>} />
@@ -102,6 +119,24 @@ function App() {
         <Route path="/brands/edit/:uid" element={<ProtectedRoute><EditBrand /></ProtectedRoute>} />
 
         <Route path="/banks/list" element={<ProtectedRoute><ListBankDetails /></ProtectedRoute>} />
+
+        <Route path="/coins/list" element={<ProtectedRoute><ListCoins /></ProtectedRoute>} />
+
+        <Route path="/flash-sale/list" element={<ProtectedRoute><ListFlashSales /></ProtectedRoute>} />
+        <Route path="/flash-sale/add" element={<ProtectedRoute><AddFlashSale /></ProtectedRoute>} />
+        <Route path="/flash-sale/edit/:saleID" element={<ProtectedRoute><EditFlashSale /></ProtectedRoute>} />
+
+        <Route path="/presale/products/add" element={<ProtectedRoute><AddPresaleProduct /></ProtectedRoute>} />
+        <Route path="/presale/products/list" element={<ProtectedRoute><ListPresaleProducts /></ProtectedRoute>} />
+        <Route path="/presale/products/edit/:presaleProductID" element={<ProtectedRoute><EditPresaleProduct /></ProtectedRoute>} />
+        <Route path="/presale/groups/add" element={<ProtectedRoute><AddPresaleGroup /></ProtectedRoute>} />
+        <Route path="/presale/groups/list" element={<ProtectedRoute><ListPresaleGroups /></ProtectedRoute>} />
+        <Route path="/presale/groups/edit/:presaleGroupID" element={<ProtectedRoute><EditPresaleGroup /></ProtectedRoute>} />
+        
+        {/* Pre-Booking Orders Routes */}
+        <Route path="/prebooking-orders/:viewType" element={<ProtectedRoute><ListPresaleBookings /></ProtectedRoute>} />
+        <Route path="/presale-bookings/list" element={<ProtectedRoute><ListPresaleBookings /></ProtectedRoute>} />
+        <Route path="/presale-bookings/details/:preBookingID" element={<ProtectedRoute><PresaleBookingDetail /></ProtectedRoute>} />
 
         {/* 404 - catch all other routes */}
         <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />

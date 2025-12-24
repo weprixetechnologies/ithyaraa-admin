@@ -5,7 +5,7 @@ import Container from '@/components/ui/container'
 import { MdEdit } from "react-icons/md";
 import { IoMdEye } from 'react-icons/io';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import InputUi from '@/components/ui/inputui';
 import { getAllOrders } from '@/lib/api/ordersApi';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -62,15 +62,46 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
 
 
 const ListOrders = () => {
+    const location = useLocation()
+    const navigate = useNavigate()
+    
+    // Get status from URL query parameters
+    const getInitialStatus = () => {
+        const searchParams = new URLSearchParams(location.search)
+        const statusParam = searchParams.get('status')
+        if (statusParam) {
+            // Map URL status values to backend filter values
+            const statusMap = {
+                'pending': 'pending',  // lowercase pending for orders that haven't been confirmed yet
+                'preparing': 'Preparing',  // Capitalized as backend expects
+                'shipping': 'Shipped',  // Backend uses 'Shipped', not 'shipping'
+                'delivered': 'Delivered',  // Capitalized as backend expects
+                'returned': 'Returned'  // Check if backend supports this, otherwise might need to be 'Cancelled'
+            }
+            return statusMap[statusParam] || 'all'
+        }
+        return 'all'
+    }
+
     const [orderList, setOrderList] = useState([])
     const [loadingAPI, setLoadingAPI] = useState(true)
     const [filters, setFilters] = useState({
         search: '',
-        status: 'all',
+        status: getInitialStatus(),
         paymentStatus: 'all',
         page: 1,
         limit: 10
     })
+
+    // Update filters when URL query parameters change
+    useEffect(() => {
+        const newStatus = getInitialStatus()
+        setFilters(prev => ({
+            ...prev,
+            status: newStatus,
+            page: 1 // Reset to first page when status changes
+        }))
+    }, [location.search])
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -83,9 +114,30 @@ const ListOrders = () => {
         try {
             setLoadingAPI(true)
             // Convert "all" values to empty strings for the API
+            // Also handle case-insensitive status matching
+            let statusFilter = filters.status === 'all' ? '' : filters.status
+            // Normalize status to match backend expectations (case-sensitive)
+            if (statusFilter) {
+                const statusNormalize = {
+                    'pending': 'pending',
+                    'Preparing': 'Preparing',
+                    'preparing': 'Preparing',
+                    'Shipped': 'Shipped',
+                    'shipped': 'Shipped',
+                    'shipping': 'Shipped',
+                    'Delivered': 'Delivered',
+                    'delivered': 'Delivered',
+                    'Returned': 'Returned',
+                    'returned': 'Returned',
+                    'Cancelled': 'Cancelled',
+                    'cancelled': 'Cancelled'
+                }
+                statusFilter = statusNormalize[statusFilter] || statusFilter
+            }
+            
             const apiFilters = {
                 ...filters,
-                status: filters.status === 'all' ? '' : filters.status,
+                status: statusFilter,
                 paymentStatus: filters.paymentStatus === 'all' ? '' : filters.paymentStatus
             }
             const response = await getAllOrders(apiFilters)
@@ -145,11 +197,14 @@ const ListOrders = () => {
     }
 
     const getStatusColor = (status) => {
-        switch (status) {
-            case 'Preparing': return 'bg-yellow-100 text-yellow-800'
-            case 'Shipped': return 'bg-blue-100 text-blue-800'
-            case 'Delivered': return 'bg-green-100 text-green-800'
-            case 'Cancelled': return 'bg-red-100 text-red-800'
+        switch (status?.toLowerCase()) {
+            case 'pending': return 'bg-yellow-100 text-yellow-800'
+            case 'preparing': return 'bg-yellow-100 text-yellow-800'
+            case 'shipped': return 'bg-blue-100 text-blue-800'
+            case 'shipping': return 'bg-blue-100 text-blue-800'
+            case 'delivered': return 'bg-green-100 text-green-800'
+            case 'returned': return 'bg-orange-100 text-orange-800'
+            case 'cancelled': return 'bg-red-100 text-red-800'
             default: return 'bg-gray-100 text-gray-800'
         }
     }
@@ -164,10 +219,28 @@ const ListOrders = () => {
         }
     }
 
-    const navigate = useNavigate()
+    // Determine active menu based on status filter
+    const getActiveMenu = () => {
+        const status = filters.status?.toLowerCase()
+        switch (status) {
+            case 'pending':
+                return 'admin-orders-pending'
+            case 'preparing':
+                return 'admin-orders-prepared'
+            case 'shipped':
+            case 'shipping':
+                return 'admin-orders-shipped'
+            case 'delivered':
+                return 'admin-orders-delivered'
+            case 'returned':
+                return 'admin-orders-returned'
+            default:
+                return 'admin-orders-list'
+        }
+    }
 
     return (
-        <Layout active={'admin-orders-list'} title={'Orders List'}>
+        <Layout active={getActiveMenu()} title={'Orders List'}>
             <Container containerclass={'bg-transaparent'}>
                 <div className="flex flex-col gap-4">
                     {/* Search and Filters */}
@@ -184,9 +257,11 @@ const ListOrders = () => {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
                                     <SelectItem value="Preparing">Preparing</SelectItem>
                                     <SelectItem value="Shipped">Shipped</SelectItem>
                                     <SelectItem value="Delivered">Delivered</SelectItem>
+                                    <SelectItem value="Returned">Returned</SelectItem>
                                     <SelectItem value="Cancelled">Cancelled</SelectItem>
                                 </SelectContent>
                             </Select>

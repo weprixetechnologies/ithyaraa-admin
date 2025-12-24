@@ -5,7 +5,7 @@ import Container from '@/components/ui/container';
 import Layout from 'src/layout';
 import { useNavigate } from 'react-router-dom';
 import InputUi from '@/components/ui/inputui';
-import { getPaginatedOffers, getOfferCount } from '../../lib/api/offerApi';
+import { getPaginatedOffers, getOfferCount, deleteOffer } from '../../lib/api/offerApi';
 import {
     RiSearchLine,
     RiRefreshLine,
@@ -14,8 +14,10 @@ import {
     RiPercentLine,
     RiCloseLine,
     RiEditLine,
-    RiEyeLine
+    RiEyeLine,
+    RiDeleteBinLine
 } from 'react-icons/ri';
+import { toast } from 'react-toastify';
 
 const ListOffers = () => {
     const navigate = useNavigate();
@@ -99,6 +101,27 @@ const ListOffers = () => {
             offerType: ''
         });
         setPage(1);
+    };
+
+    const handleDeleteOffer = async (offerID, offerName) => {
+        if (!window.confirm(`Are you sure you want to delete the offer "${offerName || offerID}"? This will also remove the offer from all associated products. This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const response = await deleteOffer(offerID);
+            if (response.success) {
+                toast.success('Offer deleted successfully');
+                // Refresh the offers list
+                await fetchOfferCount();
+                await fetchOffers();
+            } else {
+                toast.error(response.message || 'Failed to delete offer');
+            }
+        } catch (error) {
+            console.error('Error deleting offer:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete offer');
+        }
     };
 
     useEffect(() => {
@@ -373,6 +396,15 @@ const ListOffers = () => {
                                                         >
                                                             <RiEyeLine className="w-4 h-4" />
                                                             View
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteOffer(offer.offerID, offer.offerName)}
+                                                            className="flex items-center gap-1.5 px-3 py-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 transition-all duration-200"
+                                                        >
+                                                            <RiDeleteBinLine className="w-4 h-4" />
+                                                            Delete
                                                         </Button>
                                                     </div>
                                                 </TableCell>

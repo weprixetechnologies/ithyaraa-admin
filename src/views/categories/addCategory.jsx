@@ -50,7 +50,7 @@ const AddCategory = () => {
             const res = await uploadCategory(payload);
 
             if (res.success) {
-                toast.success('Category uploaded successfully');
+                // toast.success('Category uploaded successfully');
                 setCategoryData({ name: '', slug: '' });
                 categoryImageRef.current?.reset();
                 categoryBannerRef.current?.reset();

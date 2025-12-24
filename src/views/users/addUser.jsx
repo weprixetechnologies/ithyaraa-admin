@@ -135,7 +135,7 @@ const AddUser = () => {
             const response = await axiosInstance.post('/user/create-user', userData)
 
             if (response.data.success) {
-                toast.success('User created successfully!')
+                // toast.success('User created successfully!')
                 toast.info('Verification email sent to user')
 
                 // Reset form
@@ -173,7 +173,7 @@ const AddUser = () => {
 
     const updateSecurityFunction = () => {
         if (confirmPassword === password) {
-            toast.success('Password Update Success')
+            // toast.success('Password Update Success')
             toast.warning('Update Email Sent')
         } else {
             toast.error('Password Mismatch !')

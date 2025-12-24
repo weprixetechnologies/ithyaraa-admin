@@ -100,7 +100,7 @@ const ListPayouts = () => {
             const response = await axiosInstance.put(`/affiliate/approve-payout/${payoutId}`);
 
             if (response.data?.success) {
-                toast.success('Payout approved successfully');
+                // toast.success('Payout approved successfully');
                 fetchPayouts(currentPage);
             } else {
                 toast.error(response.data?.error || 'Failed to approve payout');
@@ -116,7 +116,7 @@ const ListPayouts = () => {
             const response = await axiosInstance.put(`/affiliate/reject-payout/${payoutId}`);
 
             if (response.data?.success) {
-                toast.success('Payout rejected successfully');
+                // toast.success('Payout rejected successfully');
                 fetchPayouts(currentPage);
             } else {
                 toast.error(response.data?.error || 'Failed to reject payout');

@@ -12,8 +12,10 @@ const redirectToLogin = () => {
     window.location.href = '/login';
 };
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://backend.ithyaraa.com/api';
+
 const axiosInstance = axios.create({
-    baseURL: 'http://72.60.219.181:8800/api',
+    baseURL: API_BASE_URL,
     headers: { 'Content-Type': 'application/json' },
 });
 

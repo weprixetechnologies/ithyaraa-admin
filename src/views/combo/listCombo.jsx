@@ -85,7 +85,7 @@ const ListCombo = () => {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`http://72.60.219.181:8800/api/combo/delete/${comboID}`, {
+            const res = await fetch(`https://backend.ithyaraa.com/api/combo/delete/${comboID}`, {
                 method: "DELETE",
             });
 
@@ -93,7 +93,7 @@ const ListCombo = () => {
                 throw new Error("Failed to delete combo");
             }
 
-            toast.success("Combo deleted successfully");
+            // toast.success("Combo deleted successfully");
             // 🔄 Refresh list after delete
             // Example: fetchCombos();
         } catch (error) {

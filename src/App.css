@@ -33,14 +33,8 @@
 }
 
 @font-face {
-  font-family: "Funnel Display", sans-serif;
-  src: url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&display=swap');
-}
-
-@font-face {
-  font-family: "Montserrat", sans-serif;
-  src: url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-  ;
+  font-family: "Inter", sans-serif;
+  src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 }
 
 @layer base {

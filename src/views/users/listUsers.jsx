@@ -4,7 +4,6 @@ import Container from '@/components/ui/container'
 import React, { useEffect, useState, useCallback } from 'react'
 import Layout from 'src/layout'
 import { MdEdit, MdDelete } from "react-icons/md";
-import { IoMdEye } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import InputUi from '@/components/ui/inputui';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -245,13 +244,6 @@ const ListUsersc = () => {
                                                 title="Edit User"
                                             >
                                                 <MdEdit style={{ width: '16px', height: '16px' }} />
-                                            </button>
-                                            <button
-                                                className='bg-blue-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-blue-700'
-                                                onClick={() => navigate(`/users/view/${user.uid}`)}
-                                                title="View User"
-                                            >
-                                                <IoMdEye style={{ width: '16px', height: '16px' }} />
                                             </button>
                                             <button
                                                 className='bg-red-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-red-700'

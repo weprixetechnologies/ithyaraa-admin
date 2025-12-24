@@ -64,10 +64,17 @@ const EditOffer = () => {
 
 
     const handleChange = (field) => (e) => {
-        setOffer((prev) => ({
-            ...prev,
-            [field]: e.target.value,
-        }));
+        setOffer((prev) => {
+            const updated = {
+                ...prev,
+                [field]: e.target.value,
+            };
+            // Clear getCount when switching to buy_x_at_x
+            if (field === 'offerType' && e.target.value === 'buy_x_at_x') {
+                updated.getCount = '';
+            }
+            return updated;
+        });
     };
     useEffect(() => {
         console.log(selectedProducts);
@@ -93,7 +100,7 @@ const EditOffer = () => {
             const res = await axiosInstance.put(`/offer/edit-offer/${offerID}`, payload);
             const data = res.data;
             if (data.success) {
-                toast.success('Offer updated successfully');
+                // toast.success('Offer updated successfully');
             } else {
                 toast.error(data.message || 'Failed to update offer');
             }
@@ -168,8 +175,9 @@ const EditOffer = () => {
                                 )}
                                 <InputUi
                                     label="Get Count"
-                                    value={offer.getCount}
+                                    value={offer.offerType === 'buy_x_at_x' ? '' : offer.getCount}
                                     datafunction={handleChange('getCount')}
+                                    disabled={offer.offerType === 'buy_x_at_x'}
                                 />
                             </div>
                         </Container>

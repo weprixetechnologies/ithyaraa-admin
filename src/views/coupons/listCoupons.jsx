@@ -403,7 +403,7 @@ const ListCoupons = () => {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            onClick={() => window.open(`http://192.168.1.12:3000/coupons/edit/${coupon.couponID}`, '_blank')}
+                                                            onClick={() => window.open(`https://backend.ithyaraa.com/coupons/edit/${coupon.couponID}`, '_blank')}
                                                             className="flex items-center gap-1.5 px-3 py-2 text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
                                                         >
                                                             <RiEditLine className="w-4 h-4" />
@@ -412,7 +412,7 @@ const ListCoupons = () => {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            onClick={() => window.open(`http://192.168.1.12:3000/coupons/details/${coupon.couponID}`, '_blank')}
+                                                            onClick={() => window.open(`https://backend.ithyaraa.com/coupons/details/${coupon.couponID}`, '_blank')}
                                                             className="flex items-center gap-1.5 px-3 py-2 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
                                                         >
                                                             <RiEyeLine className="w-4 h-4" />

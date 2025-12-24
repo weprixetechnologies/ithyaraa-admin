@@ -58,6 +58,13 @@ const EditBrand = () => {
     const [bankErrors, setBankErrors] = useState({})
     const [existingBankDetails, setExistingBankDetails] = useState([])
     const [loadingBankDetails, setLoadingBankDetails] = useState(false)
+    const [editingBankDetail, setEditingBankDetail] = useState(null)
+    const [editingBankErrors, setEditingBankErrors] = useState({})
+    const [showEditBankModal, setShowEditBankModal] = useState(false)
+    const [rejectionReason, setRejectionReason] = useState('')
+    const [selectedBankDetailID, setSelectedBankDetailID] = useState(null)
+    const [showRejectionModal, setShowRejectionModal] = useState(false)
+    const [processingBankID, setProcessingBankID] = useState(null) // Track which bank detail is being processed
 
     // Fetch bank details for the brand
     const fetchBankDetails = async (brandUID) => {
@@ -196,6 +203,26 @@ const EditBrand = () => {
         return Object.keys(newErrors).length === 0
     }
 
+    const validateEditingBankDetails = () => {
+        const newErrors = {}
+
+        if (!editingBankDetail.accountHolderName.trim()) {
+            newErrors.accountHolderName = 'Account holder name is required'
+        }
+        if (!editingBankDetail.accountNumber.trim()) {
+            newErrors.accountNumber = 'Account number is required'
+        }
+        if (!editingBankDetail.ifscCode.trim()) {
+            newErrors.ifscCode = 'IFSC code is required'
+        }
+        if (!editingBankDetail.bankName.trim()) {
+            newErrors.bankName = 'Bank name is required'
+        }
+
+        setEditingBankErrors(newErrors)
+        return Object.keys(newErrors).length === 0
+    }
+
     // Add bank details function
     const addBankDetails = async () => {
         if (!validateBankDetails()) {
@@ -212,7 +239,7 @@ const EditBrand = () => {
             })
 
             if (data.success) {
-                toast.success('Bank details added successfully!')
+                // toast.success('Bank details added successfully!')
                 setBankDetails({
                     accountHolderName: '',
                     accountNumber: '',
@@ -237,6 +264,118 @@ const EditBrand = () => {
         }
     }
 
+    const openEditBankModal = (bank) => {
+        setEditingBankDetail({
+            accountHolderName: bank.accountHolderName || '',
+            accountNumber: bank.accountNumber || '',
+            ifscCode: bank.ifscCode || '',
+            bankName: bank.bankName || '',
+            branchName: bank.branchName || '',
+            panNumber: bank.panNumber || '',
+            address: bank.address || '',
+            status: bank.status || 'pending',
+            rejectionReason: bank.rejectionReason || '',
+            bankDetailID: bank.bankDetailID
+        })
+        setEditingBankErrors({})
+        setShowEditBankModal(true)
+    }
+
+    const updateExistingBankDetails = async () => {
+        if (!editingBankDetail) return
+        if (!validateEditingBankDetails()) {
+            toast.error('Please fix the bank details errors')
+            return
+        }
+
+        try {
+            setLoading(true)
+            const payload = {
+                accountHolderName: editingBankDetail.accountHolderName,
+                accountNumber: editingBankDetail.accountNumber,
+                ifscCode: editingBankDetail.ifscCode,
+                bankName: editingBankDetail.bankName,
+                branchName: editingBankDetail.branchName || null,
+                panNumber: editingBankDetail.panNumber || null,
+                address: editingBankDetail.address || null,
+                status: editingBankDetail.status || 'pending',
+            }
+            
+            // Add rejection reason if status is rejected
+            if (editingBankDetail.status === 'rejected' && editingBankDetail.rejectionReason) {
+                payload.rejectionReason = editingBankDetail.rejectionReason;
+            }
+
+            const { data } = await axiosInstance.put(`/admin/bank-details/${editingBankDetail.bankDetailID}`, payload)
+
+            if (data.success) {
+                setShowEditBankModal(false)
+                setEditingBankDetail(null)
+                fetchBankDetails(uid)
+            } else {
+                toast.error(data.message || 'Failed to update bank details')
+            }
+        } catch (error) {
+            console.error('Error updating bank details:', error)
+            const errorMessage = error.response?.data?.message || 'Failed to update bank details'
+            toast.error(errorMessage)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleApproveBank = async (bankDetailID) => {
+        if (processingBankID) return; // Prevent multiple simultaneous operations
+        
+        try {
+            setProcessingBankID(bankDetailID)
+            const { data } = await axiosInstance.put(`/admin/bank-details/${bankDetailID}/approve`)
+            if (data.success) {
+                toast.success('Bank details approved successfully')
+                fetchBankDetails(uid)
+            } else {
+                toast.error(data.message || 'Failed to approve bank details')
+            }
+        } catch (error) {
+            console.error('Error approving bank details:', error)
+            const errorMessage = error.response?.data?.message || 'Failed to approve bank details'
+            toast.error(errorMessage)
+        } finally {
+            setProcessingBankID(null)
+        }
+    }
+
+    const handleRejectBank = async () => {
+        if (!selectedBankDetailID || processingBankID) return
+
+        try {
+            setProcessingBankID(selectedBankDetailID)
+            const { data } = await axiosInstance.put(`/admin/bank-details/${selectedBankDetailID}/reject`, {
+                rejectionReason
+            })
+            if (data.success) {
+                toast.success('Bank details rejected successfully')
+                setShowRejectionModal(false)
+                setRejectionReason('')
+                setSelectedBankDetailID(null)
+                fetchBankDetails(uid)
+            } else {
+                toast.error(data.message || 'Failed to reject bank details')
+            }
+        } catch (error) {
+            console.error('Error rejecting bank details:', error)
+            const errorMessage = error.response?.data?.message || 'Failed to reject bank details'
+            toast.error(errorMessage)
+        } finally {
+            setProcessingBankID(null)
+        }
+    }
+
+    const openRejectionModal = (bankDetailID) => {
+        setSelectedBankDetailID(bankDetailID)
+        setShowRejectionModal(true)
+    }
+
     // Reset password function
     const resetPassword = async () => {
         if (!validatePassword()) {
@@ -251,7 +390,7 @@ const EditBrand = () => {
             })
 
             if (data.success) {
-                toast.success('Password reset successfully!')
+                // toast.success('Password reset successfully!')
                 setPasswordData({ newPassword: '', confirmPassword: '' })
                 setShowPasswordSection(false)
                 setPasswordErrors({})
@@ -318,7 +457,7 @@ const EditBrand = () => {
             const response = await axiosInstance.put(`/admin/brands/${uid}`, brandData)
 
             if (response.data.success) {
-                toast.success('Brand updated successfully!')
+                // toast.success('Brand updated successfully!')
 
                 // Refresh page to show updated data
                 window.location.reload()
@@ -560,19 +699,21 @@ const EditBrand = () => {
                                 <div className="text-center py-4 text-gray-500">Loading bank details...</div>
                             ) : existingBankDetails && existingBankDetails.length > 0 ? (
                                 <div className="space-y-3">
-                                    {existingBankDetails.map((bank, index) => (
+                                    {existingBankDetails.map((bank) => (
                                         <div key={bank.bankDetailID} className="border border-gray-200 rounded-lg p-4">
                                             <div className="flex justify-between items-start mb-3">
                                                 <div>
                                                     <h4 className="font-semibold text-lg">{bank.bankName}</h4>
                                                     {bank.branchName && <p className="text-sm text-gray-600">{bank.branchName}</p>}
                                                 </div>
-                                                <span className={`px-3 py-1 rounded-full text-xs ${bank.status === 'active' ? 'bg-green-100 text-green-800' :
-                                                    bank.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                        'bg-red-100 text-red-800'
-                                                    }`}>
-                                                    {bank.status}
-                                                </span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className={`px-3 py-1 rounded-full text-xs ${bank.status === 'active' ? 'bg-green-100 text-green-800' :
+                                                        bank.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                            'bg-red-100 text-red-800'
+                                                        }`}>
+                                                        {bank.status}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div className="grid grid-cols-2 gap-3 text-sm">
                                                 <div>
@@ -602,6 +743,32 @@ const EditBrand = () => {
                                                 <div className="col-span-2 text-xs text-gray-500">
                                                     Added on: {new Date(bank.createdAt).toLocaleDateString()}
                                                 </div>
+                                            </div>
+                                            <div className="flex justify-end gap-2 mt-3">
+                                                <button
+                                                    className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                                                    onClick={() => openEditBankModal(bank)}
+                                                >
+                                                    Edit
+                                                </button>
+                                                {bank.status === 'pending' && (
+                                                    <>
+                                                        <button
+                                                            className={`px-3 py-1 text-sm bg-green-600 text-white rounded-lg hover:bg-green-700 ${processingBankID === bank.bankDetailID ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                            onClick={() => handleApproveBank(bank.bankDetailID)}
+                                                            disabled={processingBankID === bank.bankDetailID || processingBankID !== null}
+                                                        >
+                                                            {processingBankID === bank.bankDetailID ? 'Approving...' : 'Approve'}
+                                                        </button>
+                                                        <button
+                                                            className={`px-3 py-1 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 ${processingBankID === bank.bankDetailID ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                            onClick={() => openRejectionModal(bank.bankDetailID)}
+                                                            disabled={processingBankID === bank.bankDetailID || processingBankID !== null}
+                                                        >
+                                                            Reject
+                                                        </button>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     ))}
@@ -713,6 +880,179 @@ const EditBrand = () => {
                     </div>
                 </section>
             </div>
+
+            {/* Edit Bank Details Modal */}
+            {showEditBankModal && editingBankDetail && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-lg w-full mx-4">
+                        <h2 className="text-xl font-semibold mb-4">Edit Bank Details</h2>
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <InputUi
+                                        value={editingBankDetail.accountHolderName}
+                                        label={'Account Holder Name'}
+                                        datafunction={(e) => {
+                                            setEditingBankDetail(prev => ({ ...prev, accountHolderName: e.target.value }))
+                                            if (editingBankErrors.accountHolderName) {
+                                                setEditingBankErrors(prev => ({ ...prev, accountHolderName: '' }))
+                                            }
+                                        }}
+                                    />
+                                    {editingBankErrors.accountHolderName && <p className="text-red-500 text-sm mt-1">{editingBankErrors.accountHolderName}</p>}
+                                </div>
+                                <div>
+                                    <InputUi
+                                        value={editingBankDetail.accountNumber}
+                                        label={'Account Number'}
+                                        datafunction={(e) => {
+                                            setEditingBankDetail(prev => ({ ...prev, accountNumber: e.target.value }))
+                                            if (editingBankErrors.accountNumber) {
+                                                setEditingBankErrors(prev => ({ ...prev, accountNumber: '' }))
+                                            }
+                                        }}
+                                    />
+                                    {editingBankErrors.accountNumber && <p className="text-red-500 text-sm mt-1">{editingBankErrors.accountNumber}</p>}
+                                </div>
+                                <div>
+                                    <InputUi
+                                        value={editingBankDetail.ifscCode}
+                                        label={'IFSC Code'}
+                                        datafunction={(e) => {
+                                            setEditingBankDetail(prev => ({ ...prev, ifscCode: e.target.value }))
+                                            if (editingBankErrors.ifscCode) {
+                                                setEditingBankErrors(prev => ({ ...prev, ifscCode: '' }))
+                                            }
+                                        }}
+                                    />
+                                    {editingBankErrors.ifscCode && <p className="text-red-500 text-sm mt-1">{editingBankErrors.ifscCode}</p>}
+                                </div>
+                                <div>
+                                    <InputUi
+                                        value={editingBankDetail.bankName}
+                                        label={'Bank Name'}
+                                        datafunction={(e) => {
+                                            setEditingBankDetail(prev => ({ ...prev, bankName: e.target.value }))
+                                            if (editingBankErrors.bankName) {
+                                                setEditingBankErrors(prev => ({ ...prev, bankName: '' }))
+                                            }
+                                        }}
+                                    />
+                                    {editingBankErrors.bankName && <p className="text-red-500 text-sm mt-1">{editingBankErrors.bankName}</p>}
+                                </div>
+                                <div>
+                                    <InputUi
+                                        value={editingBankDetail.branchName}
+                                        label={'Branch Name (Optional)'}
+                                        datafunction={(e) => setEditingBankDetail(prev => ({ ...prev, branchName: e.target.value }))}
+                                    />
+                                </div>
+                                <div>
+                                    <InputUi
+                                        value={editingBankDetail.panNumber}
+                                        label={'PAN Number (Optional)'}
+                                        datafunction={(e) => setEditingBankDetail(prev => ({ ...prev, panNumber: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <InputUi
+                                        value={editingBankDetail.address}
+                                        label={'Address (Optional)'}
+                                        datafunction={(e) => setEditingBankDetail(prev => ({ ...prev, address: e.target.value }))}
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Status
+                                    </label>
+                                    <select
+                                        value={editingBankDetail.status || 'pending'}
+                                        onChange={(e) => setEditingBankDetail(prev => ({ ...prev, status: e.target.value }))}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+                                        <option value="pending">Pending</option>
+                                        <option value="active">Active</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                    <p className="text-gray-500 text-xs mt-1">Change the status of this bank detail</p>
+                                </div>
+                                {editingBankDetail.status === 'rejected' && (
+                                    <div className="col-span-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                            Rejection Reason (Optional)
+                                        </label>
+                                        <textarea
+                                            value={editingBankDetail.rejectionReason || ''}
+                                            onChange={(e) => setEditingBankDetail(prev => ({ ...prev, rejectionReason: e.target.value }))}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            rows={3}
+                                            placeholder="Enter reason for rejection (optional)"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex justify-end gap-2 mt-4">
+                                <button
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                    onClick={() => {
+                                        setShowEditBankModal(false)
+                                        setEditingBankDetail(null)
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                                    onClick={updateExistingBankDetails}
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Saving...' : 'Save Changes'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Reject Bank Details Modal */}
+            {showRejectionModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                        <h2 className="text-xl font-semibold mb-4">Reject Bank Details</h2>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Rejection Reason
+                            </label>
+                            <textarea
+                                value={rejectionReason}
+                                onChange={(e) => setRejectionReason(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                rows={3}
+                                placeholder="Enter reason for rejection"
+                            />
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                                onClick={() => {
+                                    setShowRejectionModal(false)
+                                    setRejectionReason('')
+                                    setSelectedBankDetailID(null)
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
+                                disabled={!rejectionReason.trim() || processingBankID !== null}
+                                onClick={handleRejectBank}
+                            >
+                                {processingBankID ? 'Rejecting...' : 'Reject'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     )
 }

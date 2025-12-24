@@ -16,6 +16,7 @@ const ListBankDetails = () => {
     const [rejectionReason, setRejectionReason] = useState('')
     const [selectedBankDetailID, setSelectedBankDetailID] = useState(null)
     const [showRejectionModal, setShowRejectionModal] = useState(false)
+    const [processingBankID, setProcessingBankID] = useState(null) // Track which bank detail is being processed
 
     const fetchBankDetails = useCallback(async () => {
         try {
@@ -45,7 +46,10 @@ const ListBankDetails = () => {
     }, [fetchBankDetails])
 
     const handleApprove = async (bankDetailID) => {
+        if (processingBankID) return; // Prevent multiple simultaneous operations
+        
         try {
+            setProcessingBankID(bankDetailID)
             const { data } = await axiosInstance.put(`/admin/bank-details/${bankDetailID}/approve`)
             if (data.success) {
                 toast.success('Bank details approved successfully')
@@ -55,13 +59,16 @@ const ListBankDetails = () => {
             }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to approve bank details')
+        } finally {
+            setProcessingBankID(null)
         }
     }
 
     const handleReject = async () => {
-        if (!selectedBankDetailID) return
+        if (!selectedBankDetailID || processingBankID) return
 
         try {
+            setProcessingBankID(selectedBankDetailID)
             const { data } = await axiosInstance.put(`/admin/bank-details/${selectedBankDetailID}/reject`, {
                 rejectionReason
             })
@@ -76,6 +83,8 @@ const ListBankDetails = () => {
             }
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to reject bank details')
+        } finally {
+            setProcessingBankID(null)
         }
     }
 
@@ -211,15 +220,17 @@ const ListBankDetails = () => {
                                             {bank.status === 'pending' && (
                                                 <>
                                                     <button
-                                                        className='bg-green-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-green-700'
+                                                        className={`bg-green-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-green-700 ${processingBankID === bank.bankDetailID ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                         onClick={() => handleApprove(bank.bankDetailID)}
+                                                        disabled={processingBankID === bank.bankDetailID || processingBankID !== null}
                                                         title="Approve"
                                                     >
                                                         <MdCheck style={{ width: '16px', height: '16px' }} />
                                                     </button>
                                                     <button
-                                                        className='bg-red-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-red-700'
+                                                        className={`bg-red-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-red-700 ${processingBankID === bank.bankDetailID ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                         onClick={() => handleOpenRejectionModal(bank.bankDetailID)}
+                                                        disabled={processingBankID === bank.bankDetailID || processingBankID !== null}
                                                         title="Reject"
                                                     >
                                                         <MdClose style={{ width: '16px', height: '16px' }} />
@@ -286,10 +297,10 @@ const ListBankDetails = () => {
                             </button>
                             <button
                                 onClick={handleReject}
-                                disabled={!rejectionReason.trim()}
+                                disabled={!rejectionReason.trim() || processingBankID !== null}
                                 className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
                             >
-                                Reject
+                                {processingBankID ? 'Rejecting...' : 'Reject'}
                             </button>
                         </div>
                     </div>

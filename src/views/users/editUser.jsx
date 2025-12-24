@@ -508,7 +508,7 @@ const EditUser = () => {
             })
 
             if (data.success) {
-                toast.success('Password Update Success')
+                // toast.success('Password Update Success')
                 toast.warning('Update Email Sent')
                 setPassword('')
                 setConfirmPassword('')
@@ -562,7 +562,7 @@ const EditUser = () => {
             console.log('Update response:', data)
 
             if (data.success) {
-                toast.success('User updated successfully')
+                // toast.success('User updated successfully')
                 // Refresh user data to show updated values
                 const { data: updatedUser } = await axiosInstance.get(`/admin/users/${uid}`)
                 if (updatedUser.success) {
@@ -595,7 +595,7 @@ const EditUser = () => {
             setSaving(true)
             const { data } = await axiosInstance.delete(`/admin/users/${uid}`)
             if (data.success) {
-                toast.success('User deleted successfully')
+                // toast.success('User deleted successfully')
                 navigate('/users')
             } else {
                 toast.error('Failed to delete user')
@@ -614,7 +614,7 @@ const EditUser = () => {
             setSaving(true)
             const { data } = await axiosInstance.post(`/admin/users/${uid}/remove-email-verification`)
             if (data.success) {
-                toast.success(data.message)
+                // toast.success(data.message)
                 setUser(prev => ({ ...prev, verifiedEmail: 0 }))
             } else {
                 toast.error(data.message)
@@ -632,7 +632,7 @@ const EditUser = () => {
             setSaving(true)
             const { data } = await axiosInstance.post(`/admin/users/${uid}/remove-phone-verification`)
             if (data.success) {
-                toast.success(data.message)
+                // toast.success(data.message)
                 setUser(prev => ({ ...prev, verifiedPhone: 0 }))
             } else {
                 toast.error(data.message)
@@ -650,7 +650,7 @@ const EditUser = () => {
             setSaving(true)
             const { data } = await axiosInstance.post(`/admin/users/${uid}/send-verification-email`)
             if (data.success) {
-                toast.success('Verification email sent successfully')
+                // toast.success('Verification email sent successfully')
             } else {
                 toast.error(data.message || 'Failed to send verification email')
             }
@@ -667,7 +667,7 @@ const EditUser = () => {
             setSaving(true)
             const { data } = await axiosInstance.post(`/admin/users/${uid}/send-phone-verification-otp`)
             if (data.success) {
-                toast.success('Verification OTP sent successfully')
+                // toast.success('Verification OTP sent successfully')
             } else {
                 toast.error(data.message || 'Failed to send verification OTP')
             }

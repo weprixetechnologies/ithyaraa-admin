@@ -60,7 +60,7 @@ const ListReviews = () => {
             await axiosInstance.put(`/reviews/admin/${reviewID}/status`, {
                 status: newStatus
             });
-            toast.success(`Review ${newStatus} successfully!`);
+            // toast.success(`Review ${newStatus} successfully!`);
             fetchReviews();
             fetchStats(); // Refresh stats after status change
         } catch (error) {
@@ -76,7 +76,7 @@ const ListReviews = () => {
 
         try {
             await axiosInstance.delete(`/reviews/admin/${reviewID}`);
-            toast.success('Review deleted successfully!');
+            // toast.success('Review deleted successfully!');
             fetchReviews();
             fetchStats(); // Refresh stats after deletion
         } catch (error) {

@@ -9,6 +9,7 @@ import SelectProducts from '@/components/ui/selectProducts';
 import OfferProducts from '@/components/products/offersProducts';
 import Pricing from '@/components/products/pricing';
 import CategoryProduct from '@/components/products/categoryProduct';
+import CrossSellModal from '@/components/products/crossSellModal';
 import { toast } from 'react-toastify';
 import { getComboDetails } from '../../lib/api/comboApi';
 
@@ -19,6 +20,8 @@ const EditCombo = () => {
 
     const [loading, setLoading] = useState(true);
     const [selectedProductIDs, setSelectedProductIDs] = useState([]);
+    const [showCrossSellModal, setShowCrossSellModal] = useState(false);
+    const [crossSells, setCrossSells] = useState([]);
 
     const [product, setProduct] = useState({
         name: '',
@@ -55,6 +58,12 @@ const EditCombo = () => {
 
                 setProduct(parsedProduct);
                 setSelectedProductIDs(parsedProduct.products);
+                
+                // Extract cross-sell product IDs
+                if (data.crossSellProducts && Array.isArray(data.crossSellProducts)) {
+                    setCrossSells(data.crossSellProducts.map(p => p.productID || p.crossSellProductID));
+                }
+                
                 console.log(parsedProduct);
 
             } catch (error) {
@@ -111,12 +120,13 @@ const EditCombo = () => {
                 featuredImage,
                 galleryImage,
                 products: selectedProductIDs,
+                crossSells: crossSells,
                 comboID, // include comboID for editing
             };
 
             const response = await axiosInstance.put(`/combo/edit/${comboID}`, fullProductData);
             console.log('Edit combo response:', response.data);
-            toast.success('Combo updated successfully!');
+            // toast.success('Combo updated successfully!');
         } catch (error) {
             console.error('Error uploading or posting product:', error.message);
             toast.error(`Error: ${error.message}`);
@@ -171,6 +181,23 @@ const EditCombo = () => {
                             onProductToggle={handleToggleProductParent}
                         />
                     </Container>
+                    
+                    <Container gap={3} label={'Cross-Sell Products'}>
+                        <div className="flex flex-col gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setShowCrossSellModal(true)}
+                                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                            >
+                                Select Cross-Sell Products
+                            </button>
+                            {crossSells.length > 0 && (
+                                <div className="text-sm text-gray-600">
+                                    {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
+                                </div>
+                            )}
+                        </div>
+                    </Container>
                 </div>
 
                 <div className="col-span-2 flex flex-col gap-2">
@@ -208,6 +235,12 @@ const EditCombo = () => {
                     </button>
                 </div>
             </div>
+            <CrossSellModal
+                isOpen={showCrossSellModal}
+                onClose={() => setShowCrossSellModal(false)}
+                onSave={(selected) => setCrossSells(selected)}
+                initialSelected={crossSells}
+            />
         </Layout>
     );
 };

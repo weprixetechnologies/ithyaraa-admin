@@ -19,6 +19,16 @@ const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
         totalPages: 1,
     });
 
+    // Sync selectedProductIDs when initialSelected changes
+    useEffect(() => {
+        if (initialSelected && Array.isArray(initialSelected)) {
+            setSelected(prev => ({
+                ...prev,
+                selectedProductIDs: initialSelected
+            }));
+        }
+    }, [initialSelected]);
+
     const {
         filters,
         appliedFilters,

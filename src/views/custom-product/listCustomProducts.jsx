@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Container from '@/components/ui/container';
 import Layout from 'src/layout';
-import { MdEdit } from 'react-icons/md';
+import { MdEdit, MdDelete } from 'react-icons/md';
 import { IoMdEye } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
-import { getPaginatedProducts, getProductCount } from './../../lib/api/productsApi';
+import { getPaginatedProducts, getProductCount, deleteProduct } from './../../lib/api/productsApi';
 import InputUi from '@/components/ui/inputui';
+import { toast } from 'react-toastify';
 
 const CustomProductList = () => {
     const navigate = useNavigate();
@@ -15,6 +16,8 @@ const CustomProductList = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
 
     const [filters, setFilters] = useState({
         name: '',
@@ -68,6 +71,39 @@ const CustomProductList = () => {
     // Handle page changes
     const handlePageChange = (newPage) => {
         setPage(newPage);
+    };
+
+    // Handle delete product
+    const handleDeleteProduct = async (productID) => {
+        try {
+            setDeleteLoading(true);
+            const response = await deleteProduct(productID);
+
+            if (response.success) {
+                toast.success('Custom product deleted successfully');
+                // Refresh the product list
+                await fetchProductCount();
+                await fetchProducts();
+            } else {
+                toast.error(response.message || 'Failed to delete custom product');
+            }
+        } catch (error) {
+            console.error('Error deleting custom product:', error);
+            toast.error('Error deleting custom product');
+        } finally {
+            setDeleteLoading(false);
+            setProductToDelete(null);
+        }
+    };
+
+    // Show delete confirmation
+    const confirmDelete = (product) => {
+        setProductToDelete(product);
+    };
+
+    // Cancel delete
+    const cancelDelete = () => {
+        setProductToDelete(null);
     };
 
     // Initial load and when filters/page change
@@ -163,6 +199,14 @@ const CustomProductList = () => {
                                             >
                                                 <IoMdEye size={16} />
                                             </button>
+                                            <button
+                                                className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition-colors"
+                                                onClick={() => confirmDelete(product)}
+                                                title="Delete Custom Product"
+                                                disabled={deleteLoading}
+                                            >
+                                                <MdDelete size={16} />
+                                            </button>
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -189,6 +233,37 @@ const CustomProductList = () => {
                     </button>
                 </div>
             </Container>
+
+            {/* Delete Confirmation Modal */}
+            {productToDelete && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={cancelDelete}>
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                            Confirm Delete
+                        </h3>
+                        <p className="text-gray-600 mb-6">
+                            Are you sure you want to delete the custom product "{productToDelete.name}"?
+                            This action cannot be undone.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                onClick={cancelDelete}
+                                className="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300"
+                                disabled={deleteLoading}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => handleDeleteProduct(productToDelete.productID)}
+                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                                disabled={deleteLoading}
+                            >
+                                {deleteLoading ? 'Deleting...' : 'Delete'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     );
 };

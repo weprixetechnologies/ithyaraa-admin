@@ -2,6 +2,7 @@ import CategoryProduct from '@/components/products/categoryProduct'
 import OfferProducts from '@/components/products/offersProducts'
 import Pricing from '@/components/products/pricing'
 import VariationsComponent from '@/components/products/variations'
+import CrossSellModal from '@/components/products/crossSellModal'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
 import UploadImages from '@/components/ui/uploadImages'
@@ -15,6 +16,8 @@ const AddProduct = () => {
     const galleryRef = useRef();
 
     const [product, setProduct] = useState({ type: 'variable', brand: 'inhouse' })
+    const [showCrossSellModal, setShowCrossSellModal] = useState(false)
+    const [crossSells, setCrossSells] = useState([])
 
     const updateFunction = (data, name) => {
         setProduct(prev => ({
@@ -34,7 +37,8 @@ const AddProduct = () => {
             const fullProductData = {
                 ...product,
                 featuredImage: finalImages,
-                galleryImage: galleryupload
+                galleryImage: galleryupload,
+                crossSells: crossSells
             };
 
             console.log('🚀 Full product with images:', fullProductData); // ✅ has images
@@ -45,7 +49,7 @@ const AddProduct = () => {
             );
 
             console.log('Product added successfully:', result);
-            toast.success('Product Added');
+            // toast.success('Product Added');
         } catch (error) {
             console.error('Error uploading or posting product:', error.response?.data || error.message);
             toast.error(error.response?.data?.message || 'Failed to add product');
@@ -95,6 +99,22 @@ const AddProduct = () => {
                         <Container gap={3} label={'Offers & Promotions'}>
                             <OfferProducts setProducts={setProduct} products={product} />
                         </Container>
+                        <Container gap={3} label={'Cross-Sell Products'}>
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCrossSellModal(true)}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                >
+                                    Select Cross-Sell Products
+                                </button>
+                                {crossSells.length > 0 && (
+                                    <div className="text-sm text-gray-600">
+                                        {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
+                                    </div>
+                                )}
+                            </div>
+                        </Container>
                         <Container gap={3} label={'Featured Images'}>
                             <UploadImages ref={uploadRef} maxImages={2} setProducts={setProduct} products={product} />
                         </Container>
@@ -106,6 +126,12 @@ const AddProduct = () => {
                     </div>
                 </div>
             </div>
+            <CrossSellModal
+                isOpen={showCrossSellModal}
+                onClose={() => setShowCrossSellModal(false)}
+                onSave={(selected) => setCrossSells(selected)}
+                initialSelected={crossSells}
+            />
         </Layout >
     )
 }

@@ -48,3 +48,8 @@ export const getOfferCount = async (filters = {}) => {
     const response = await axiosInstance.get(queryUrl);
     return response.data;
 };
+
+export const deleteOffer = async (offerID) => {
+    const response = await axiosInstance.delete(`/offer/delete/${offerID}`);
+    return response.data;
+};

@@ -39,7 +39,7 @@ const Login = () => {
             setLoading(true);
 
             const response = await axios.post(
-                'http://72.60.219.181:8800/api/auth/login',
+                'https://backend.ithyaraa.com/api/auth/login',
                 loginForm,
                 {
                     headers: { 'Content-Type': 'application/json' },
@@ -54,7 +54,7 @@ const Login = () => {
             }
 
             console.log('Login success:', response.data);
-            toast.success('Logged in successfully');
+            // toast.success('Logged in successfully');
 
             // Store login state + tokens in cookies
             setCookie('_iil', 'true', 7); // 7 days

@@ -117,7 +117,7 @@ const AddBrand = () => {
             const response = await axiosInstance.post('/admin/brands', brandData)
 
             if (response.data.success) {
-                toast.success('Brand created successfully!')
+                // toast.success('Brand created successfully!')
                 toast.info('Verification email sent to brand')
 
                 // Reset form

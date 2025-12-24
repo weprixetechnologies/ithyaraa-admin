@@ -11,12 +11,17 @@ export const setCookie = (name, value, days) => {
     const expires = days
         ? "; expires=" + new Date(Date.now() + days * 864e5).toUTCString()
         : "";
+
+    // Detect if we're on HTTPS (production) or HTTP (192.168.1.12)
+    const isSecure = window.location.protocol === 'https:';
+
+    // Set Secure flag only on HTTPS, use Lax for cross-site requests
     document.cookie =
         name +
         "=" +
         encodeURIComponent(value) +
         expires +
         "; path=/" +
-        // "; Secure" +      // only send over HTTPS
-        "; SameSite=Strict"; // prevent CSRF, adjust if needed
+        (isSecure ? "; Secure" : "") +
+        "; SameSite=Lax"; // Lax allows cookies to work across redirects but still provides CSRF protection
 };

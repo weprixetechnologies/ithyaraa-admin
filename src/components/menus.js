@@ -3,8 +3,6 @@ import React from 'react';
 import {
     RiUser3Line,        // Users
     RiUserAddLine,      // Add User
-    RiTeamLine,         // Vendors
-    RiStore2Line,       // Add Vendor
     RiShoppingCart2Line,// Orders
     RiFileList3Line,    // Order List
     RiFileInfoLine,     // Order Details
@@ -16,6 +14,7 @@ import {
     RiSettings3Line,    // Custom Products
     RiStarSmileLine,    // Reviews
     RiStarLine,         // Brands
+    RiAccountBoxLine,   // Bank Accounts
 } from 'react-icons/ri';
 
 
@@ -39,16 +38,6 @@ export const mainMenu = [
         ],
     },
     {
-        menuID: 'vendor-m',
-        id: 8,
-        url: '/vendor',
-        icon: <RiTeamLine />,
-        title: 'Vendors',
-        subMenu: [
-            { menuID: 'vendors-users-add', url: '/vendors/add', icon: <RiStore2Line />, title: 'Add Vendor' },
-        ],
-    },
-    {
         menuID: 'brand-m',
         id: 19,
         url: '/brands',
@@ -67,8 +56,14 @@ export const mainMenu = [
         icon: <RiShoppingCart2Line />,
         title: 'Orders',
         subMenu: [
-            { menuID: 'admin-orders-detail', url: '/orders/details', icon: <RiFileInfoLine />, title: 'Order Details' },
+            // { menuID: 'admin-orders-detail', url: '/orders/details', icon: <RiFileInfoLine />, title: 'Order Details' },
             { menuID: 'admin-orders-list', url: '/orders/list', icon: <RiFileList3Line />, title: 'Order List' },
+            { menuID: 'admin-brand-orders', url: '/orders/brand-orders', icon: <RiFileList3Line />, title: 'Brand Orders' },
+            { menuID: 'admin-orders-pending', url: '/orders/list?status=pending', icon: <RiFileList3Line />, title: 'Pending Order' },
+            { menuID: 'admin-orders-prepared', url: '/orders/list?status=preparing', icon: <RiFileList3Line />, title: 'Prepared' },
+            { menuID: 'admin-orders-shipped', url: '/orders/list?status=shipping', icon: <RiFileList3Line />, title: 'Shipped' },
+            { menuID: 'admin-orders-delivered', url: '/orders/list?status=delivered', icon: <RiFileList3Line />, title: 'Delivered' },
+            { menuID: 'admin-orders-returned', url: '/orders/list?status=returned', icon: <RiFileList3Line />, title: 'Returned' },
         ],
     },
     {
@@ -102,6 +97,25 @@ export const mainMenu = [
         subMenu: [
             { menuID: 'admin-offers-add', url: '/offer/add', icon: <RiFolderAddLine />, title: 'Add Offers' },
             { menuID: 'admin-offers-list', url: '/offer/list', icon: <RiListUnordered />, title: 'List Offers' },
+        ],
+    }, {
+        menuID: 'coins-m',
+        id: 20,
+        url: '/coins',
+        icon: <RiMoneyDollarCircleLine />,
+        title: 'Coins',
+        subMenu: [
+            { menuID: 'admin-coins-list', url: '/coins/list', icon: <RiListUnordered />, title: 'Transactions' },
+        ],
+    }, {
+        menuID: 'flash-sale-m',
+        id: 21,
+        url: '/flash-sale',
+        icon: <RiListUnordered />,
+        title: 'Flash Sale',
+        subMenu: [
+            { menuID: 'admin-flash-sale-add', url: '/flash-sale/add', icon: <RiFolderAddLine />, title: 'Add Flash Sale' },
+            { menuID: 'admin-flash-sale-list', url: '/flash-sale/list', icon: <RiListUnordered />, title: 'List Flash Sale' },
         ],
     }, {
         menuID: 'coupons-m',
@@ -151,6 +165,7 @@ export const mainMenu = [
         title: 'Payout Approval',
         subMenu: [
             { menuID: 'admin-payout-list', url: '/payout/list', icon: <RiListUnordered />, title: 'Payout Requests' },
+            { menuID: 'admin-affiliate-bank-accounts', url: '/affiliate-bank-accounts/list', icon: <RiAccountBoxLine />, title: 'Affiliate Bank Accounts' },
         ],
     }, {
         menuID: 'reviews-m',
@@ -160,6 +175,32 @@ export const mainMenu = [
         title: 'Reviews',
         subMenu: [
             { menuID: 'admin-reviews-list', url: '/reviews/list', icon: <RiListUnordered />, title: 'All Reviews' },
+        ],
+    },
+    {
+        menuID: 'presale-m',
+        id: 22,
+        url: '/presale',
+        icon: <RiBox3Line />,
+        title: 'Pre-Sale',
+        subMenu: [
+            { menuID: 'admin-presale-add', url: '/presale/products/add', icon: <RiFolderAddLine />, title: 'Add Pre-Sale Product' },
+            { menuID: 'admin-presale-list', url: '/presale/products/list', icon: <RiListUnordered />, title: 'List Pre-Sale Products' },
+            { menuID: 'admin-presale-group-add', url: '/presale/groups/add', icon: <RiFolderAddLine />, title: 'Create Pre-Sale Group' },
+            { menuID: 'admin-presale-group-list', url: '/presale/groups/list', icon: <RiListUnordered />, title: 'List Pre-Sale Groups' },
+        ],
+    },
+    {
+        menuID: 'prebooking-orders-m',
+        id: 23,
+        url: '/prebooking-orders',
+        icon: <RiShoppingCart2Line />,
+        title: 'Pre-Booking Orders',
+        subMenu: [
+            { menuID: 'admin-prebooking-all', url: '/prebooking-orders/all', icon: <RiFileList3Line />, title: 'All Orders' },
+            { menuID: 'admin-prebooking-pending', url: '/prebooking-orders/pending', icon: <RiFileList3Line />, title: 'Pending Orders' },
+            { menuID: 'admin-prebooking-processing', url: '/prebooking-orders/processing', icon: <RiFileList3Line />, title: 'Processing' },
+            { menuID: 'admin-prebooking-delivered', url: '/prebooking-orders/delivered', icon: <RiFileList3Line />, title: 'Delivered' },
         ],
     }
 ];

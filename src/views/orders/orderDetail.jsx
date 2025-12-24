@@ -4,8 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Layout from 'src/layout'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useParams, useNavigate } from 'react-router-dom'
-import { getOrderDetails, updateOrderStatus, updatePaymentStatus, downloadInvoice, emailInvoice, updateOrderItemsTracking } from '@/lib/api/ordersApi'
-import { FaDownload, FaTruck, FaCreditCard, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhone, FaSpinner } from 'react-icons/fa'
+import { getOrderDetails, updateOrderStatus, updatePaymentStatus, downloadInvoice, emailInvoice, updateOrderItemsTracking, recheckOrderPaymentStatus } from '@/lib/api/ordersApi'
+import { FaDownload, FaTruck, FaCreditCard, FaMapMarkerAlt, FaUser, FaEnvelope, FaPhone, FaSpinner, FaSync } from 'react-icons/fa'
 const OrderDetail = () => {
     const { orderId } = useParams()
     const navigate = useNavigate()
@@ -21,6 +21,7 @@ const OrderDetail = () => {
     const [showItemModal, setShowItemModal] = useState(false)
     const [editedItems, setEditedItems] = useState({})
     const [savingTracking, setSavingTracking] = useState(false)
+    const [recheckingPayment, setRecheckingPayment] = useState(false)
 
     const fetchOrderDetails = useCallback(async () => {
         try {
@@ -100,6 +101,30 @@ const OrderDetail = () => {
             alert('Failed to update payment status')
         } finally {
             setUpdating(false)
+        }
+    }
+
+    const handleRecheckPaymentStatus = async () => {
+        try {
+            setRecheckingPayment(true)
+            const response = await recheckOrderPaymentStatus(orderId)
+            if (response.success) {
+                // Refresh order details to get updated status
+                await fetchOrderDetails()
+                
+                if (response.updated) {
+                    alert(`Payment status updated! New status: ${response.latestStatus.orderStatus}`)
+                } else {
+                    alert(`Payment status checked. Current status: ${response.latestStatus.orderStatus}\n${response.latestStatus.statusMessage}`)
+                }
+            } else {
+                alert(response.message || 'Failed to check payment status')
+            }
+        } catch (error) {
+            console.error('Error re-checking payment status:', error)
+            alert(error.response?.data?.message || 'Failed to check payment status with PhonePe')
+        } finally {
+            setRecheckingPayment(false)
         }
     }
 
@@ -279,7 +304,7 @@ const OrderDetail = () => {
                         {/* Order Items */}
                         <Container label={'Order Items'} gap={3}>
                             <div className="flex justify-between items-center mb-3">
-                                <h3 className="font-semibold text-gray-900">Items</h3>
+                                <h3 className="font-semibold text-gray-900"></h3>
                                 <button
                                     onClick={handleSaveTracking}
                                     disabled={savingTracking}
@@ -315,57 +340,119 @@ const OrderDetail = () => {
                                     </thead>
                                     <tbody>
                                         {order.items?.map((item, index) => (
-                                            <tr
-                                                key={index}
-                                                className="border-b hover:bg-gray-50 transition-colors"
-                                            >
-                                                <td className="py-4 px-4 cursor-pointer" onClick={() => handleItemClick(item)}>
-                                                    <div className="flex items-center space-x-3">
-                                                        <img
-                                                            src={item.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
-                                                            alt={item.name}
-                                                            className="w-12 h-12 object-cover rounded"
-                                                        />
-                                                        <div>
-                                                            <p className="font-medium text-gray-900">{item.name}</p>
-                                                            {item.variationName && (
-                                                                <p className="text-sm text-gray-500">{item.variationName}</p>
-                                                            )}
+                                            <React.Fragment key={index}>
+                                                {/* Main Item Row */}
+                                                <tr
+                                                    className={`border-b hover:bg-gray-50 transition-colors ${item.comboItems && item.comboItems.length > 0 ? 'cursor-pointer' : ''}`}
+                                                    onClick={() => {
+                                                        if (item.comboItems && item.comboItems.length > 0) {
+                                                            handleItemClick(item);
+                                                        }
+                                                    }}
+                                                >
+                                                    <td className="py-4 px-4" onClick={(e) => {
+                                                        if (!item.comboItems || item.comboItems.length === 0) {
+                                                            handleItemClick(item);
+                                                        } else {
+                                                            e.stopPropagation();
+                                                        }
+                                                    }}>
+                                                        <div className="flex items-center space-x-3">
+                                                            <img
+                                                                src={item.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
+                                                                alt={item.name}
+                                                                className="w-12 h-12 object-cover rounded"
+                                                            />
+                                                            <div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <p className="font-medium text-gray-900">{item.name}</p>
+                                                                    {item.comboItems && item.comboItems.length > 0 && (
+                                                                        <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-medium">
+                                                                            Combo ({item.comboItems.length})
+                                                                        </span>
+                                                                    )}
+                                                                </div>
+                                                                {item.brandName && (
+                                                                    <p className="text-xs text-blue-600 font-medium">{item.brandName}</p>
+                                                                )}
+                                                                {item.variationName && (
+                                                                    <p className="text-sm text-gray-500">{item.variationName}</p>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                                <td className="py-4 px-4 text-center">
-                                                    <span className="bg-gray-100 px-2 py-1 rounded text-sm">
-                                                        {item.quantity}
-                                                    </span>
-                                                </td>
-                                                <td className="py-4 px-4 text-right">
-                                                    {formatPrice(item.salePrice || item.regularPrice || 0)}
-                                                </td>
-                                                <td className="py-4 px-4 text-right font-medium">
-                                                    {formatPrice(item.lineTotalAfter || (item.salePrice || item.regularPrice || 0) * item.quantity)}
-                                                </td>
-                                                <td className="py-4 px-4 text-left">
-                                                    <input
-                                                        type="text"
-                                                        value={(editedItems[index]?.trackingCode || '')}
-                                                        onChange={(e) => handleChangeItem(index, 'trackingCode', e.target.value)}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        placeholder="Enter tracking code"
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                    />
-                                                </td>
-                                                <td className="py-4 px-4 text-left">
-                                                    <input
-                                                        type="text"
-                                                        value={(editedItems[index]?.deliveryCompany || '')}
-                                                        onChange={(e) => handleChangeItem(index, 'deliveryCompany', e.target.value)}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        placeholder="Enter delivery company"
-                                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                    />
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                    <td className="py-4 px-4 text-center">
+                                                        <span className="bg-gray-100 px-2 py-1 rounded text-sm">
+                                                            {item.quantity}
+                                                        </span>
+                                                    </td>
+                                                    <td className="py-4 px-4 text-right">
+                                                        {formatPrice(item.salePrice || item.regularPrice || 0)}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-right font-medium">
+                                                        {formatPrice(item.lineTotalAfter || (item.salePrice || item.regularPrice || 0) * item.quantity)}
+                                                    </td>
+                                                    <td className="py-4 px-4 text-left" onClick={(e) => e.stopPropagation()}>
+                                                        <input
+                                                            type="text"
+                                                            value={(editedItems[index]?.trackingCode || '')}
+                                                            onChange={(e) => handleChangeItem(index, 'trackingCode', e.target.value)}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            placeholder="Enter tracking code"
+                                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        />
+                                                    </td>
+                                                    <td className="py-4 px-4 text-left" onClick={(e) => e.stopPropagation()}>
+                                                        <input
+                                                            type="text"
+                                                            value={(editedItems[index]?.deliveryCompany || '')}
+                                                            onChange={(e) => handleChangeItem(index, 'deliveryCompany', e.target.value)}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            placeholder="Enter delivery company"
+                                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                        />
+                                                    </td>
+                                                </tr>
+
+                                                {/* Combo Items Rows */}
+                                                {item.comboItems && item.comboItems.length > 0 && item.comboItems.map((comboItem, comboIndex) => (
+                                                    <tr key={`${index}-combo-${comboIndex}`} className="border-b bg-gray-50">
+                                                        <td className="py-3 px-4 pl-8">
+                                                            <div className="flex items-center space-x-3">
+                                                                <img
+                                                                    src={comboItem.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
+                                                                    alt={comboItem.name}
+                                                                    className="w-10 h-10 object-cover rounded"
+                                                                />
+                                                                <div>
+                                                                    <p className="text-sm font-medium text-gray-700">{comboItem.name}</p>
+                                                                    {comboItem.brandName && (
+                                                                        <p className="text-xs text-blue-600 font-medium">{comboItem.brandName}</p>
+                                                                    )}
+                                                                    {comboItem.variationName && (
+                                                                        <p className="text-xs text-gray-500">{comboItem.variationName}</p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-center">
+                                                            <span className="text-xs text-gray-500">Included</span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-right">
+                                                            <span className="text-xs text-gray-500">-</span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-right">
+                                                            <span className="text-xs text-gray-500">-</span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-left">
+                                                            <span className="text-xs text-gray-400">-</span>
+                                                        </td>
+                                                        <td className="py-3 px-4 text-left">
+                                                            <span className="text-xs text-gray-400">-</span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </React.Fragment>
                                         ))}
                                     </tbody>
                                 </table>
@@ -487,6 +574,28 @@ const OrderDetail = () => {
                                         {order.paymentStatus || 'N/A'}
                                     </span>
                                 </div>
+                                {(order.paymentMode === 'PREPAID' || order.paymentMode === 'PHONEPE') && (
+                                    <button
+                                        onClick={handleRecheckPaymentStatus}
+                                        disabled={recheckingPayment}
+                                        className={`w-full py-2 px-4 rounded flex items-center justify-center gap-2 ${recheckingPayment
+                                            ? 'bg-gray-400 cursor-not-allowed'
+                                            : 'bg-blue-600 hover:bg-blue-700'
+                                            } text-white`}
+                                    >
+                                        {recheckingPayment ? (
+                                            <>
+                                                <FaSpinner className="animate-spin" />
+                                                Checking...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaSync />
+                                                Re-Check Payment Status
+                                            </>
+                                        )}
+                                    </button>
+                                )}
                                 <Select value={newPaymentStatus || 'select'} onValueChange={(value) => setNewPaymentStatus(value === 'select' ? '' : value)}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select new payment status" />
@@ -590,10 +699,20 @@ const OrderDetail = () => {
                                     alt={selectedItem.name}
                                     className="w-24 h-24 object-cover rounded"
                                 />
-                                <div>
+                                <div className="flex-1">
                                     <h3 className="text-lg font-semibold">{selectedItem.name}</h3>
-                                    <p className="text-gray-600">Quantity: {selectedItem.quantity}</p>
-                                    <p className="text-gray-600">Price: {formatPrice(selectedItem.salePrice || selectedItem.regularPrice || 0)}</p>
+                                    {selectedItem.brandName && (
+                                        <p className="text-sm text-blue-600 font-medium mt-1">{selectedItem.brandName}</p>
+                                    )}
+                                    <div className="mt-2 space-y-1">
+                                        <p className="text-gray-600">Quantity: {selectedItem.quantity}</p>
+                                        <p className="text-gray-600">Price: {formatPrice(selectedItem.salePrice || selectedItem.regularPrice || 0)}</p>
+                                        {selectedItem.comboItems && selectedItem.comboItems.length > 0 && (
+                                            <p className="text-sm text-green-600 font-medium">
+                                                Combo/Make-Combo Product ({selectedItem.comboItems.length} items included)
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -680,22 +799,82 @@ const OrderDetail = () => {
                         {/* Combo Items */}
                         {selectedItem.comboItems && selectedItem.comboItems.length > 0 && (
                             <div className="mb-6">
-                                <h4 className="text-lg font-semibold mb-3 text-green-600">Combo Items</h4>
-                                <div className="space-y-3">
+                                <h4 className="text-lg font-semibold mb-3 text-green-600">
+                                    Combo/Make-Combo Items ({selectedItem.comboItems.length})
+                                </h4>
+                                <p className="text-sm text-gray-600 mb-4">All products included in this combo with their selected variations:</p>
+                                <div className="space-y-4">
                                     {selectedItem.comboItems.map((comboItem, index) => (
                                         <div key={index} className="bg-green-50 p-4 rounded-lg border border-green-200">
-                                            <div className="flex gap-3">
+                                            <div className="flex gap-4">
                                                 <img
                                                     src={comboItem.featuredImage?.[0]?.imgUrl || '/placeholder-product.jpg'}
                                                     alt={comboItem.name}
-                                                    className="w-16 h-16 object-cover rounded"
+                                                    className="w-20 h-20 object-cover rounded flex-shrink-0"
                                                 />
-                                                <div>
-                                                    <p className="font-medium">{comboItem.name}</p>
-                                                    <p className="text-sm text-gray-600">
-                                                        {comboItem.variationName || 'No variation'}
-                                                    </p>
-                                                    <p className="text-sm text-gray-500">Combo Item - Free</p>
+                                                <div className="flex-1">
+                                                    <div className="flex items-start justify-between mb-2">
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900">{comboItem.name}</p>
+                                                            {comboItem.brandName && (
+                                                                <p className="text-xs text-blue-600 font-medium mt-0.5">{comboItem.brandName}</p>
+                                                            )}
+                                                        </div>
+                                                        <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded font-medium">
+                                                            Included
+                                                        </span>
+                                                    </div>
+
+                                                    {/* Variation Details */}
+                                                    {comboItem.variationID && (
+                                                        <div className="mt-3 pt-3 border-t border-green-200">
+                                                            <p className="text-sm font-medium text-green-800 mb-2">
+                                                                Selected Variation:
+                                                            </p>
+                                                            {comboItem.variationName && (
+                                                                <p className="text-sm text-gray-700 font-medium mb-2">
+                                                                    {comboItem.variationName}
+                                                                </p>
+                                                            )}
+                                                            {comboItem.variationValues && Array.isArray(comboItem.variationValues) && comboItem.variationValues.length > 0 && (
+                                                                <div className="mt-2 space-y-1">
+                                                                    <p className="text-xs font-medium text-green-700 mb-1">Variation Attributes:</p>
+                                                                    <div className="space-y-1">
+                                                                        {comboItem.variationValues.map((attr, attrIndex) => {
+                                                                            // Handle both {label, value} format and {key: value} format
+                                                                            if (attr && typeof attr === 'object') {
+                                                                                const entries = Object.entries(attr);
+                                                                                if (entries.length > 0) {
+                                                                                    const [key, value] = entries[0];
+                                                                                    // Check if it's already in {label, value} format
+                                                                                    if (key === 'label' && 'value' in attr) {
+                                                                                        return (
+                                                                                            <div key={attrIndex} className="flex gap-2 text-xs">
+                                                                                                <span className="font-medium text-green-800 capitalize">{attr.label}:</span>
+                                                                                                <span className="text-gray-700">{attr.value}</span>
+                                                                                            </div>
+                                                                                        );
+                                                                                    } else {
+                                                                                        return (
+                                                                                            <div key={attrIndex} className="flex gap-2 text-xs">
+                                                                                                <span className="font-medium text-green-800 capitalize">{key}:</span>
+                                                                                                <span className="text-gray-700">{value}</span>
+                                                                                            </div>
+                                                                                        );
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            return null;
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+
+                                                    {!comboItem.variationID && (
+                                                        <p className="text-xs text-gray-500 mt-2">No variation selected</p>
+                                                    )}
                                                 </div>
                                             </div>
                                         </div>

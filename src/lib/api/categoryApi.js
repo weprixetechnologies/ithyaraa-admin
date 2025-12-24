@@ -70,3 +70,16 @@ export const updateCategory = async (payload) => {
         };
     }
 };
+
+export const deleteCategory = async (categoryID) => {
+    try {
+        const response = await axiosInstance.delete(`/categories/delete/${categoryID}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting category:", error);
+        return {
+            success: false,
+            error: error.response?.data?.message || error.message
+        };
+    }
+};

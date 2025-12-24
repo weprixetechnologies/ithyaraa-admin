@@ -43,7 +43,7 @@ const EditCategory = () => {
         setCategory(prev => ({ ...prev, [name]: e.target.value }));
     };
 
-   const handleSubmit = async () => {
+    const handleSubmit = async () => {
         try {
             const [featured, banner] = await Promise.all([
                 categoryImageRef.current?.uploadImageFunction(),
@@ -62,7 +62,7 @@ const EditCategory = () => {
             if (res.status !== 200) {
                 throw new Error(res.data?.message || 'Failed to update category');
             }
-            toast.success('Category updated successfully');
+            // toast.success('Category updated successfully');
         } catch (err) {
             console.error('Error updating category:', err);
             toast.error(`Update failed: ${err.message}`);

@@ -21,6 +21,10 @@ const AddOffer = () => {
 
     const handleOfferTypeChange = (e) => {
         setOfferType(e.target.value)
+        // Clear getCount when switching to buy_x_at_x
+        if (e.target.value === 'buy_x_at_x') {
+            setGetCount('')
+        }
     }
 
     const handleToggleProductParent = (productID) => {
@@ -63,7 +67,7 @@ const AddOffer = () => {
             if (data.success) {
                 console.log('Offer created successfully');
                 console.log(data);
-                toast.success('Offer is Live');
+                // toast.success('Offer is Live');
                 // Optionally reset form or show toast
             } else {
                 console.error('Failed to create offer:', data.message);
@@ -119,7 +123,12 @@ const AddOffer = () => {
                                 {offerType === 'buy_x_at_x' && (
                                     <InputUi label={'Buy At'} datafunction={(val) => setBuyAt(val.target.value)} />
                                 )}
-                                <InputUi label={'Get Count'} datafunction={(val) => setGetCount(val.target.value)} />
+                                <InputUi 
+                                    label={'Get Count'} 
+                                    datafunction={(val) => setGetCount(val.target.value)} 
+                                    disabled={offerType === 'buy_x_at_x'}
+                                    value={offerType === 'buy_x_at_x' ? '' : (getCount || '')}
+                                />
                             </div>
                         </Container>
 

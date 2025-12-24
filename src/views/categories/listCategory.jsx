@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
-import { getPaginatedCategories, getCategoryCount } from "./../../lib/api/categoryApi";
+import { getPaginatedCategories, getCategoryCount, deleteCategory } from "./../../lib/api/categoryApi";
 import { Input } from "@/components/ui/input";
 import {
     RiSearchLine,
@@ -18,11 +18,13 @@ import {
     RiAddLine,
     RiImageLine,
     RiFolderLine,
-    RiCloseLine
+    RiCloseLine,
+    RiDeleteBinLine
 } from "react-icons/ri";
 import { MdEdit } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 const ListCategory = () => {
     const [categories, setCategories] = useState([]);
@@ -66,6 +68,29 @@ const ListCategory = () => {
     const handleSearch = () => {
         setPage(1);
         fetchData();
+    };
+
+    const handleDeleteCategory = async (categoryID, categoryName) => {
+        if (!window.confirm(`Are you sure you want to delete the category "${categoryName || categoryID}"? This will also remove this category from all associated products. This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const response = await deleteCategory(categoryID);
+            if (response.success) {
+                toast.success(`Category deleted successfully. ${response.updatedProductsCount || 0} product(s) updated.`);
+                // Refresh the categories list
+                fetchData();
+            } else {
+                toast.error(response.error || response.message || 'Failed to delete category');
+            }
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            toast.error(error.response?.data?.message || 'Failed to delete category');
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Pagination logic
@@ -123,7 +148,7 @@ const ListCategory = () => {
                     </div>
 
                     {/* Stats Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
@@ -160,20 +185,6 @@ const ListCategory = () => {
                                 </div>
                                 <div className="p-3 bg-blue-100 rounded-full">
                                     <RiImageLine className="w-6 h-6 text-blue-600" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Products</p>
-                                    <p className="text-2xl font-bold text-pink-600">
-                                        {categories.reduce((sum, cat) => sum + (cat.count || 0), 0)}
-                                    </p>
-                                </div>
-                                <div className="p-3 bg-pink-100 rounded-full">
-                                    <RiFolderLine className="w-6 h-6 text-pink-600" />
                                 </div>
                             </div>
                         </div>
@@ -248,9 +259,6 @@ const ListCategory = () => {
                                             Featured Image
                                         </TableHead>
                                         <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Products
-                                        </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                             Banner Status
                                         </TableHead>
                                         <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -261,7 +269,7 @@ const ListCategory = () => {
                                 <TableBody className="bg-white divide-y divide-gray-100">
                                     {loading ? (
                                         <TableRow>
-                                            <TableCell colSpan={6} className="px-6 py-12 text-center">
+                                            <TableCell colSpan={5} className="px-6 py-12 text-center">
                                                 <div className="flex flex-col items-center justify-center">
                                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-4"></div>
                                                     <p className="text-gray-500 text-lg">Loading categories...</p>
@@ -270,7 +278,7 @@ const ListCategory = () => {
                                         </TableRow>
                                     ) : categories.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={6} className="px-6 py-12 text-center">
+                                            <TableCell colSpan={5} className="px-6 py-12 text-center">
                                                 <div className="flex flex-col items-center justify-center">
                                                     <RiFolderLine className="w-16 h-16 text-gray-300 mb-4" />
                                                     <p className="text-gray-500 text-lg font-medium">No categories found</p>
@@ -322,12 +330,6 @@ const ListCategory = () => {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-lg font-bold text-gray-900">
-                                                        {cat.count || 0}
-                                                    </div>
-                                                    <div className="text-xs text-gray-500">products</div>
-                                                </TableCell>
-                                                <TableCell className="px-6 py-4 whitespace-nowrap text-center">
                                                     {cat.categoryBanner ? (
                                                         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
                                                             {/* <span>✅</span> */}
@@ -359,6 +361,16 @@ const ListCategory = () => {
                                                         >
                                                             <IoMdEye className="w-4 h-4" />
                                                             View
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => handleDeleteCategory(cat.categoryID, cat.categoryName)}
+                                                            disabled={loading}
+                                                            className="flex items-center gap-1.5 px-3 py-2 text-red-600 border-red-200 hover:bg-red-50 hover:border-red-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                        >
+                                                            <RiDeleteBinLine className="w-4 h-4" />
+                                                            Delete
                                                         </Button>
                                                     </div>
                                                 </TableCell>

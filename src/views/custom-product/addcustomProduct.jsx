@@ -1,6 +1,7 @@
 import CategoryProduct from '@/components/products/categoryProduct';
 import OfferProducts from '@/components/products/offersProducts';
 import Pricing from '@/components/products/pricing';
+import CrossSellModal from '@/components/products/crossSellModal';
 import Container from '@/components/ui/container';
 import InputUi from '@/components/ui/inputui';
 import UploadImages from '@/components/ui/uploadImages';
@@ -10,8 +11,10 @@ import { toast } from 'react-toastify';
 import Layout from 'src/layout'
 
 const AddCustomProduct = () => {
-  const [product, setProduct] = useState({ type: 'customproduct', brand: 'inhouse' })
+  const [product, setProduct] = useState({ type: 'customproduct', brand: 'inhouse', allowCustomerImageUpload: false })
   const [customInputs, setCustomInputs] = useState([])
+  const [showCrossSellModal, setShowCrossSellModal] = useState(false)
+  const [crossSells, setCrossSells] = useState([])
   const uploadRef = useRef();
   const galleryRef = useRef();
 
@@ -119,7 +122,8 @@ const AddCustomProduct = () => {
         ...product,
         featuredImage: finalImages,
         galleryImage: galleryupload,
-        custom_inputs: customInputs
+        custom_inputs: customInputs,
+        crossSells: crossSells
       };
 
       console.log('🚀 Full custom product with images:', fullProductData);
@@ -138,7 +142,7 @@ const AddCustomProduct = () => {
       );
 
       console.log('Custom product added successfully:', result);
-      toast.success('Custom Product Added Successfully');
+      // toast.success('Custom Product Added Successfully');
 
       // Reset form
       setProduct({ type: 'customproduct', brand: 'inhouse' });
@@ -173,6 +177,22 @@ const AddCustomProduct = () => {
                   >
                     + Add Input Field
                   </button>
+                </div>
+
+                {/* Allow Customer Image Upload Checkbox */}
+                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                  <label className="flex items-center space-x-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={product.allowCustomerImageUpload || false}
+                      onChange={(e) => setProduct(prev => ({ ...prev, allowCustomerImageUpload: e.target.checked }))}
+                      className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">Allow Customer to Upload Photo</span>
+                      <p className="text-xs text-gray-500 mt-1">Enable this to allow customers to upload images when ordering this custom product</p>
+                    </div>
+                  </label>
                 </div>
 
                 {customInputs.length === 0 ? (
@@ -314,7 +334,22 @@ const AddCustomProduct = () => {
             <Container gap={3} label={'Offers & Promotions'}>
               <OfferProducts setProducts={setProduct} products={product} />
             </Container>
-
+            <Container gap={3} label={'Cross-Sell Products'}>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCrossSellModal(true)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Select Cross-Sell Products
+                </button>
+                {crossSells.length > 0 && (
+                  <div className="text-sm text-gray-600">
+                    {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
+                  </div>
+                )}
+              </div>
+            </Container>
             <Container gap={3} label={'Featured Images'}>
               <UploadImages ref={uploadRef} maxImages={2} setProducts={setProduct} products={product} />
             </Container>
@@ -332,6 +367,12 @@ const AddCustomProduct = () => {
           </div>
         </div>
       </div>
+      <CrossSellModal
+        isOpen={showCrossSellModal}
+        onClose={() => setShowCrossSellModal(false)}
+        onSave={(selected) => setCrossSells(selected)}
+        initialSelected={crossSells}
+      />
     </Layout>
   )
 }

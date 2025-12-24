@@ -1,6 +1,7 @@
 import OfferProducts from '@/components/products/offersProducts'
 import Pricing from '@/components/products/pricing'
 import VariationsComponent from '@/components/products/variations'
+import CrossSellModal from '@/components/products/crossSellModal'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
 import UploadImages from '@/components/ui/uploadImages'
@@ -18,6 +19,8 @@ const EditProduct = () => {
     const galleryRef = useRef();
 
     const [product, setProduct] = useState({ type: 'variable' })
+    const [showCrossSellModal, setShowCrossSellModal] = useState(false)
+    const [crossSells, setCrossSells] = useState([])
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -39,6 +42,12 @@ const EditProduct = () => {
                 };
 
                 setProduct(parsedProduct);
+                
+                // Extract cross-sell product IDs
+                if (data.crossSellProducts && Array.isArray(data.crossSellProducts)) {
+                    setCrossSells(data.crossSellProducts.map(p => p.productID || p.crossSellProductID));
+                }
+                
                 console.log(parsedProduct);
 
             } catch (error) {
@@ -81,7 +90,8 @@ const EditProduct = () => {
             const fullProductData = {
                 ...product,
                 featuredImage: finalImages,
-                galleryImage: galleryupload
+                galleryImage: galleryupload,
+                crossSells: crossSells
             };
 
             console.log('🚀 Full product with images:', fullProductData);
@@ -90,7 +100,7 @@ const EditProduct = () => {
             const response = await axiosInstance.post('/products/edit-product', fullProductData);
 
             console.log('Product edited successfully:', response.data);
-            toast.success('Product updated successfully!');
+            // toast.success('Product updated successfully!');
 
         } catch (error) {
             console.error('Error uploading or posting product:', error.message);
@@ -142,6 +152,22 @@ const EditProduct = () => {
                         <Container gap={3} label={'Offers & Promotions'}>
                             <OfferProducts setProducts={setProduct} products={product} />
                         </Container>
+                        <Container gap={3} label={'Cross-Sell Products'}>
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCrossSellModal(true)}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                >
+                                    Select Cross-Sell Products
+                                </button>
+                                {crossSells.length > 0 && (
+                                    <div className="text-sm text-gray-600">
+                                        {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
+                                    </div>
+                                )}
+                            </div>
+                        </Container>
                         <Container gap={3} label={'Featured Images'}>
                             <UploadImages ref={uploadRef} maxImages={2} defaultImages={product.featuredImage} />
                         </Container>
@@ -153,6 +179,12 @@ const EditProduct = () => {
                     </div>
                 </div>
             </div>
+            <CrossSellModal
+                isOpen={showCrossSellModal}
+                onClose={() => setShowCrossSellModal(false)}
+                onSave={(selected) => setCrossSells(selected)}
+                initialSelected={crossSells}
+            />
         </Layout >
     )
 }

@@ -9,6 +9,7 @@ import Pricing from '@/components/products/pricing'
 import CategoryProduct from '@/components/products/categoryProduct'
 import OfferProducts from '@/components/products/offersProducts'
 import SelectProducts from '@/components/ui/selectProducts'
+import CrossSellModal from '@/components/products/crossSellModal'
 
 const AddMakeCombo = () => {
     const uploadRef = useRef();
@@ -16,6 +17,8 @@ const AddMakeCombo = () => {
 
     const [selectedProducts, setSelectedProductsState] = useState([])
     const [product, setProduct] = useState({ type: 'make_combo' })
+    const [showCrossSellModal, setShowCrossSellModal] = useState(false)
+    const [crossSells, setCrossSells] = useState([])
 
     const updateFunction = (data, name) => {
         setProduct(prev => ({
@@ -36,7 +39,8 @@ const AddMakeCombo = () => {
 
                 featuredImage: finalImages,
                 galleryImage: galleryupload,
-                products: selectedProducts
+                products: selectedProducts,
+                crossSells: crossSells
             };
             console.log(fullProductData);
 
@@ -46,7 +50,7 @@ const AddMakeCombo = () => {
             const response = await axiosInstance.post('/make-combo/create-make-combo', fullProductData);
             const result = response.data;
             console.log('Product added successfully:', result);
-            toast.success('Product Added')
+            // toast.success('Product Added')
 
         } catch (error) {
             console.error('Error uploading or posting product:', error.message);
@@ -89,6 +93,22 @@ const AddMakeCombo = () => {
                             />
 
                         </Container>
+                        <Container gap={3} label={'Cross-Sell Products'}>
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowCrossSellModal(true)}
+                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                >
+                                    Select Cross-Sell Products
+                                </button>
+                                {crossSells.length > 0 && (
+                                    <div className="text-sm text-gray-600">
+                                        {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
+                                    </div>
+                                )}
+                            </div>
+                        </Container>
 
                     </div>
 
@@ -120,6 +140,12 @@ const AddMakeCombo = () => {
                     </div>
                 </div>
             </div>
+            <CrossSellModal
+                isOpen={showCrossSellModal}
+                onClose={() => setShowCrossSellModal(false)}
+                onSave={(selected) => setCrossSells(selected)}
+                initialSelected={crossSells}
+            />
         </Layout>
     )
 }

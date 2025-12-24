@@ -182,7 +182,7 @@ const EditCustomProduct = () => {
             );
 
             console.log('Custom product updated successfully:', result);
-            toast.success('Custom Product Updated Successfully');
+            // toast.success('Custom Product Updated Successfully');
 
         } catch (error) {
             console.error('Error updating custom product:', error.response?.data || error.message);
@@ -247,6 +247,22 @@ const EditCustomProduct = () => {
                                     >
                                         + Add Input Field
                                     </button>
+                                </div>
+
+                                {/* Allow Customer Image Upload Checkbox */}
+                                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                    <label className="flex items-center space-x-3 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={product.allowCustomerImageUpload || false}
+                                            onChange={(e) => setProduct(prev => ({ ...prev, allowCustomerImageUpload: e.target.checked }))}
+                                            className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                        />
+                                        <div>
+                                            <span className="text-sm font-medium text-gray-700">Allow Customer to Upload Photo</span>
+                                            <p className="text-xs text-gray-500 mt-1">Enable this to allow customers to upload images when ordering this custom product</p>
+                                        </div>
+                                    </label>
                                 </div>
 
                                 {customInputs.length === 0 ? (
