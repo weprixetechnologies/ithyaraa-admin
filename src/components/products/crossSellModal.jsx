@@ -32,10 +32,10 @@ const CrossSellModal = ({ isOpen, onClose, onSave, initialSelected = [] }) => {
             <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] flex flex-col m-4">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b">
-                    <h2 className="text-2xl font-bold text-gray-900">Select Cross-Sell Products</h2>
+                    <h2 className="text-2xl font-bold text-foreground">Select Cross-Sell Products</h2>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 transition-colors"
+                        className="text-gray-400 hover:text-secondary-text transition-colors"
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -52,14 +52,14 @@ const CrossSellModal = ({ isOpen, onClose, onSave, initialSelected = [] }) => {
                 </div>
 
                 {/* Footer */}
-                <div className="flex items-center justify-between p-6 border-t bg-gray-50">
-                    <div className="text-sm text-gray-600">
+                <div className="flex items-center justify-between p-6 border-t bg-background">
+                    <div className="text-sm text-secondary-text">
                         <strong>{selectedProductIDs.length}</strong> product{selectedProductIDs.length !== 1 ? 's' : ''} selected
                     </div>
                     <div className="flex gap-3">
                         <button
                             onClick={onClose}
-                            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                            className="px-4 py-2 border border-gray-300 rounded-lg text-secondary-text hover:bg-background transition-colors"
                         >
                             Cancel
                         </button>

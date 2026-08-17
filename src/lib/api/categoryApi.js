@@ -83,3 +83,34 @@ export const deleteCategory = async (categoryID) => {
         };
     }
 };
+
+// Featured Category APIs
+export const getFeaturedCategories = async () => {
+    try {
+        const response = await axiosInstance.get("/categories/featured");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching featured categories:", error);
+        return { success: false, error: error.message };
+    }
+};
+
+export const bulkSetFeatured = async (categoryIDs, isFeatured) => {
+    try {
+        const response = await axiosInstance.put("/categories/bulk-featured", { categoryIDs, isFeatured });
+        return response.data;
+    } catch (error) {
+        console.error("Error bulk updating featured status:", error);
+        return { success: false, error: error.message };
+    }
+};
+
+export const reorderCategories = async (reorderedItems) => {
+    try {
+        const response = await axiosInstance.put("/categories/reorder", { reorderedItems });
+        return response.data;
+    } catch (error) {
+        console.error("Error reordering categories:", error);
+        return { success: false, error: error.message };
+    }
+};

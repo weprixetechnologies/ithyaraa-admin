@@ -80,6 +80,52 @@ const EditPresaleGroup = () => {
         return value;
     };
 
+    const formatDateTimeForInput = (dateValue) => {
+        if (!dateValue) return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    const formatDateForInput = (dateValue) => {
+        if (!dateValue) return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const updateFunction = (data, name) => {
         setGroup(prev => ({
             ...prev,
@@ -92,11 +138,25 @@ const EditPresaleGroup = () => {
             const bannerImages = await bannerRef.current?.uploadImageFunction();
             const featuredImages = await featuredRef.current?.uploadImageFunction();
 
+            const convertToMySQL = (dateStr) => {
+                if (!dateStr) return null;
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return null;
+                
+                const pad = (n) => n.toString().padStart(2, '0');
+                // Format to LOCAL YYYY-MM-DD HH:mm:ss
+                return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+            };
+
             const fullGroupData = {
                 ...group,
                 bannerImage: bannerImages,
                 featuredImage: featuredImages,
-                productIDs: selectedProducts
+                productIDs: selectedProducts,
+                startDate: convertToMySQL(group.startDate),
+                endDate: convertToMySQL(group.endDate),
+                earlyBirdEndDate: convertToMySQL(group.earlyBirdEndDate),
+                expectedDeliveryDate: convertToMySQL(group.expectedDeliveryDate)
             };
 
             const { data: result } = await axiosInstance.put(
@@ -137,19 +197,19 @@ const EditPresaleGroup = () => {
                                 <InputUi
                                     label={'Start Date'}
                                     type="datetime-local"
-                                    value={group.startDate ? new Date(group.startDate).toISOString().slice(0, 16) : ''}
+                                    value={formatDateTimeForInput(group.startDate)}
                                     datafunction={(e) => updateFunction(e, 'startDate')}
                                 />
                                 <InputUi
                                     label={'End Date'}
                                     type="datetime-local"
-                                    value={group.endDate ? new Date(group.endDate).toISOString().slice(0, 16) : ''}
+                                    value={formatDateTimeForInput(group.endDate)}
                                     datafunction={(e) => updateFunction(e, 'endDate')}
                                 />
                                 <InputUi
                                     label={'Expected Delivery Date'}
                                     type="date"
-                                    value={group.expectedDeliveryDate ? group.expectedDeliveryDate.split('T')[0] : ''}
+                                    value={formatDateForInput(group.expectedDeliveryDate)}
                                     datafunction={(e) => updateFunction(e, 'expectedDeliveryDate')}
                                 />
                             </div>
@@ -183,7 +243,7 @@ const EditPresaleGroup = () => {
                                 <InputUi
                                     label={'Early Bird End Date'}
                                     type="datetime-local"
-                                    value={group.earlyBirdEndDate ? new Date(group.earlyBirdEndDate).toISOString().slice(0, 16) : ''}
+                                    value={formatDateTimeForInput(group.earlyBirdEndDate)}
                                     datafunction={(e) => updateFunction(e, 'earlyBirdEndDate')}
                                 />
                             </div>
@@ -264,7 +324,7 @@ const EditPresaleGroup = () => {
                                     </div>
                                 ))}
                             </div>
-                            <p className="text-sm text-gray-600 mt-2">
+                            <p className="text-sm text-secondary-text mt-2">
                                 {selectedProducts.length} product(s) selected
                             </p>
                         </Container>

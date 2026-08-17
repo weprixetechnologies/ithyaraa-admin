@@ -71,16 +71,76 @@ const AddPresaleGroup = () => {
         }));
     };
 
+    const formatDateTimeForInput = (dateValue) => {
+        if (!dateValue) return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    const formatDateForInput = (dateValue) => {
+        if (!dateValue) return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const handleUpload = async () => {
         try {
             const bannerImages = await bannerRef.current?.uploadImageFunction();
             const featuredImages = await featuredRef.current?.uploadImageFunction();
 
+            const convertToMySQL = (dateStr) => {
+                if (!dateStr) return null;
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return null;
+                
+                const pad = (n) => n.toString().padStart(2, '0');
+                // Format to LOCAL YYYY-MM-DD HH:mm:ss
+                return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+            };
+
             const fullGroupData = {
                 ...group,
                 bannerImage: bannerImages,
                 featuredImage: featuredImages,
-                productIDs: selectedProducts
+                productIDs: selectedProducts,
+                startDate: convertToMySQL(group.startDate),
+                endDate: convertToMySQL(group.endDate),
+                earlyBirdEndDate: convertToMySQL(group.earlyBirdEndDate),
+                expectedDeliveryDate: convertToMySQL(group.expectedDeliveryDate)
             };
 
             const { data: result } = await axiosInstance.post(
@@ -126,8 +186,8 @@ const AddPresaleGroup = () => {
             <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
                 {/* Header Section */}
                 <div className="mb-6">
-                    <h1 className="text-3xl font-semibold text-gray-900 mb-2">Create Pre-Sale Group</h1>
-                    <p className="text-gray-600">Set up a new presale group with products, discounts, and display settings</p>
+                    <h1 className="text-3xl font-semibold text-foreground mb-2">Create Pre-Sale Group</h1>
+                    <p className="text-secondary-text">Set up a new presale group with products, discounts, and display settings</p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -139,18 +199,18 @@ const AddPresaleGroup = () => {
                                 <div className="p-2 bg-blue-100 rounded-lg">
                                     <MdShoppingBag className="w-5 h-5 text-blue-600" />
                                 </div>
-                                <h2 className="text-xl font-semibold text-gray-900">Basic Information</h2>
+                                <h2 className="text-xl font-semibold text-foreground">Basic Information</h2>
                             </div>
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Group Name</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Group Name</label>
                                     <InputUi
                                         placeholder="Enter group name"
                                         datafunction={(e) => updateFunction(e, 'groupName')}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Description</label>
                                     <InputUi
                                         isInput={false}
                                         placeholder="Enter group description"
@@ -166,27 +226,30 @@ const AddPresaleGroup = () => {
                                 <div className="p-2 bg-purple-100 rounded-lg">
                                     <MdCalendarToday className="w-5 h-5 text-purple-600" />
                                 </div>
-                                <h2 className="text-xl font-semibold text-gray-900">Pre-Sale Dates</h2>
+                                <h2 className="text-xl font-semibold text-foreground">Pre-Sale Dates</h2>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Start Date</label>
                                     <InputUi
                                         type="datetime-local"
+                                        value={formatDateTimeForInput(group.startDate)}
                                         datafunction={(e) => updateFunction(e, 'startDate')}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">End Date</label>
                                     <InputUi
                                         type="datetime-local"
+                                        value={formatDateTimeForInput(group.endDate)}
                                         datafunction={(e) => updateFunction(e, 'endDate')}
                                     />
                                 </div>
                                 <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Expected Delivery Date</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Expected Delivery Date</label>
                                     <InputUi
                                         type="date"
+                                        value={formatDateForInput(group.expectedDeliveryDate)}
                                         datafunction={(e) => updateFunction(e, 'expectedDeliveryDate')}
                                     />
                                 </div>
@@ -199,11 +262,11 @@ const AddPresaleGroup = () => {
                                 <div className="p-2 bg-green-100 rounded-lg">
                                     <MdDiscount className="w-5 h-5 text-green-600" />
                                 </div>
-                                <h2 className="text-xl font-semibold text-gray-900">Discount Settings</h2>
+                                <h2 className="text-xl font-semibold text-foreground">Discount Settings</h2>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Discount Type</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Discount Type</label>
                                     <Select
                                         onValueChange={(value) => setGroup(prev => ({ ...prev, groupDiscountType: value }))}
                                         value={group.groupDiscountType || ''}
@@ -218,7 +281,7 @@ const AddPresaleGroup = () => {
                                     </Select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Group Discount Value</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Group Discount Value</label>
                                     <InputUi
                                         type="number"
                                         placeholder="Enter discount value"
@@ -226,7 +289,7 @@ const AddPresaleGroup = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Early Bird Discount (%)</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Early Bird Discount (%)</label>
                                     <InputUi
                                         type="number"
                                         placeholder="Enter early bird discount"
@@ -234,9 +297,10 @@ const AddPresaleGroup = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Early Bird End Date</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Early Bird End Date</label>
                                     <InputUi
                                         type="datetime-local"
+                                        value={formatDateTimeForInput(group.earlyBirdEndDate)}
                                         datafunction={(e) => updateFunction(e, 'earlyBirdEndDate')}
                                     />
                                 </div>
@@ -249,11 +313,11 @@ const AddPresaleGroup = () => {
                                 <div className="p-2 bg-orange-100 rounded-lg">
                                     <MdSettings className="w-5 h-5 text-orange-600" />
                                 </div>
-                                <h2 className="text-xl font-semibold text-gray-900">Display Settings</h2>
+                                <h2 className="text-xl font-semibold text-foreground">Display Settings</h2>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Status</label>
                                     <Select
                                         onValueChange={(value) => setGroup(prev => ({ ...prev, status: value }))}
                                         value={group.status}
@@ -270,7 +334,7 @@ const AddPresaleGroup = () => {
                                     </Select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">Display Order</label>
                                     <InputUi
                                         type="number"
                                         value={group.displayOrder || 0}
@@ -279,7 +343,7 @@ const AddPresaleGroup = () => {
                                     />
                                 </div>
                                 <div className="md:col-span-2 space-y-3">
-                                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-background transition-colors cursor-pointer">
                                         <input
                                             type="checkbox"
                                             id="showOnHomepage"
@@ -287,11 +351,11 @@ const AddPresaleGroup = () => {
                                             onChange={(e) => setGroup(prev => ({ ...prev, showOnHomepage: e.target.checked }))}
                                             className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                                         />
-                                        <label htmlFor="showOnHomepage" className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
+                                        <label htmlFor="showOnHomepage" className="text-sm font-medium text-secondary-text cursor-pointer flex-1">
                                             Show on Homepage
                                         </label>
                                     </div>
-                                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer">
+                                    <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-background transition-colors cursor-pointer">
                                         <input
                                             type="checkbox"
                                             id="isFeatured"
@@ -299,7 +363,7 @@ const AddPresaleGroup = () => {
                                             onChange={(e) => setGroup(prev => ({ ...prev, isFeatured: e.target.checked }))}
                                             className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                                         />
-                                        <label htmlFor="isFeatured" className="text-sm font-medium text-gray-700 cursor-pointer flex-1">
+                                        <label htmlFor="isFeatured" className="text-sm font-medium text-secondary-text cursor-pointer flex-1">
                                             Featured
                                         </label>
                                     </div>
@@ -316,15 +380,15 @@ const AddPresaleGroup = () => {
                                 <div className="p-2 bg-pink-100 rounded-lg">
                                     <MdImage className="w-5 h-5 text-pink-600" />
                                 </div>
-                                <h2 className="text-lg font-semibold text-gray-900">Images</h2>
+                                <h2 className="text-lg font-semibold text-foreground">Images</h2>
                             </div>
                             <div className="space-y-6">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-3">Banner Image</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-3">Banner Image</label>
                                     <UploadImages ref={bannerRef} maxImages={1} setProducts={setGroup} products={group} />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-3">Featured Image</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-3">Featured Image</label>
                                     <UploadImages ref={featuredRef} maxImages={1} setProducts={setGroup} products={group} />
                                 </div>
                             </div>
@@ -336,7 +400,7 @@ const AddPresaleGroup = () => {
                                 <div className="p-2 bg-indigo-100 rounded-lg">
                                     <MdShoppingBag className="w-5 h-5 text-indigo-600" />
                                 </div>
-                                <h2 className="text-lg font-semibold text-gray-900">Products</h2>
+                                <h2 className="text-lg font-semibold text-foreground">Products</h2>
                             </div>
                             <div className="space-y-4">
                                 <div className="relative">
@@ -382,7 +446,7 @@ const AddPresaleGroup = () => {
                                                 key={product.presaleProductID}
                                                 className={`flex items-start gap-3 p-3 rounded-lg border transition-all cursor-pointer ${selectedProducts.includes(product.presaleProductID)
                                                     ? 'border-blue-500 bg-blue-50'
-                                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                                    : 'border-gray-200 hover:border-gray-300 hover:bg-background'
                                                     }`}
                                                 onClick={() => {
                                                     if (selectedProducts.includes(product.presaleProductID)) {
@@ -406,7 +470,7 @@ const AddPresaleGroup = () => {
                                                     className="w-5 h-5 mt-0.5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                                                 />
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                                                    <p className="text-sm font-medium text-foreground truncate">{product.name}</p>
                                                     <p className="text-xs text-gray-500 font-mono mt-1">{product.presaleProductID}</p>
                                                 </div>
                                                 {selectedProducts.includes(product.presaleProductID) && (
@@ -420,7 +484,7 @@ const AddPresaleGroup = () => {
                                 {selectedProducts.length > 0 && (
                                     <div className="pt-3 border-t border-gray-200">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-sm font-medium text-gray-700">Selected</span>
+                                            <span className="text-sm font-medium text-secondary-text">Selected</span>
                                             <span className="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
                                                 {selectedProducts.length} {selectedProducts.length === 1 ? 'product' : 'products'}
                                             </span>

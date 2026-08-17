@@ -17,6 +17,7 @@ const ListUsersc = () => {
     const [error, setError] = useState('')
     const [filters, setFilters] = useState({
         search: '',
+        role: 'user',
         verifiedEmail: '',
         verifiedPhone: '',
         dateFrom: '',
@@ -101,12 +102,12 @@ const ListUsersc = () => {
                             <InputUi
                                 placeholder={'Search by Name, Email, Phone, or UID'}
                                 value={filters.search}
-                                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                                datafunction={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
                             />
                             <select
                                 value={filters.verifiedPhone}
                                 onChange={(e) => handleFilterChange('verifiedPhone', e.target.value)}
-                                className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700"
+                                className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-secondary-text"
                             >
                                 <option value="">All Phone Status</option>
                                 <option value="1">Verified</option>
@@ -115,7 +116,7 @@ const ListUsersc = () => {
                             <select
                                 value={filters.verifiedEmail}
                                 onChange={(e) => handleFilterChange('verifiedEmail', e.target.value)}
-                                className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700"
+                                className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-secondary-text"
                             >
                                 <option value="">All Email Status</option>
                                 <option value="1">Verified</option>
@@ -137,13 +138,13 @@ const ListUsersc = () => {
                                 type='date'
                                 placeholder={'From Date'}
                                 value={filters.dateFrom}
-                                onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
+                                datafunction={(e) => handleFilterChange('dateFrom', e.target.value)}
                             />
                             <InputUi
                                 type='date'
                                 placeholder={'To Date'}
                                 value={filters.dateTo}
-                                onChange={(e) => handleFilterChange('dateTo', e.target.value)}
+                                datafunction={(e) => handleFilterChange('dateTo', e.target.value)}
                             />
                         </div>
                         <button
@@ -209,7 +210,7 @@ const ListUsersc = () => {
                                     <TableCell className="text-center py-5 pl-10">
                                         <div className="flex gap-2 justify-start items-center">
                                             <div className="h-[35px] w-[35px] rounded-full bg-gray-200 flex items-center justify-center">
-                                                <span className="text-gray-600 font-semibold text-sm">
+                                                <span className="text-secondary-text font-semibold text-sm">
                                                     {user.username?.charAt(0)?.toUpperCase() || 'U'}
                                                 </span>
                                             </div>
@@ -283,7 +284,7 @@ const ListUsersc = () => {
                         <button
                             onClick={() => handlePageChange(pagination.currentPage - 1)}
                             disabled={!pagination.hasPrev}
-                            className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                            className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-secondary-text disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
                         >
                             Previous
                         </button>
@@ -296,7 +297,7 @@ const ListUsersc = () => {
                                     onClick={() => handlePageChange(page)}
                                     className={`px-3 py-2 border rounded-lg ${page === pagination.currentPage
                                         ? 'bg-blue-600 text-white border-blue-600'
-                                        : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                                        : 'border-gray-300 bg-white text-secondary-text hover:bg-background'
                                         }`}
                                 >
                                     {page}
@@ -307,7 +308,7 @@ const ListUsersc = () => {
                         <button
                             onClick={() => handlePageChange(pagination.currentPage + 1)}
                             disabled={!pagination.hasNext}
-                            className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                            className="px-3 py-2 border border-gray-300 rounded-lg bg-white text-secondary-text disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
                         >
                             Next
                         </button>
@@ -316,7 +317,7 @@ const ListUsersc = () => {
 
                 {/* Pagination Info */}
                 {!loadingAPI && (
-                    <div className="text-center mt-4 text-sm text-gray-600">
+                    <div className="text-center mt-4 text-sm text-secondary-text">
                         Showing {userlist.length} of {pagination.totalUsers} users
                     </div>
                 )}

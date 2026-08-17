@@ -3,7 +3,7 @@ import React from 'react'
 const InputUi = ({ disabled, datafunction, label, placeholder, isInput = true, type = 'text', value, labelClassp = 'text-dark-secondary-text ', fieldClass = " h-[35px]" }) => {
     return (
 
-        <label htmlFor="" className='w-full '>
+        <div className='w-full '>
             {
                 label &&
                 <p className={`${labelClassp}`}>{label}</p>
@@ -15,7 +15,7 @@ const InputUi = ({ disabled, datafunction, label, placeholder, isInput = true, t
                 !isInput && <textarea style={{ fontFamily: 'var(--f2)' }} className={`w-full p-2 rounded-[10px] border my-1  border-grey text-xs tracking-wideset ${fieldClass}`} value={value} onChange={(e) => datafunction(e)} placeholder={placeholder || `Enter Your ${label}`}></textarea>
             }
 
-        </label>
+        </div>
 
     )
 }

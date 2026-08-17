@@ -10,6 +10,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import Layout from 'src/layout'
 import { useParams } from 'react-router-dom'
+import { listSizeCharts } from '../../lib/api/sizeChartApi'
 
 const EditPresaleProduct = () => {
     const { presaleProductID } = useParams()
@@ -18,6 +19,7 @@ const EditPresaleProduct = () => {
 
     const [product, setProduct] = useState({ type: 'variable' })
     const [loading, setLoading] = useState(true)
+    const [sizeCharts, setSizeCharts] = useState([])
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -31,6 +33,14 @@ const EditPresaleProduct = () => {
                         galleryImage: parseJSONSafe(data.data.galleryImage),
                         productAttributes: parseJSONSafe(data.data.productAttributes),
                         categories: parseJSONSafe(data.data.categories),
+                        // Ensure variations are parsed and include variationID and variationSlug
+                        variations: Array.isArray(data.data.variations) ? data.data.variations?.map(variation => ({
+                            ...variation,
+                            variationValues: parseJSONSafe(variation.variationValues),
+                            // Preserve variationID and variationSlug
+                            variationID: variation.variationID || null,
+                            variationSlug: variation.variationSlug || null,
+                        })) : [],
                     };
                     setProduct(parsedProduct);
                 }
@@ -47,6 +57,20 @@ const EditPresaleProduct = () => {
         }
     }, [presaleProductID]);
 
+    useEffect(() => {
+        const fetchSizeCharts = async () => {
+            try {
+                const res = await listSizeCharts();
+                if (res.success) {
+                    setSizeCharts(res.data || []);
+                }
+            } catch (err) {
+                console.error('Error fetching size charts:', err);
+            }
+        };
+        fetchSizeCharts();
+    }, []);
+
     const parseJSONSafe = (value) => {
         if (typeof value === 'string') {
             try {
@@ -56,6 +80,54 @@ const EditPresaleProduct = () => {
             }
         }
         return value;
+    };
+
+    const formatDateTimeForInput = (dateValue) => {
+        if (!dateValue) return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            // If it's a MySQL string like "2026-03-27 00:21:00", convert to ISO and treat as UTC
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            // If it's an ISO-like string but missing 'Z', treat as UTC
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
+    const formatDateForInput = (dateValue) => {
+        if (!dateValue) return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
 
     const updateFunction = (data, name) => {
@@ -70,11 +142,45 @@ const EditPresaleProduct = () => {
             const finalImages = await uploadRef.current?.uploadImageFunction();
             const galleryupload = await galleryRef.current?.uploadImageFunction();
 
+            // Ensure variations include variationID and variationSlug if they exist
+            const variationsToSend = product.productVariations?.map(variation => {
+                // Preserve all existing fields, especially variationID and variationSlug
+                return {
+                    ...variation,
+                    // Ensure variationID is preserved if it exists
+                    variationID: variation.variationID || null,
+                    // Ensure variationSlug is preserved if it exists
+                    variationSlug: variation.variationSlug || null,
+                };
+            }) || [];
+
+            const convertToMySQL = (dateStr) => {
+                if (!dateStr) return null;
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return null;
+
+                const pad = (n) => n.toString().padStart(2, '0');
+                // Format to LOCAL YYYY-MM-DD HH:mm:ss
+                return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+            };
+
             const fullProductData = {
                 ...product,
                 featuredImage: finalImages,
-                galleryImage: galleryupload
+                galleryImage: galleryupload,
+                productVariations: variationsToSend,
+                preSaleStartDate: convertToMySQL(product.preSaleStartDate),
+                preSaleEndDate: convertToMySQL(product.preSaleEndDate),
+                earlyBirdEndDate: convertToMySQL(product.earlyBirdEndDate),
+                expectedDeliveryDate: convertToMySQL(product.expectedDeliveryDate)
             };
+
+            console.log('🚀 Full presale product with images:', fullProductData);
+            console.log('📦 Variations being sent:', variationsToSend.map(v => ({
+                variationID: v.variationID,
+                variationSlug: v.variationSlug,
+                variationName: v.variationName
+            })));
 
             const { data: result } = await axiosInstance.put(
                 `/admin/presale-products/${presaleProductID}`,
@@ -108,9 +214,10 @@ const EditPresaleProduct = () => {
                         <Container gap={3} label={'Basic Information'}>
                             <InputUi label={'Product Title'} value={product.name || ''} datafunction={(e) => updateFunction(e, 'name')} />
                             <InputUi label={'Product Description'} value={product.description || ''} isInput={false} datafunction={(e) => updateFunction(e, 'description')} />
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-3 gap-2">
                                 <InputUi label={'Tab 1'} value={product.tab1 || ''} isInput={false} datafunction={(e) => updateFunction(e, 'tab1')} fieldClass='h-[100px]' />
                                 <InputUi label={'Tab 2'} value={product.tab2 || ''} isInput={false} datafunction={(e) => updateFunction(e, 'tab2')} fieldClass='h-[100px]' />
+                                <InputUi label={'Tab 3 - Product Specifications'} value={product.tab3 || ''} isInput={false} datafunction={(e) => updateFunction(e, 'tab3')} fieldClass='h-[100px]' />
                             </div>
                         </Container>
                         <Container gap={3} label={'Pricing & Discount'}>
@@ -124,24 +231,59 @@ const EditPresaleProduct = () => {
                                 products={product}
                             />
                         </Container>
+                        {product.type === 'variable' && (
+                            <Container gap={3} label={'Size Chart (Variable Products Only)'}>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-xs font-medium text-secondary-text">
+                                        Select Size Chart
+                                    </label>
+                                    <select
+                                        className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                                        value={product.sizeChartUrl || ''}
+                                        onChange={(e) =>
+                                            setProduct(prev => ({ ...prev, sizeChartUrl: e.target.value || null }))
+                                        }
+                                    >
+                                        <option value="">None</option>
+                                        {sizeCharts.map(chart => (
+                                            <option key={chart.id} value={chart.imgUrl}>
+                                                {chart.chartName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {product.sizeChartUrl && (
+                                        <div className="mt-2">
+                                            <p className="text-xs text-secondary-text mb-1">Preview:</p>
+                                            <div className="w-40 h-40 border rounded overflow-hidden bg-background">
+                                                <img
+                                                    src={product.sizeChartUrl}
+                                                    alt="Size chart preview"
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </Container>
+                        )}
                         <Container gap={3} label={'Pre-Sale Settings'}>
                             <div className="grid grid-cols-2 gap-3">
                                 <InputUi
                                     label={'Expected Delivery Date'}
                                     type="date"
-                                    value={product.expectedDeliveryDate ? product.expectedDeliveryDate.split('T')[0] : ''}
+                                    value={formatDateForInput(product.expectedDeliveryDate)}
                                     datafunction={(e) => updateFunction(e, 'expectedDeliveryDate')}
                                 />
                                 <InputUi
                                     label={'Pre-Sale Start Date'}
                                     type="datetime-local"
-                                    value={product.preSaleStartDate ? new Date(product.preSaleStartDate).toISOString().slice(0, 16) : ''}
+                                    value={formatDateTimeForInput(product.preSaleStartDate)}
                                     datafunction={(e) => updateFunction(e, 'preSaleStartDate')}
                                 />
                                 <InputUi
                                     label={'Pre-Sale End Date'}
                                     type="datetime-local"
-                                    value={product.preSaleEndDate ? new Date(product.preSaleEndDate).toISOString().slice(0, 16) : ''}
+                                    value={formatDateTimeForInput(product.preSaleEndDate)}
                                     datafunction={(e) => updateFunction(e, 'preSaleEndDate')}
                                 />
                                 <InputUi
@@ -171,7 +313,7 @@ const EditPresaleProduct = () => {
                                 <InputUi
                                     label={'Early Bird End Date'}
                                     type="datetime-local"
-                                    value={product.earlyBirdEndDate ? new Date(product.earlyBirdEndDate).toISOString().slice(0, 16) : ''}
+                                    value={formatDateTimeForInput(product.earlyBirdEndDate)}
                                     datafunction={(e) => updateFunction(e, 'earlyBirdEndDate')}
                                 />
                             </div>
@@ -208,4 +350,3 @@ const EditPresaleProduct = () => {
 }
 
 export default EditPresaleProduct
-

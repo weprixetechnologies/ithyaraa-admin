@@ -47,7 +47,7 @@ const ListBankDetails = () => {
 
     const handleApprove = async (bankDetailID) => {
         if (processingBankID) return; // Prevent multiple simultaneous operations
-        
+
         try {
             setProcessingBankID(bankDetailID)
             const { data } = await axiosInstance.put(`/admin/bank-details/${bankDetailID}/approve`)
@@ -108,7 +108,7 @@ const ListBankDetails = () => {
             case 'active': return 'bg-green-100 text-green-800'
             case 'pending': return 'bg-yellow-100 text-yellow-800'
             case 'rejected': return 'bg-red-100 text-red-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -120,25 +120,25 @@ const ListBankDetails = () => {
                     <div className="flex gap-2">
                         <button
                             onClick={() => setFilterStatus('all')}
-                            className={`px-4 py-2 rounded-lg ${filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                            className={`px-4 py-2 rounded-lg ${filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-secondary-text'}`}
                         >
                             All
                         </button>
                         <button
                             onClick={() => setFilterStatus('pending')}
-                            className={`px-4 py-2 rounded-lg ${filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                            className={`px-4 py-2 rounded-lg ${filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-secondary-text'}`}
                         >
                             Pending
                         </button>
                         <button
                             onClick={() => setFilterStatus('active')}
-                            className={`px-4 py-2 rounded-lg ${filterStatus === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                            className={`px-4 py-2 rounded-lg ${filterStatus === 'active' ? 'bg-green-600 text-white' : 'bg-gray-200 text-secondary-text'}`}
                         >
                             Active
                         </button>
                         <button
                             onClick={() => setFilterStatus('rejected')}
-                            className={`px-4 py-2 rounded-lg ${filterStatus === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                            className={`px-4 py-2 rounded-lg ${filterStatus === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-secondary-text'}`}
                         >
                             Rejected
                         </button>
@@ -191,7 +191,7 @@ const ListBankDetails = () => {
                                     <TableCell className="text-center py-5">
                                         <div className="flex flex-col">
                                             <p className="font-medium">{bank.brandName || 'N/A'}</p>
-                                            <p className="text-xs text-gray-600">@{bank.username}</p>
+                                            <p className="text-xs text-secondary-text">@{bank.username}</p>
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-center py-5">
@@ -205,7 +205,7 @@ const ListBankDetails = () => {
                                     </TableCell>
                                     <TableCell className="text-center py-5">
                                         {bank.bankName}
-                                        {bank.branchName && <p className="text-xs text-gray-600">{bank.branchName}</p>}
+                                        {bank.branchName && <p className="text-xs text-secondary-text">{bank.branchName}</p>}
                                     </TableCell>
                                     <TableCell className="text-center py-5">
                                         <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(bank.status)}`}>
@@ -272,7 +272,7 @@ const ListBankDetails = () => {
                         <h2 className="text-xl font-bold mb-4">Reject Bank Details</h2>
 
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-secondary-text mb-2">
                                 Rejection Reason
                             </label>
                             <textarea
@@ -291,7 +291,7 @@ const ListBankDetails = () => {
                                     setRejectionReason('')
                                     setSelectedBankDetailID(null)
                                 }}
-                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-background"
                             >
                                 Cancel
                             </button>

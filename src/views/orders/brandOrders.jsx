@@ -32,7 +32,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={!hasPrev}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
             >
                 Previous
             </button>
@@ -43,7 +43,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
                     onClick={() => onPageChange(page)}
                     className={`px-3 py-2 text-sm border rounded ${page === currentPage
                         ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
+                        : 'hover:bg-background'
                         }`}
                 >
                     {page}
@@ -53,7 +53,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={!hasNext}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
             >
                 Next
             </button>
@@ -247,7 +247,7 @@ const BrandOrders = () => {
             case 'delivered': return 'bg-green-100 text-green-800'
             case 'returned': return 'bg-orange-100 text-orange-800'
             case 'cancelled': return 'bg-red-100 text-red-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -257,7 +257,7 @@ const BrandOrders = () => {
             case 'pending': return 'bg-yellow-100 text-yellow-800'
             case 'failed': return 'bg-red-100 text-red-800'
             case 'refunded': return 'bg-purple-100 text-purple-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -268,7 +268,7 @@ const BrandOrders = () => {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium text-gray-700">Brand Name</label>
+                            <label className="text-sm font-medium text-secondary-text">Brand Name</label>
                             <div className="relative">
                                 <input
                                     type="text"
@@ -331,7 +331,7 @@ const BrandOrders = () => {
 
                         <div className="flex flex-col md:flex-row gap-4 items-end">
                             <div className="flex-1">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">From Date</label>
+                                <label className="text-sm font-medium text-secondary-text mb-2 block">From Date</label>
                                 <input
                                     type="date"
                                     value={fromDate}
@@ -340,7 +340,7 @@ const BrandOrders = () => {
                                 />
                             </div>
                             <div className="flex-1">
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">To Date</label>
+                                <label className="text-sm font-medium text-secondary-text mb-2 block">To Date</label>
                                 <input
                                     type="date"
                                     value={toDate}
@@ -359,16 +359,16 @@ const BrandOrders = () => {
 
                         {/* Selected Brand Info */}
                         {selectedBrand && (
-                            <div className="text-sm text-gray-600 pt-2 border-t border-gray-200">
+                            <div className="text-sm text-secondary-text pt-2 border-t border-gray-200">
                                 <span className="font-medium">Selected Brand:</span> <span className="text-blue-600">{selectedBrand.name}</span>
                             </div>
                         )}
 
                         {/* Stats */}
                         {selectedBrand && (
-                            <div className="flex gap-4 text-sm text-gray-600 pt-2 border-t border-gray-200">
-                                <span className="font-medium">Total Orders: <span className="text-gray-900">{pagination.totalOrders}</span></span>
-                                <span className="font-medium">Page: <span className="text-gray-900">{pagination.currentPage} of {pagination.totalPages}</span></span>
+                            <div className="flex gap-4 text-sm text-secondary-text pt-2 border-t border-gray-200">
+                                <span className="font-medium">Total Orders: <span className="text-foreground">{pagination.totalOrders}</span></span>
+                                <span className="font-medium">Page: <span className="text-foreground">{pagination.currentPage} of {pagination.totalPages}</span></span>
                             </div>
                         )}
                     </div>
@@ -385,7 +385,7 @@ const BrandOrders = () => {
                                     <RiSearchLine className="text-gray-400" size={40} />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                            <h3 className="text-xl font-semibold text-foreground mb-2">
                                 Search a Brand to View Orders
                             </h3>
                             <p className="text-gray-500 text-sm">
@@ -481,7 +481,7 @@ const BrandOrders = () => {
                                             </TableRow>
                                             {isExpanded && order.items && order.items.length > 0 && (
                                                 <TableRow>
-                                                    <TableCell colSpan={8} className="bg-gray-50">
+                                                    <TableCell colSpan={8} className="bg-background">
                                                         <div className="p-4">
                                                             <h4 className="font-semibold mb-3">Order Items (Brand Only)</h4>
                                                             <div className="overflow-x-auto">

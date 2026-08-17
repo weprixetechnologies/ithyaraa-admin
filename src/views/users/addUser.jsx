@@ -278,7 +278,7 @@ const AddUser = () => {
                             <div className="flex items-center justify-end gap-3">
                                 <button
                                     onClick={() => navigate('/users')}
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-secondary-text hover:bg-background"
                                     disabled={loading}
                                 >
                                     Cancel
@@ -341,7 +341,7 @@ const AddUser = () => {
                             <div className="flex flex-col gap-2">
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Full Name</p>
+                                    <p className="w-40 text-foreground font-semibold">Full Name</p>
                                     <p className="text-secondary-text">
                                         {user.firstname && user.lastname
                                             ? `${user.firstname} ${user.lastname}`
@@ -351,35 +351,35 @@ const AddUser = () => {
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Email</p>
+                                    <p className="w-40 text-foreground font-semibold">Email</p>
                                     <p className="text-secondary-text max-w-[70%] truncate">
                                         {user.email || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Phone</p>
+                                    <p className="w-40 text-foreground font-semibold">Phone</p>
                                     <p className="text-secondary-text">
                                         {user.phonenumber || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Wallet Balance</p>
+                                    <p className="w-40 text-foreground font-semibold">Wallet Balance</p>
                                     <p className="text-secondary-text">
                                         ₹{user.wallet || '0'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Status</p>
+                                    <p className="w-40 text-foreground font-semibold">Status</p>
                                     <p className="text-green-500">
                                         New User
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Verification</p>
+                                    <p className="w-40 text-foreground font-semibold">Verification</p>
                                     <p className="text-yellow-500">
                                         Pending
                                     </p>

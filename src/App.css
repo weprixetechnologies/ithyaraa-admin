@@ -38,9 +38,7 @@
 }
 
 @layer base {
-  h1 {
-    @apply text-center
-  }
+  /* Restored default left alignment for headings */
 }
 
 @layer components {

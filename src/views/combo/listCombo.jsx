@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import axiosInstance from '../../lib/axiosInstance';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import Container from '@/components/ui/container';
 import Layout from 'src/layout';
@@ -29,16 +30,16 @@ const ListCombo = () => {
         setFilters({ ...filters, [name]: e.target.value });
     };
 
-    const fetchProductCount = async () => {
+    const fetchProductCount = useCallback(async () => {
         try {
             const { totalItems } = await getProductCount(filters);
             setTotalPages(Math.ceil(totalItems / limit));
         } catch (error) {
             console.error('Error counting products:', error);
         }
-    };
+    }, [filters, limit]);
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async () => {
         try {
             setLoading(true);
             const response = await getPaginatedProducts({
@@ -52,7 +53,7 @@ const ListCombo = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, limit, filters]);
 
     const handleSearch = async () => {
         setPage(1);
@@ -72,7 +73,7 @@ const ListCombo = () => {
             await fetchProducts();
         };
         loadData();
-    }, [page]); // Add filters to dependency array if you want real-time filtering
+    }, [page, fetchProductCount, fetchProducts]); // Added missing dependencies
     const handleDelete = async (comboID) => {
         if (!comboID) {
             toast.error("Invalid combo ID");
@@ -85,20 +86,13 @@ const ListCombo = () => {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`https://backend.ithyaraa.com/api/combo/delete/${comboID}`, {
-                method: "DELETE",
-            });
-
-            if (!res.ok) {
-                throw new Error("Failed to delete combo");
-            }
-
-            // toast.success("Combo deleted successfully");
-            // 🔄 Refresh list after delete
-            // Example: fetchCombos();
+            await axiosInstance.delete(`/combo/delete/${comboID}`);
+            toast.success("Combo deleted successfully");
+            fetchProducts();
+            fetchProductCount();
         } catch (error) {
             console.error(error);
-            toast.error(error.message || "Something went wrong");
+            toast.error(error.response?.data?.message || error.message || "Something went wrong");
         }
     };
 

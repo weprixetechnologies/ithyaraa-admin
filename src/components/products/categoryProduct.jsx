@@ -4,7 +4,7 @@ import { getPaginatedCategories } from '../../lib/api/categoryApi';
 const CategoryProduct = ({ setProducts, products, isEditable = false, oldValue = [] }) => {
     const [categories, setCategories] = useState([]);
     const [selected, setSelected] = useState([]);
-    const hasSyncedOldValues = useRef(false); // 🧠 prevents infinite loop
+    const lastSyncedOldValue = useRef(null); // Track what we last synced to prevent unnecessary re-syncs
 
     // Fetch all categories
     useEffect(() => {
@@ -26,39 +26,45 @@ const CategoryProduct = ({ setProducts, products, isEditable = false, oldValue =
         fetchData();
     }, []);
 
-    // Sync old values (only once)
+    // Sync old values when both categories and oldValue are available
+    // Re-sync if oldValue changes (e.g., after product data is refreshed)
     useEffect(() => {
         if (
             isEditable &&
             Array.isArray(oldValue) &&
-            categories.length > 0 &&
-            !hasSyncedOldValues.current
+            categories.length > 0
         ) {
-            hasSyncedOldValues.current = true;
+            // Create a stable key from oldValue to detect changes
+            const oldValueKey = JSON.stringify(oldValue);
+            
+            // Only sync if oldValue has changed or hasn't been synced yet
+            if (lastSyncedOldValue.current !== oldValueKey) {
+                lastSyncedOldValue.current = oldValueKey;
 
-            // Support both ID arrays and object arrays
-            const selectedIDs = oldValue
-                .map(item => {
-                    if (item && typeof item === 'object') {
-                        return String(item.categoryID ?? item.categoryId ?? item.id ?? item.value);
-                    }
-                    return String(item);
-                })
-                .filter(Boolean);
+                // Support both ID arrays and object arrays
+                const selectedIDs = oldValue
+                    .map(item => {
+                        if (item && typeof item === 'object') {
+                            return String(item.categoryID ?? item.categoryId ?? item.id ?? item.value);
+                        }
+                        return String(item);
+                    })
+                    .filter(Boolean);
 
-            setSelected(selectedIDs);
+                setSelected(selectedIDs);
 
-            const selectedObjects = categories
-                .filter(cat => selectedIDs.includes(String(cat.categoryID ?? cat.categoryId ?? cat.id)))
-                .map(cat => ({
-                    categoryID: cat.categoryID ?? cat.categoryId ?? cat.id,
-                    categoryName: cat.categoryName ?? cat.name,
+                const selectedObjects = categories
+                    .filter(cat => selectedIDs.includes(String(cat.categoryID ?? cat.categoryId ?? cat.id)))
+                    .map(cat => ({
+                        categoryID: cat.categoryID ?? cat.categoryId ?? cat.id,
+                        categoryName: cat.categoryName ?? cat.name,
+                    }));
+
+                setProducts(prev => ({
+                    ...prev,
+                    categories: selectedObjects,
                 }));
-
-            setProducts(prev => ({
-                ...prev,
-                categories: selectedObjects,
-            }));
+            }
         }
     }, [oldValue, categories, isEditable, setProducts]);
 

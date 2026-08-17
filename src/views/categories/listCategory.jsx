@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
-import { getPaginatedCategories, getCategoryCount, deleteCategory } from "./../../lib/api/categoryApi";
+import { getPaginatedCategories, getCategoryCount, deleteCategory, bulkSetFeatured } from "./../../lib/api/categoryApi";
 import { Input } from "@/components/ui/input";
 import {
     RiSearchLine,
@@ -35,6 +35,7 @@ const ListCategory = () => {
     const [refreshing, setRefreshing] = useState(false);
     const limit = 10;
     const navigate = useNavigate();
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
     // Fetch categories
     const fetchData = async () => {
@@ -93,6 +94,51 @@ const ListCategory = () => {
         }
     };
 
+    const handleBulkFeatured = async (isFeatured) => {
+        if (selectedCategories.length === 0) {
+            toast.warn("Please select at least one category");
+            return;
+        }
+
+        const action = isFeatured ? "mark as featured" : "unmark as featured";
+        if (!window.confirm(`Are you sure you want to ${action} ${selectedCategories.length} categories?`)) {
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const response = await bulkSetFeatured(selectedCategories, isFeatured);
+            if (response.success) {
+                toast.success(response.message || "Updated successfully");
+                setSelectedCategories([]);
+                fetchData();
+            } else {
+                toast.error(response.error || "Failed to update categories");
+            }
+        } catch (error) {
+            console.error("Bulk update error:", error);
+            toast.error("An error occurred during bulk update");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedCategories.length === categories.length) {
+            setSelectedCategories([]);
+        } else {
+            setSelectedCategories(categories.map(cat => cat.categoryID));
+        }
+    };
+
+    const toggleSelect = (id) => {
+        if (selectedCategories.includes(id)) {
+            setSelectedCategories(selectedCategories.filter(item => item !== id));
+        } else {
+            setSelectedCategories([...selectedCategories, id]);
+        }
+    };
+
     // Pagination logic
     const totalPages = Math.ceil(totalItems / limit);
     const maxPagesToShow = 5;
@@ -125,7 +171,7 @@ const ListCategory = () => {
                                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-purple-900 to-pink-900 bg-clip-text text-transparent">
                                     Category Management
                                 </h1>
-                                <p className="text-gray-600 mt-2 text-lg">
+                                <p className="text-secondary-text mt-2 text-lg">
                                     Manage product categories and their details
                                 </p>
                             </div>
@@ -139,7 +185,7 @@ const ListCategory = () => {
                                     <RiRefreshLine className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                                     Refresh
                                 </Button>
-                                <Button className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                                <Button className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" onClick={() => navigate('/categories/add')}>
                                     <RiAddLine className="w-4 h-4" />
                                     Add Category
                                 </Button>
@@ -147,13 +193,48 @@ const ListCategory = () => {
                         </div>
                     </div>
 
+                    {/* Bulk Actions */}
+                    {selectedCategories.length > 0 && (
+                        <div className="bg-white rounded-xl shadow-lg p-4 mb-6 border border-purple-100 flex items-center justify-between animate-in fade-in slide-in-from-top-4 duration-300">
+                            <div className="flex items-center gap-3">
+                                <span className="text-sm font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
+                                    {selectedCategories.length} selected
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Button
+                                    onClick={() => handleBulkFeatured(true)}
+                                    className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                                    size="sm"
+                                >
+                                    Mark Featured
+                                </Button>
+                                <Button
+                                    onClick={() => handleBulkFeatured(false)}
+                                    className="bg-orange-600 hover:bg-orange-700 text-white flex items-center gap-2"
+                                    size="sm"
+                                >
+                                    Unmark Featured
+                                </Button>
+                                <Button
+                                    onClick={() => setSelectedCategories([])}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-gray-500 hover:text-gray-700"
+                                >
+                                    Cancel
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Categories</p>
-                                    <p className="text-2xl font-bold text-gray-900">{totalItems}</p>
+                                    <p className="text-sm font-medium text-secondary-text">Total Categories</p>
+                                    <p className="text-2xl font-bold text-foreground">{totalItems}</p>
                                 </div>
                                 <div className="p-3 bg-purple-100 rounded-full">
                                     <RiFolderLine className="w-6 h-6 text-purple-600" />
@@ -164,7 +245,7 @@ const ListCategory = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">With Images</p>
+                                    <p className="text-sm font-medium text-secondary-text">With Images</p>
                                     <p className="text-2xl font-bold text-green-600">
                                         {categories.filter(cat => cat.featuredImage).length}
                                     </p>
@@ -178,7 +259,7 @@ const ListCategory = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">With Banners</p>
+                                    <p className="text-sm font-medium text-secondary-text">With Banners</p>
                                     <p className="text-2xl font-bold text-blue-600">
                                         {categories.filter(cat => cat.categoryBanner).length}
                                     </p>
@@ -210,7 +291,7 @@ const ListCategory = () => {
                                             setPage(1);
                                             fetchData();
                                         }}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-secondary-text transition-colors duration-200"
                                     >
                                         <RiCloseLine className="w-5 h-5" />
                                     </button>
@@ -238,7 +319,7 @@ const ListCategory = () => {
                     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                         <div className="p-6 border-b border-gray-100">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-gray-900">Categories</h3>
+                                <h3 className="text-lg font-semibold text-foreground">Categories</h3>
                                 <div className="text-sm text-gray-500">
                                     Showing {categories.length} of {totalItems} categories
                                 </div>
@@ -249,19 +330,27 @@ const ListCategory = () => {
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gradient-to-r from-gray-50 to-purple-50 border-b border-gray-200">
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-4 py-4 text-left">
+                                            <input
+                                                type="checkbox"
+                                                checked={categories.length > 0 && selectedCategories.length === categories.length}
+                                                onChange={toggleSelectAll}
+                                                className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                                            />
+                                        </TableHead>
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             ID
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Category Name
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Featured Image
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Banner Status
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Actions
                                         </TableHead>
                                     </TableRow>
@@ -290,9 +379,17 @@ const ListCategory = () => {
                                         categories.map((cat, idx) => (
                                             <TableRow
                                                 key={cat.categoryID}
-                                                className={`hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                                className={`hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 ${selectedCategories.includes(cat.categoryID) ? 'bg-purple-50' : idx % 2 === 0 ? 'bg-white' : 'bg-background'
                                                     }`}
                                             >
+                                                <TableCell className="px-4 py-4">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={selectedCategories.includes(cat.categoryID)}
+                                                        onChange={() => toggleSelect(cat.categoryID)}
+                                                        className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                                                    />
+                                                </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center">
                                                         <div className="flex-shrink-0 h-10 w-10">
@@ -303,14 +400,14 @@ const ListCategory = () => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="text-sm font-mono font-medium text-gray-900">
+                                                            <div className="text-sm font-mono font-medium text-foreground">
                                                                 {cat.categoryID || 'N/A'}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-semibold text-gray-900">
+                                                    <div className="text-sm font-semibold text-foreground">
                                                         {cat.categoryName || 'Unnamed Category'}
                                                     </div>
                                                 </TableCell>
@@ -330,17 +427,22 @@ const ListCategory = () => {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    {cat.categoryBanner ? (
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
-                                                            {/* <span>✅</span> */}
-                                                            Available
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border border-red-200">
-                                                            {/* <span>❌</span> */}
-                                                            No Banner
-                                                        </span>
-                                                    )}
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        {cat.categoryBanner ? (
+                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200">
+                                                                Available
+                                                            </span>
+                                                        ) : (
+                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border border-red-200">
+                                                                No Banner
+                                                            </span>
+                                                        )}
+                                                        {cat.isFeatured === 1 && (
+                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200 uppercase tracking-tighter">
+                                                                Featured
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
                                                     <div className="flex items-center justify-center gap-2">
@@ -385,9 +487,9 @@ const ListCategory = () => {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                        <div className="bg-background px-6 py-4 border-t border-gray-200">
                             <div className="flex items-center justify-between">
-                                <div className="text-sm text-gray-700">
+                                <div className="text-sm text-secondary-text">
                                     Showing page <span className="font-semibold">{page}</span> of{' '}
                                     <span className="font-semibold">{totalPages}</span>
                                 </div>

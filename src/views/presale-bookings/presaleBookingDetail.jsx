@@ -120,7 +120,7 @@ const PresaleBookingDetail = () => {
             if (response.success) {
                 // Refresh booking details to get updated status
                 await fetchBookingDetails()
-                
+
                 if (response.updated) {
                     alert(`Payment status updated! New status: ${response.latestStatus.orderStatus}`)
                 } else {
@@ -163,7 +163,7 @@ const PresaleBookingDetail = () => {
             case 'delivered': return 'bg-green-100 text-green-800'
             case 'cancelled': return 'bg-red-100 text-red-800'
             case 'returned': return 'bg-orange-100 text-orange-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -173,7 +173,7 @@ const PresaleBookingDetail = () => {
             case 'pending': return 'bg-yellow-100 text-yellow-800'
             case 'failed': return 'bg-red-100 text-red-800'
             case 'refunded': return 'bg-purple-100 text-purple-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -183,7 +183,7 @@ const PresaleBookingDetail = () => {
                 <div className="flex items-center justify-center h-64">
                     <div className="text-center">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                        <p className="mt-4 text-gray-600">Loading presale booking details...</p>
+                        <p className="mt-4 text-secondary-text">Loading presale booking details...</p>
                     </div>
                 </div>
             </Layout>
@@ -229,10 +229,10 @@ const PresaleBookingDetail = () => {
                                 <table className="w-full">
                                     <thead>
                                         <tr className="border-b">
-                                            <th className="text-left py-3 px-4 font-medium text-gray-700">Product</th>
-                                            <th className="text-center py-3 px-4 font-medium text-gray-700">Quantity</th>
-                                            <th className="text-right py-3 px-4 font-medium text-gray-700">Price</th>
-                                            <th className="text-right py-3 px-4 font-medium text-gray-700">Total</th>
+                                            <th className="text-left py-3 px-4 font-medium text-secondary-text">Product</th>
+                                            <th className="text-center py-3 px-4 font-medium text-secondary-text">Quantity</th>
+                                            <th className="text-right py-3 px-4 font-medium text-secondary-text">Price</th>
+                                            <th className="text-right py-3 px-4 font-medium text-secondary-text">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -246,7 +246,7 @@ const PresaleBookingDetail = () => {
                                                             className="w-12 h-12 object-cover rounded"
                                                         />
                                                         <div>
-                                                            <p className="font-medium text-gray-900">{item.name}</p>
+                                                            <p className="font-medium text-foreground">{item.name}</p>
                                                             {item.variationName && (
                                                                 <p className="text-sm text-gray-500">{item.variationName}</p>
                                                             )}
@@ -274,7 +274,7 @@ const PresaleBookingDetail = () => {
                             <div className="mt-6 border-t pt-4">
                                 <div className="space-y-2">
                                     <div className="flex justify-between">
-                                        <span className="text-gray-600">Subtotal:</span>
+                                        <span className="text-secondary-text">Subtotal:</span>
                                         <span>{formatPrice(booking.subtotal)}</span>
                                     </div>
                                     {booking.discount > 0 && (
@@ -338,7 +338,7 @@ const PresaleBookingDetail = () => {
                         <Container label={'Tracking Information'} gap={3}>
                             <div className="space-y-3">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Tracking Code</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-1">Tracking Code</label>
                                     <InputUi
                                         value={trackingCode}
                                         datafunction={(e) => setTrackingCode(e.target.value)}
@@ -346,7 +346,7 @@ const PresaleBookingDetail = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Delivery Company</label>
+                                    <label className="block text-sm font-medium text-secondary-text mb-1">Delivery Company</label>
                                     <InputUi
                                         value={deliveryCompany}
                                         datafunction={(e) => setDeliveryCompany(e.target.value)}
@@ -421,7 +421,7 @@ const PresaleBookingDetail = () => {
                                         {booking.paymentStatus || 'N/A'}
                                     </span>
                                 </div>
-                                
+
                                 {/* Re-Check Payment Status Button - Only for PREPAID orders */}
                                 {(booking.paymentType === 'PREPAID' || booking.paymentType === 'PHONEPE' || booking.paymentMode === 'PREPAID' || booking.paymentMode === 'PHONEPE') && (
                                     <button

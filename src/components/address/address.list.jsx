@@ -28,7 +28,7 @@ const AddressList = ({ addressprop, loading = false }) => {
         return (
             <div className='px-1.2 flex w-full flex-col gap-1.5'>
                 <div className='p-3 bg-gray-100 rounded-lg text-center'>
-                    <p className='text-gray-600 text-sm'>No addresses found</p>
+                    <p className='text-secondary-text text-sm'>No addresses found</p>
                 </div>
             </div>
         )

@@ -1,5 +1,10 @@
 import axiosInstance from "../axiosInstance";
 
+// In your productsApi.js
+export const getDeletedProducts = ({ page, limit }) =>
+    axiosInstance.get(`/products/deleted?page=${page}&limit=${limit}`)
+        .then(res => res.data);
+
 export const getPaginatedProducts = async ({ page = 1, limit = 10, filters = {} } = {}) => {
     const params = new URLSearchParams();
 

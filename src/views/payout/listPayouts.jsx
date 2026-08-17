@@ -182,7 +182,7 @@ const ListPayouts = () => {
                                 <h1 className="text-3xl text-left font-bold bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 bg-clip-text text-transparent">
                                     Payout Management
                                 </h1>
-                                <p className="text-gray-600 mt-2 text-lg">
+                                <p className="text-secondary-text mt-2 text-lg">
                                     Manage affiliate payout requests and approvals
                                 </p>
                             </div>
@@ -209,8 +209,8 @@ const ListPayouts = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Requests</p>
-                                    <p className="text-2xl font-bold text-gray-900">{totalItems}</p>
+                                    <p className="text-sm font-medium text-secondary-text">Total Requests</p>
+                                    <p className="text-2xl font-bold text-foreground">{totalItems}</p>
                                 </div>
                                 <div className="p-3 bg-blue-100 rounded-full">
                                     <RiMoneyDollarCircleLine className="w-6 h-6 text-blue-600" />
@@ -221,7 +221,7 @@ const ListPayouts = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Pending</p>
+                                    <p className="text-sm font-medium text-secondary-text">Pending</p>
                                     <p className="text-2xl font-bold text-amber-600">
                                         {payouts.filter(p => p.status === 'pending').length}
                                     </p>
@@ -235,7 +235,7 @@ const ListPayouts = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Approved</p>
+                                    <p className="text-sm font-medium text-secondary-text">Approved</p>
                                     <p className="text-2xl font-bold text-green-600">
                                         {payouts.filter(p => p.status === 'approved').length}
                                     </p>
@@ -249,7 +249,7 @@ const ListPayouts = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Amount</p>
+                                    <p className="text-sm font-medium text-secondary-text">Total Amount</p>
                                     <p className="text-2xl font-bold text-indigo-600">
                                         ₹{payouts.reduce((sum, p) => sum + Number(p.amount || 0), 0).toLocaleString('en-IN')}
                                     </p>
@@ -278,7 +278,7 @@ const ListPayouts = () => {
                                 {searchTerm && (
                                     <button
                                         onClick={handleClearSearch}
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-secondary-text transition-colors duration-200"
                                     >
                                         <RiCloseLine className="w-5 h-5" />
                                     </button>
@@ -321,7 +321,7 @@ const ListPayouts = () => {
                     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                         <div className="p-6 border-b border-gray-100">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-gray-900">Payout Requests</h3>
+                                <h3 className="text-lg font-semibold text-foreground">Payout Requests</h3>
                                 <div className="text-sm text-gray-500">
                                     Showing {payouts.length} of {totalItems} requests
                                 </div>
@@ -332,22 +332,22 @@ const ListPayouts = () => {
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gradient-to-r from-gray-50 to-blue-50 border-b border-gray-200">
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Transaction ID
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             User Details
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Amount
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Status
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Request Date
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Actions
                                         </TableHead>
                                     </TableRow>
@@ -376,7 +376,7 @@ const ListPayouts = () => {
                                         payouts.map((payout, index) => (
                                             <TableRow
                                                 key={payout.txnID}
-                                                className={`hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                                className={`hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 ${index % 2 === 0 ? 'bg-white' : 'bg-background'
                                                     }`}
                                             >
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
@@ -389,7 +389,7 @@ const ListPayouts = () => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="text-sm font-mono font-medium text-gray-900">
+                                                            <div className="text-sm font-mono font-medium text-foreground">
                                                                 {payout.txnID}
                                                             </div>
                                                         </div>
@@ -403,7 +403,7 @@ const ListPayouts = () => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="text-sm font-medium text-gray-900">
+                                                            <div className="text-sm font-medium text-foreground">
                                                                 {payout.userName || 'N/A'}
                                                             </div>
                                                             <div className="text-sm text-gray-500">
@@ -413,7 +413,7 @@ const ListPayouts = () => {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-lg font-bold text-gray-900">
+                                                    <div className="text-lg font-bold text-foreground">
                                                         ₹{Number(payout.amount).toLocaleString('en-IN')}
                                                     </div>
                                                 </TableCell>
@@ -421,7 +421,7 @@ const ListPayouts = () => {
                                                     {getStatusBadge(payout.status)}
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-sm text-gray-900">
+                                                    <div className="text-sm text-foreground">
                                                         {new Date(payout.createdOn).toLocaleDateString('en-IN')}
                                                     </div>
                                                     <div className="text-xs text-gray-500">
@@ -476,9 +476,9 @@ const ListPayouts = () => {
 
                         {/* Pagination */}
                         {totalPages > 1 && (
-                            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                            <div className="bg-background px-6 py-4 border-t border-gray-200">
                                 <div className="flex items-center justify-between">
-                                    <div className="text-sm text-gray-700">
+                                    <div className="text-sm text-secondary-text">
                                         Showing page <span className="font-semibold">{currentPage}</span> of{' '}
                                         <span className="font-semibold">{totalPages}</span>
                                     </div>
@@ -560,46 +560,46 @@ const ListPayouts = () => {
                             {/* Modal Body */}
                             <div className="p-6 space-y-6">
                                 {/* Transaction ID */}
-                                <div className="bg-gray-50 rounded-xl p-4">
-                                    <label className="text-sm font-semibold text-gray-700 mb-2 block">Transaction ID</label>
-                                    <p className="text-lg font-mono text-gray-900 bg-white px-3 py-2 rounded-lg border">
+                                <div className="bg-background rounded-xl p-4">
+                                    <label className="text-sm font-semibold text-secondary-text mb-2 block">Transaction ID</label>
+                                    <p className="text-lg font-mono text-foreground bg-white px-3 py-2 rounded-lg border">
                                         {selectedPayout.txnID}
                                     </p>
                                 </div>
 
                                 {/* User Information */}
-                                <div className="bg-gray-50 rounded-xl p-4">
-                                    <label className="text-sm font-semibold text-gray-700 mb-3 block">User Information</label>
+                                <div className="bg-background rounded-xl p-4">
+                                    <label className="text-sm font-semibold text-secondary-text mb-3 block">User Information</label>
                                     <div className="flex items-center gap-3">
                                         <div className="h-12 w-12 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
                                             <RiUserLine className="w-6 h-6 text-white" />
                                         </div>
                                         <div>
-                                            <p className="text-lg font-semibold text-gray-900">{selectedPayout.userName || 'N/A'}</p>
-                                            <p className="text-sm text-gray-600">{selectedPayout.userEmail || 'N/A'}</p>
+                                            <p className="text-lg font-semibold text-foreground">{selectedPayout.userName || 'N/A'}</p>
+                                            <p className="text-sm text-secondary-text">{selectedPayout.userEmail || 'N/A'}</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Amount */}
                                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 border border-green-200">
-                                    <label className="text-sm font-semibold text-gray-700 mb-2 block">Amount</label>
+                                    <label className="text-sm font-semibold text-secondary-text mb-2 block">Amount</label>
                                     <p className="text-3xl font-bold text-green-700">
                                         ₹{Number(selectedPayout.amount).toLocaleString('en-IN')}
                                     </p>
                                 </div>
 
                                 {/* Status */}
-                                <div className="bg-gray-50 rounded-xl p-4">
-                                    <label className="text-sm font-semibold text-gray-700 mb-3 block">Status</label>
+                                <div className="bg-background rounded-xl p-4">
+                                    <label className="text-sm font-semibold text-secondary-text mb-3 block">Status</label>
                                     {getStatusBadge(selectedPayout.status)}
                                 </div>
 
                                 {/* Dates */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="bg-gray-50 rounded-xl p-4">
-                                        <label className="text-sm font-semibold text-gray-700 mb-2 block">Request Date</label>
-                                        <p className="text-sm text-gray-900">
+                                    <div className="bg-background rounded-xl p-4">
+                                        <label className="text-sm font-semibold text-secondary-text mb-2 block">Request Date</label>
+                                        <p className="text-sm text-foreground">
                                             {new Date(selectedPayout.createdOn).toLocaleDateString('en-IN')}
                                         </p>
                                         <p className="text-xs text-gray-500">
@@ -608,9 +608,9 @@ const ListPayouts = () => {
                                     </div>
 
                                     {selectedPayout.updatedOn && (
-                                        <div className="bg-gray-50 rounded-xl p-4">
-                                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Last Updated</label>
-                                            <p className="text-sm text-gray-900">
+                                        <div className="bg-background rounded-xl p-4">
+                                            <label className="text-sm font-semibold text-secondary-text mb-2 block">Last Updated</label>
+                                            <p className="text-sm text-foreground">
                                                 {new Date(selectedPayout.updatedOn).toLocaleDateString('en-IN')}
                                             </p>
                                             <p className="text-xs text-gray-500">
@@ -622,7 +622,7 @@ const ListPayouts = () => {
                             </div>
 
                             {/* Modal Footer */}
-                            <div className="bg-gray-50 px-6 py-4 rounded-b-2xl">
+                            <div className="bg-background px-6 py-4 rounded-b-2xl">
                                 <div className="flex gap-3">
                                     <Button
                                         variant="outline"

@@ -90,7 +90,7 @@ const ListReviews = () => {
             case 'approved': return 'bg-green-100 text-green-800';
             case 'pending': return 'bg-yellow-100 text-yellow-800';
             case 'rejected': return 'bg-red-100 text-red-800';
-            default: return 'bg-gray-100 text-gray-800';
+            default: return 'bg-gray-100 text-foreground';
         }
     };
 
@@ -124,23 +124,23 @@ const ListReviews = () => {
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
                     <div className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                        <h3 className="text-sm font-medium text-gray-600">Total Reviews</h3>
-                        <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                        <h3 className="text-sm font-medium text-secondary-text">Total Reviews</h3>
+                        <p className="text-2xl font-bold text-foreground">{stats.total}</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg shadow border-l-4 border-yellow-500">
-                        <h3 className="text-sm font-medium text-gray-600">Pending</h3>
+                        <h3 className="text-sm font-medium text-secondary-text">Pending</h3>
                         <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg shadow border-l-4 border-green-500">
-                        <h3 className="text-sm font-medium text-gray-600">Approved</h3>
+                        <h3 className="text-sm font-medium text-secondary-text">Approved</h3>
                         <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg shadow border-l-4 border-red-500">
-                        <h3 className="text-sm font-medium text-gray-600">Rejected</h3>
+                        <h3 className="text-sm font-medium text-secondary-text">Rejected</h3>
                         <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
                     </div>
                     <div className="bg-white p-4 rounded-lg shadow border-l-4 border-purple-500">
-                        <h3 className="text-sm font-medium text-gray-600">Avg Rating</h3>
+                        <h3 className="text-sm font-medium text-secondary-text">Avg Rating</h3>
                         <p className="text-2xl font-bold text-purple-600">
                             {typeof stats.averageRating === 'number' ? stats.averageRating.toFixed(1) : '0.0'}
                         </p>
@@ -151,28 +151,28 @@ const ListReviews = () => {
                 <div className="mb-6 flex gap-4">
                     <button
                         onClick={() => setFilterStatus('all')}
-                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'
+                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-secondary-text'
                             }`}
                     >
                         All
                     </button>
                     <button
                         onClick={() => setFilterStatus('pending')}
-                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700'
+                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-secondary-text'
                             }`}
                     >
                         Pending
                     </button>
                     <button
                         onClick={() => setFilterStatus('approved')}
-                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'
+                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200 text-secondary-text'
                             }`}
                     >
                         Approved
                     </button>
                     <button
                         onClick={() => setFilterStatus('rejected')}
-                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'
+                        className={`px-4 py-2 rounded-lg font-medium ${filterStatus === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-secondary-text'
                             }`}
                     >
                         Rejected
@@ -182,7 +182,7 @@ const ListReviews = () => {
                 {/* Reviews Table */}
                 <div className="bg-white rounded-lg shadow">
                     <table className="w-full">
-                        <thead className="bg-gray-50">
+                        <thead className="bg-background">
                             <tr>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Product
@@ -216,21 +216,21 @@ const ListReviews = () => {
                                 </tr>
                             ) : (
                                 reviews.map((review) => (
-                                    <tr key={review.reviewID} className="hover:bg-gray-50">
+                                    <tr key={review.reviewID} className="hover:bg-background">
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">
+                                            <div className="text-sm font-medium text-foreground">
                                                 {review.productName || review.productID}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm text-gray-900">{review.username}</div>
+                                            <div className="text-sm text-foreground">{review.username}</div>
                                             <div className="text-sm text-gray-500">{review.emailID}</div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             {renderStars(review.rating)}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900 max-w-xs truncate">
+                                            <div className="text-sm text-foreground max-w-xs truncate">
                                                 {review.comment || 'No comment'}
                                             </div>
                                         </td>

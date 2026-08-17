@@ -2,81 +2,30 @@ import React, { useEffect, useState, useCallback } from 'react'
 import Layout from 'src/layout'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from '@/components/ui/container'
-import { MdEdit } from "react-icons/md";
+import { 
+    MdEdit, MdSearch, MdFilterList, MdCheckCircle, MdPending, MdLocalShipping, MdClose
+} from "react-icons/md";
 import { IoMdEye } from 'react-icons/io';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useNavigate, useLocation } from 'react-router-dom';
 import InputUi from '@/components/ui/inputui';
 import { getAllOrders } from '@/lib/api/ordersApi';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Simple Pagination Component
-const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasPrev }) => {
-    const pages = []
-    const maxVisiblePages = 5
-
-    // Calculate which pages to show
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
-
-    if (endPage - startPage + 1 < maxVisiblePages) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1)
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-        pages.push(i)
-    }
-
-    return (
-        <div className="flex items-center justify-center gap-2 mt-4">
-            <button
-                onClick={() => onPageChange(currentPage - 1)}
-                disabled={!hasPrev}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-                Previous
-            </button>
-
-            {pages.map(page => (
-                <button
-                    key={page}
-                    onClick={() => onPageChange(page)}
-                    className={`px-3 py-2 text-sm border rounded ${page === currentPage
-                        ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
-                        }`}
-                >
-                    {page}
-                </button>
-            ))}
-
-            <button
-                onClick={() => onPageChange(currentPage + 1)}
-                disabled={!hasNext}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-                Next
-            </button>
-        </div>
-    )
-}
-
 
 const ListOrders = () => {
     const location = useLocation()
     const navigate = useNavigate()
-    
-    // Get status from URL query parameters
+
     const getInitialStatus = () => {
         const searchParams = new URLSearchParams(location.search)
         const statusParam = searchParams.get('status')
         if (statusParam) {
-            // Map URL status values to backend filter values
             const statusMap = {
-                'pending': 'pending',  // lowercase pending for orders that haven't been confirmed yet
-                'preparing': 'Preparing',  // Capitalized as backend expects
-                'shipping': 'Shipped',  // Backend uses 'Shipped', not 'shipping'
-                'delivered': 'Delivered',  // Capitalized as backend expects
-                'returned': 'Returned'  // Check if backend supports this, otherwise might need to be 'Cancelled'
+                'pending': 'pending',
+                'preparing': 'Preparing',
+                'shipping': 'Shipped',
+                'delivered': 'Delivered',
+                'returned': 'Returned'
             }
             return statusMap[statusParam] || 'all'
         }
@@ -93,15 +42,6 @@ const ListOrders = () => {
         limit: 10
     })
 
-    // Update filters when URL query parameters change
-    useEffect(() => {
-        const newStatus = getInitialStatus()
-        setFilters(prev => ({
-            ...prev,
-            status: newStatus,
-            page: 1 // Reset to first page when status changes
-        }))
-    }, [location.search])
     const [pagination, setPagination] = useState({
         currentPage: 1,
         totalPages: 1,
@@ -110,37 +50,32 @@ const ListOrders = () => {
         hasPrev: false
     })
 
+    useEffect(() => {
+        const newStatus = getInitialStatus()
+        setFilters(prev => ({ ...prev, status: newStatus, page: 1 }))
+    }, [location.search])
+
     const fetchOrders = useCallback(async () => {
         try {
             setLoadingAPI(true)
-            // Convert "all" values to empty strings for the API
-            // Also handle case-insensitive status matching
             let statusFilter = filters.status === 'all' ? '' : filters.status
-            // Normalize status to match backend expectations (case-sensitive)
             if (statusFilter) {
                 const statusNormalize = {
                     'pending': 'pending',
-                    'Preparing': 'Preparing',
                     'preparing': 'Preparing',
-                    'Shipped': 'Shipped',
-                    'shipped': 'Shipped',
                     'shipping': 'Shipped',
-                    'Delivered': 'Delivered',
                     'delivered': 'Delivered',
-                    'Returned': 'Returned',
                     'returned': 'Returned',
-                    'Cancelled': 'Cancelled',
                     'cancelled': 'Cancelled'
                 }
-                statusFilter = statusNormalize[statusFilter] || statusFilter
+                statusFilter = statusNormalize[statusFilter.toLowerCase()] || statusFilter
             }
-            
-            const apiFilters = {
+
+            const response = await getAllOrders({
                 ...filters,
                 status: statusFilter,
                 paymentStatus: filters.paymentStatus === 'all' ? '' : filters.paymentStatus
-            }
-            const response = await getAllOrders(apiFilters)
+            })
             if (response.success) {
                 setOrderList(response.data)
                 setPagination(response.pagination)
@@ -157,36 +92,11 @@ const ListOrders = () => {
     }, [fetchOrders])
 
     const handleFilterChange = (key, value) => {
-        setFilters(prev => ({
-            ...prev,
-            [key]: value,
-            page: 1 // Reset to first page when filtering
-        }))
-    }
-
-    const handleSearch = () => {
-        setFilters(prev => ({
-            ...prev,
-            page: 1
-        }))
-        fetchOrders()
+        setFilters(prev => ({ ...prev, [key]: value, page: 1 }))
     }
 
     const handlePageChange = (page) => {
-        setFilters(prev => ({
-            ...prev,
-            page
-        }))
-    }
-
-    const formatDate = (dateString) => {
-        return new Date(dateString).toLocaleDateString('en-IN', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })
+        setFilters(prev => ({ ...prev, page }))
     }
 
     const formatPrice = (price) => {
@@ -196,224 +106,190 @@ const ListOrders = () => {
         }).format(price || 0)
     }
 
-    const getStatusColor = (status) => {
+    const getStatusStyles = (status) => {
         switch (status?.toLowerCase()) {
-            case 'pending': return 'bg-yellow-100 text-yellow-800'
-            case 'preparing': return 'bg-yellow-100 text-yellow-800'
-            case 'shipped': return 'bg-blue-100 text-blue-800'
-            case 'shipping': return 'bg-blue-100 text-blue-800'
-            case 'delivered': return 'bg-green-100 text-green-800'
-            case 'returned': return 'bg-orange-100 text-orange-800'
-            case 'cancelled': return 'bg-red-100 text-red-800'
-            default: return 'bg-gray-100 text-gray-800'
-        }
-    }
-
-    const getPaymentStatusColor = (status) => {
-        switch (status) {
-            case 'successful': return 'bg-green-100 text-green-800'
-            case 'pending': return 'bg-yellow-100 text-yellow-800'
-            case 'failed': return 'bg-red-100 text-red-800'
-            case 'refunded': return 'bg-purple-100 text-purple-800'
-            default: return 'bg-gray-100 text-gray-800'
-        }
-    }
-
-    // Determine active menu based on status filter
-    const getActiveMenu = () => {
-        const status = filters.status?.toLowerCase()
-        switch (status) {
-            case 'pending':
-                return 'admin-orders-pending'
-            case 'preparing':
-                return 'admin-orders-prepared'
-            case 'shipped':
-            case 'shipping':
-                return 'admin-orders-shipped'
-            case 'delivered':
-                return 'admin-orders-delivered'
-            case 'returned':
-                return 'admin-orders-returned'
-            default:
-                return 'admin-orders-list'
+            case 'pending': return 'bg-amber-100 text-amber-700 border-amber-200'
+            case 'preparing': return 'bg-blue-100 text-blue-700 border-blue-200'
+            case 'shipped': return 'bg-purple-100 text-purple-700 border-purple-200'
+            case 'delivered': return 'bg-emerald-100 text-emerald-700 border-emerald-200'
+            case 'cancelled': return 'bg-red-100 text-red-700 border-red-200'
+            default: return 'bg-gray-100 text-gray-700 border-gray-200'
         }
     }
 
     return (
-        <Layout active={getActiveMenu()} title={'Orders List'}>
-            <Container containerclass={'bg-transaparent'}>
-                <div className="flex flex-col gap-4">
-                    {/* Search and Filters */}
-                    <div className="flex w-full items-center gap-4">
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-grow w-full">
-                            <InputUi
-                                placeholder={'Search Order ID / Name / Email'}
-                                value={filters.search}
-                                onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
-                            />
-                            <Select value={filters.status} onValueChange={(value) => handleFilterChange('status', value)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Order Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="Preparing">Preparing</SelectItem>
-                                    <SelectItem value="Shipped">Shipped</SelectItem>
-                                    <SelectItem value="Delivered">Delivered</SelectItem>
-                                    <SelectItem value="Returned">Returned</SelectItem>
-                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <Select value={filters.paymentStatus} onValueChange={(value) => handleFilterChange('paymentStatus', value)}>
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Payment Status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Payment</SelectItem>
-                                    <SelectItem value="successful">Successful</SelectItem>
-                                    <SelectItem value="pending">Pending</SelectItem>
-                                    <SelectItem value="failed">Failed</SelectItem>
-                                    <SelectItem value="refunded">Refunded</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <button
-                                onClick={handleSearch}
-                                className="shrink-0 px-4 py-2 bg-blue-600 text-white rounded text-[12px] hover:bg-blue-700"
-                            >
-                                Search
-                            </button>
-                        </div>
+        <Layout active="admin-orders-list" title="Orders Management">
+            {/* Header Summary */}
+            <Container containerclass="bg-white border-b border-gray-200 py-6 mb-0 rounded-none shadow-none">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Order Registry</h2>
+                        <p className="text-sm text-gray-500 mt-1">Manage and track your customer fulfillment lifecycle.</p>
                     </div>
-
-                    {/* Stats */}
-                    <div className="flex gap-4 text-sm text-gray-600">
-                        <span>Total Orders: {pagination.totalOrders}</span>
-                        <span>Page: {pagination.currentPage} of {pagination.totalPages}</span>
+                    <div className="flex gap-6">
+                        <div className="text-center">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Active Volume</p>
+                            <p className="text-xl font-bold text-gray-900">{pagination.totalOrders}</p>
+                        </div>
+                        <div className="h-10 w-px bg-gray-200"></div>
+                        <div className="text-center">
+                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending</p>
+                            <p className="text-xl font-bold text-gray-900">{orderList.filter(o => o.orderStatus === 'pending').length}</p>
+                        </div>
                     </div>
                 </div>
             </Container>
-            <Container containerclass="bg-transparent">
-                <Table className="border-separate border-spacing-y-2 ">
-                    <TableHeader>
-                        <TableRow className=" text-unique text-[16px] uppercase">
-                            <TableHead className="pl-5">ORDER ID</TableHead>
-                            <TableHead className="text-left pl-10">User Data</TableHead>
-                            <TableHead className="text-center">Items</TableHead>
-                            <TableHead className="text-center">Amount</TableHead>
-                            <TableHead className="text-center">Status</TableHead>
-                            <TableHead className="text-center">Payment</TableHead>
-                            <TableHead className="text-center">Ordered On</TableHead>
-                            <TableHead className="pr-5 text-center">Actions</TableHead>
+
+            {/* Filter Bar */}
+            <Container containerclass="bg-gray-50/50 border-b border-gray-200 py-4 mb-0 rounded-none shadow-none">
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="relative flex-1 min-w-[300px]">
+                        <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <input 
+                            className="w-full bg-white border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                            placeholder="Search by Order ID, Name or Email..."
+                            value={filters.search}
+                            onChange={(e) => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                        />
+                    </div>
+                    
+                    <Select value={filters.status} onValueChange={(v) => handleFilterChange('status', v)}>
+                        <SelectTrigger className="w-[160px] h-9 text-xs bg-white shadow-sm border-gray-300">
+                            <SelectValue placeholder="Manifest Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Orders</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="Preparing">Preparing</SelectItem>
+                            <SelectItem value="Shipped">Shipped</SelectItem>
+                            <SelectItem value="Delivered">Delivered</SelectItem>
+                            <SelectItem value="Returned">Returned</SelectItem>
+                            <SelectItem value="Cancelled">Cancelled</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <Select value={filters.paymentStatus} onValueChange={(v) => handleFilterChange('paymentStatus', v)}>
+                        <SelectTrigger className="w-[160px] h-9 text-xs bg-white shadow-sm border-gray-300">
+                            <SelectValue placeholder="Payment" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Payment: All</SelectItem>
+                            <SelectItem value="successful">Successful</SelectItem>
+                            <SelectItem value="pending">Pending</SelectItem>
+                            <SelectItem value="failed">Failed</SelectItem>
+                        </SelectContent>
+                    </Select>
+
+                    <button 
+                        onClick={fetchOrders}
+                        className="bg-white border border-gray-300 text-gray-700 px-4 py-1.5 rounded-md text-xs font-semibold hover:bg-gray-50 transition shadow-sm"
+                    >
+                        Apply Filters
+                    </button>
+                </div>
+            </Container>
+
+            {/* Table Area */}
+            <Container containerclass="p-0 border-none rounded-none shadow-none">
+                <Table className="bg-white">
+                    <TableHeader className="bg-gray-50">
+                        <TableRow>
+                            <TableHead className="w-[120px] font-bold text-gray-600 text-xs">ORDER ID</TableHead>
+                            <TableHead className="font-bold text-gray-600 text-xs">CUSTOMER</TableHead>
+                            <TableHead className="text-center font-bold text-gray-600 text-xs">UNITS</TableHead>
+                            <TableHead className="text-right font-bold text-gray-600 text-xs">AMOUNT</TableHead>
+                            <TableHead className="text-center font-bold text-gray-600 text-xs">STATUS</TableHead>
+                            <TableHead className="text-center font-bold text-gray-600 text-xs">PAYMENT</TableHead>
+                            <TableHead className="text-center font-bold text-gray-600 text-xs">DATE</TableHead>
+                            <TableHead className="text-right font-bold text-gray-600 text-xs pr-6">TOOLS</TableHead>
                         </TableRow>
                     </TableHeader>
-
-                    <TableBody className="bg-white">
-                        {loadingAPI && orderList?.length === 0 && (
+                    <TableBody>
+                        {loadingAPI ? (
                             <TableRow>
-                                <TableCell colSpan={8} className='rounded-[10px]'>
-                                    <DotLottieReact
-                                        src="https://lottie.host/15a4b106-bbe8-40d8-bb4e-834fb23fceae/I9HKWeP6l2.lottie"
-                                        loop
-                                        autoplay
-                                        style={{ height: '200px', width: 'auto' }}
-                                    />
-                                </TableCell>
+                                <TableCell colSpan={8} className="py-20 text-center text-gray-400 italic">Retrieving order data...</TableCell>
                             </TableRow>
-                        )}
-
-                        {orderList?.length > 0 && !loadingAPI &&
-                            orderList?.map((order, index) => (
-                                <TableRow key={index} className="rounded-full bg-white shadow-lg shadow-cyan-500/50">
-                                    <TableCell className="rounded-l-[10px] font-bold py-5 pl-5">
-                                        #{order.orderID}
-                                    </TableCell>
-                                    <TableCell className="text-center py-5 pl-10">
-                                        <div className="flex gap-2 justify-start items-center">
-                                            <img
-                                                src='https://picsum.photos/400/300?random=1'
-                                                className="h-[35px] w-[35px] rounded-full"
-                                                alt="User"
-                                            />
-                                            <div className="flex flex-col justify-start items-start text-right">
-                                                <p className='text-right font-medium'>{order.username || 'N/A'}</p>
-                                                <p className='font-light text-secondary-text max-w-[350px] truncate overflow-hidden whitespace-nowrap hover:text-dark-secondary-text cursor-pointer'>
-                                                    {order.emailID || 'N/A'}
-                                                </p>
-                                            </div>
+                        ) : orderList.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={8} className="py-20 text-center text-gray-400">No matching orders found.</TableCell>
+                            </TableRow>
+                        ) : (
+                            orderList.map((order, idx) => (
+                                <TableRow key={idx} className="hover:bg-blue-50/30 transition-colors border-b border-gray-100">
+                                    <TableCell className="font-medium text-gray-900 py-4">#{order.orderID}</TableCell>
+                                    <TableCell>
+                                        <div className="flex flex-col">
+                                            <span className="font-semibold text-gray-900">{order.username || 'N/A'}</span>
+                                            <span className="text-xs text-gray-500 lowercase mt-0.5">{order.emailID || 'no email'}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-center py-5">
-                                        <span className="bg-gray-100 px-2 py-1 rounded text-sm">
+                                    <TableCell className="text-center">
+                                        <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs border border-gray-200">
                                             {order.itemCount}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="text-center py-5 font-medium">
+                                    <TableCell className="text-right font-semibold text-gray-900">
                                         {formatPrice(order.total)}
                                     </TableCell>
-                                    <TableCell className="text-center py-5">
-                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.orderStatus)}`}>
-                                            {order.orderStatus || 'N/A'}
+                                    <TableCell className="text-center">
+                                        <span className={`px-2.5 py-1 rounded-md text-[11px] font-bold uppercase border ${getStatusStyles(order.orderStatus)}`}>
+                                            {order.orderStatus}
                                         </span>
                                     </TableCell>
-                                    <TableCell className="text-center py-5">
-                                        <div className="flex flex-col gap-1">
-                                            <span className="text-sm font-medium">{order.paymentMode}</span>
-                                            <span className={`px-2 py-1 rounded-full text-xs ${getPaymentStatusColor(order.paymentStatus)}`}>
-                                                {order.paymentStatus || 'N/A'}
-                                            </span>
+                                    <TableCell className="text-center">
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[10px] font-bold text-gray-400 uppercase">{order.paymentMode}</span>
+                                            <span className={`text-[10px] ${order.paymentStatus === 'successful' ? 'text-emerald-600 font-bold' : 'text-amber-600'}`}>{order.paymentStatus}</span>
                                         </div>
                                     </TableCell>
-                                    <TableCell className="text-center py-5 text-sm">
-                                        {formatDate(order.createdAt)}
+                                    <TableCell className="text-center text-xs text-gray-500">
+                                        {new Date(order.createdAt).toLocaleDateString('en-GB')}
                                     </TableCell>
-                                    <TableCell className="rounded-r-[10px] text-center pr-5">
-                                        <div className="flex-center gap-2">
-                                            <button
-                                                className='bg-green-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-green-700'
+                                    <TableCell className="text-right pr-6">
+                                        <div className="flex justify-end gap-2">
+                                            <button 
                                                 onClick={() => navigate(`/orders/details/${order.orderID}`)}
-                                                title="Edit Order"
+                                                className="p-2 text-gray-400 hover:text-blue-600 bg-gray-100 hover:bg-blue-100 rounded-md transition-colors"
                                             >
-                                                <MdEdit style={{ width: '16px', height: '16px' }} />
+                                                <IoMdEye size={16} />
                                             </button>
-                                            <button
-                                                className='bg-blue-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-blue-700'
+                                            <button 
                                                 onClick={() => navigate(`/orders/details/${order.orderID}`)}
-                                                title="View Details"
+                                                className="p-2 text-gray-400 hover:text-blue-600 bg-gray-100 hover:bg-blue-100 rounded-md transition-colors"
                                             >
-                                                <IoMdEye style={{ width: '16px', height: '16px' }} />
+                                                <MdEdit size={16} />
                                             </button>
                                         </div>
                                     </TableCell>
                                 </TableRow>
                             ))
-                        }
-                        {!loadingAPI && orderList?.length === 0 && (
-                            <TableRow>
-                                <TableCell colSpan={8}>
-                                    <div className="text-center py-8 text-lg text-muted-foreground">
-                                        🚫 No Orders Found
-                                    </div>
-                                </TableCell>
-                            </TableRow>
                         )}
                     </TableBody>
-
                 </Table>
-            </Container>
 
-            {/* Pagination */}
-            {!loadingAPI && pagination.totalPages > 1 && (
-                <Container containerclass="bg-transparent">
-                    <SimplePagination
-                        currentPage={pagination.currentPage}
-                        totalPages={pagination.totalPages}
-                        onPageChange={handlePageChange}
-                        hasNext={pagination.hasNext}
-                        hasPrev={pagination.hasPrev}
-                    />
-                </Container>
-            )}
+                {/* Professional Pagination */}
+                {!loadingAPI && pagination.totalPages > 1 && (
+                    <div className="p-4 bg-white border-t border-gray-200 flex items-center justify-between">
+                        <p className="text-xs text-gray-500">Showing page {pagination.currentPage} of {pagination.totalPages}</p>
+                        <div className="flex gap-1">
+                            <button 
+                                disabled={!pagination.hasPrev}
+                                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                className="px-3 py-1.5 border border-gray-300 rounded text-xs font-semibold hover:bg-gray-50 disabled:opacity-50"
+                            >
+                                Previous
+                            </button>
+                            <button 
+                                disabled={!pagination.hasNext}
+                                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                className="px-3 py-1.5 border border-gray-300 rounded text-xs font-semibold hover:bg-gray-50 disabled:opacity-50"
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </Container>
         </Layout>
     )
 }

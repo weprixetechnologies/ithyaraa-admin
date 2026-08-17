@@ -117,7 +117,7 @@ const AddBrand = () => {
             const response = await axiosInstance.post('/admin/brands', brandData)
 
             if (response.data.success) {
-                // toast.success('Brand created successfully!')
+                toast.success('Brand created successfully!')
                 toast.info('Verification email sent to brand')
 
                 // Reset form
@@ -232,7 +232,7 @@ const AddBrand = () => {
                             <div className="flex items-center justify-end gap-3">
                                 <button
                                     onClick={() => navigate('/brands/list')}
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-secondary-text hover:bg-background"
                                     disabled={loading}
                                 >
                                     Cancel
@@ -290,35 +290,35 @@ const AddBrand = () => {
                         <Container label={'Brand Information'} containerclass={'mb-10 bg-white'}>
                             <div className="flex flex-col gap-2">
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Brand Name</p>
+                                    <p className="w-40 text-foreground font-semibold">Brand Name</p>
                                     <p className="text-secondary-text">
                                         {brand.name || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Email</p>
+                                    <p className="w-40 text-foreground font-semibold">Email</p>
                                     <p className="text-secondary-text max-w-[70%] truncate">
                                         {brand.email || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">GSTIN</p>
+                                    <p className="w-40 text-foreground font-semibold">GSTIN</p>
                                     <p className="text-secondary-text">
                                         {brand.gstin || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Status</p>
+                                    <p className="w-40 text-foreground font-semibold">Status</p>
                                     <p className="text-green-500">
                                         New Brand
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Verification</p>
+                                    <p className="w-40 text-foreground font-semibold">Verification</p>
                                     <p className="text-yellow-500">
                                         Pending
                                     </p>

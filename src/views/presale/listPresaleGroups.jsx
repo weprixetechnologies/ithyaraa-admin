@@ -69,10 +69,10 @@ export default function ListPresaleGroups() {
     const statusMap = {
       'upcoming': 'bg-yellow-100 text-yellow-800',
       'active': 'bg-green-100 text-green-800',
-      'completed': 'bg-gray-100 text-gray-800',
+      'completed': 'bg-gray-100 text-foreground',
       'cancelled': 'bg-red-100 text-red-800'
     };
-    return statusMap[status] || 'bg-gray-100 text-gray-800';
+    return statusMap[status] || 'bg-gray-100 text-foreground';
   };
 
   return (
@@ -86,7 +86,7 @@ export default function ListPresaleGroups() {
         <div className="bg-white border rounded overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b bg-gray-50">
+              <tr className="border-b bg-background">
                 <th className="text-left p-3">Group ID</th>
                 <th className="text-left p-3">Group Name</th>
                 <th className="text-left p-3">Status</th>
@@ -107,7 +107,7 @@ export default function ListPresaleGroups() {
                 const imageUrl = bannerImage[0]?.imgUrl || featuredImage[0]?.imgUrl || '';
 
                 return (
-                  <tr key={group.presaleGroupID} className="border-b hover:bg-gray-50">
+                  <tr key={group.presaleGroupID} className="border-b hover:bg-background">
                     <td className="p-3">{group.presaleGroupID}</td>
                     <td className="p-3">
                       <div className="flex items-center gap-2">
@@ -128,21 +128,20 @@ export default function ListPresaleGroups() {
                       </span>
                     </td>
                     <td className="p-3">
-                      {group.startDate 
+                      {group.startDate
                         ? new Date(group.startDate).toLocaleDateString()
                         : '-'
                       }
                     </td>
                     <td className="p-3">
-                      {group.endDate 
+                      {group.endDate
                         ? new Date(group.endDate).toLocaleDateString()
                         : '-'
                       }
                     </td>
                     <td className="p-3">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        group.showOnHomepage ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`px-2 py-1 rounded text-xs ${group.showOnHomepage ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-foreground'
+                        }`}>
                         {group.showOnHomepage ? 'Yes' : 'No'}
                       </span>
                     </td>

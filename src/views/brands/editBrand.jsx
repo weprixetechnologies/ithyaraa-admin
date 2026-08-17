@@ -32,7 +32,9 @@ const EditBrand = () => {
         uid: '',
         brandID: '',
         username: '',
-        profilePhoto: ''
+        profilePhoto: '',
+        shippingCharge: '',
+        commissionPercentage: ''
     })
     const [defaultProfilePhoto, setDefaultProfilePhoto] = useState([])
 
@@ -98,7 +100,9 @@ const EditBrand = () => {
                         uid: data.data.uid || uid,
                         brandID: data.data.brandID || data.data.uid || uid,
                         username: data.data.username || '',
-                        profilePhoto: data.data.profilePhoto || ''
+                        profilePhoto: data.data.profilePhoto || '',
+                        shippingCharge: data.data.shippingCharge || '0.00',
+                        commissionPercentage: data.data.commissionPercentage || '0.00'
                     })
 
                     // Set default profile photo if exists
@@ -300,7 +304,7 @@ const EditBrand = () => {
                 address: editingBankDetail.address || null,
                 status: editingBankDetail.status || 'pending',
             }
-            
+
             // Add rejection reason if status is rejected
             if (editingBankDetail.status === 'rejected' && editingBankDetail.rejectionReason) {
                 payload.rejectionReason = editingBankDetail.rejectionReason;
@@ -326,7 +330,7 @@ const EditBrand = () => {
 
     const handleApproveBank = async (bankDetailID) => {
         if (processingBankID) return; // Prevent multiple simultaneous operations
-        
+
         try {
             setProcessingBankID(bankDetailID)
             const { data } = await axiosInstance.put(`/admin/bank-details/${bankDetailID}/approve`)
@@ -390,7 +394,7 @@ const EditBrand = () => {
             })
 
             if (data.success) {
-                // toast.success('Password reset successfully!')
+                toast.success('Password reset successfully!')
                 setPasswordData({ newPassword: '', confirmPassword: '' })
                 setShowPasswordSection(false)
                 setPasswordErrors({})
@@ -442,6 +446,8 @@ const EditBrand = () => {
                 name: brand.name,
                 email: brand.email,
                 gstin: brand.gstin || null,
+                shippingCharge: brand.shippingCharge || 0,
+                commissionPercentage: brand.commissionPercentage === '' ? null : brand.commissionPercentage
             }
 
             // Add profile photo URL if uploaded
@@ -457,7 +463,7 @@ const EditBrand = () => {
             const response = await axiosInstance.put(`/admin/brands/${uid}`, brandData)
 
             if (response.data.success) {
-                // toast.success('Brand updated successfully!')
+                toast.success('Brand updated successfully!')
 
                 // Refresh page to show updated data
                 window.location.reload()
@@ -527,6 +533,26 @@ const EditBrand = () => {
                                         datafunction={(e) => updateFunction(e, 'brandID')}
                                     />
                                     <p className="text-gray-500 text-xs mt-1">Brand ID (cannot be changed)</p>
+                                </div>
+                                <div className="col-span-1">
+                                    <InputUi
+                                        value={brand.shippingCharge}
+                                        label={'Shipping Charge (INR)'}
+                                        type='number'
+                                        placeholder='e.g., 50'
+                                        datafunction={(e) => updateFunction(e, 'shippingCharge')}
+                                    />
+                                    <p className="text-gray-500 text-xs mt-1">Shipping charge applied once per order.</p>
+                                </div>
+                                <div className="col-span-1">
+                                    <InputUi
+                                        value={brand.commissionPercentage}
+                                        label={'Commission Percentage (%)'}
+                                        type='number'
+                                        placeholder='e.g., 10'
+                                        datafunction={(e) => updateFunction(e, 'commissionPercentage')}
+                                    />
+                                    <p className="text-gray-500 text-xs mt-1">Platform commission on each sale.</p>
                                 </div>
                             </div>
                         </Container>
@@ -704,7 +730,7 @@ const EditBrand = () => {
                                             <div className="flex justify-between items-start mb-3">
                                                 <div>
                                                     <h4 className="font-semibold text-lg">{bank.bankName}</h4>
-                                                    {bank.branchName && <p className="text-sm text-gray-600">{bank.branchName}</p>}
+                                                    {bank.branchName && <p className="text-sm text-secondary-text">{bank.branchName}</p>}
                                                 </div>
                                                 <div className="flex items-center gap-2">
                                                     <span className={`px-3 py-1 rounded-full text-xs ${bank.status === 'active' ? 'bg-green-100 text-green-800' :
@@ -717,26 +743,26 @@ const EditBrand = () => {
                                             </div>
                                             <div className="grid grid-cols-2 gap-3 text-sm">
                                                 <div>
-                                                    <p className="text-gray-600">Account Holder:</p>
+                                                    <p className="text-secondary-text">Account Holder:</p>
                                                     <p className="font-medium">{bank.accountHolderName}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-gray-600">Account Number:</p>
+                                                    <p className="text-secondary-text">Account Number:</p>
                                                     <p className="font-medium font-mono">{bank.accountNumber}</p>
                                                 </div>
                                                 <div>
-                                                    <p className="text-gray-600">IFSC Code:</p>
+                                                    <p className="text-secondary-text">IFSC Code:</p>
                                                     <p className="font-medium font-mono">{bank.ifscCode}</p>
                                                 </div>
                                                 {bank.panNumber && (
                                                     <div>
-                                                        <p className="text-gray-600">PAN Number:</p>
+                                                        <p className="text-secondary-text">PAN Number:</p>
                                                         <p className="font-medium">{bank.panNumber}</p>
                                                     </div>
                                                 )}
                                                 {bank.address && (
                                                     <div className="col-span-2">
-                                                        <p className="text-gray-600">Address:</p>
+                                                        <p className="text-secondary-text">Address:</p>
                                                         <p className="font-medium">{bank.address}</p>
                                                     </div>
                                                 )}
@@ -746,7 +772,7 @@ const EditBrand = () => {
                                             </div>
                                             <div className="flex justify-end gap-2 mt-3">
                                                 <button
-                                                    className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50"
+                                                    className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-background"
                                                     onClick={() => openEditBankModal(bank)}
                                                 >
                                                     Edit
@@ -784,7 +810,7 @@ const EditBrand = () => {
                             <div className="flex items-center justify-end gap-3">
                                 <button
                                     onClick={() => navigate('/brands/list')}
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-secondary-text hover:bg-background"
                                     disabled={loading}
                                 >
                                     Cancel
@@ -842,35 +868,35 @@ const EditBrand = () => {
                         <Container label={'Brand Information'} containerclass={'mb-10 bg-white'}>
                             <div className="flex flex-col gap-2">
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Brand Name</p>
+                                    <p className="w-40 text-foreground font-semibold">Brand Name</p>
                                     <p className="text-secondary-text">
                                         {brand.name || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Username</p>
+                                    <p className="w-40 text-foreground font-semibold">Username</p>
                                     <p className="text-secondary-text">
                                         @{brand.username}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Email</p>
+                                    <p className="w-40 text-foreground font-semibold">Email</p>
                                     <p className="text-secondary-text max-w-[70%] truncate">
                                         {brand.email || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">GSTIN</p>
+                                    <p className="w-40 text-foreground font-semibold">GSTIN</p>
                                     <p className="text-secondary-text">
                                         {brand.gstin || 'Not provided'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Brand ID</p>
+                                    <p className="w-40 text-foreground font-semibold">Brand ID</p>
                                     <p className="text-secondary-text">
                                         {brand.brandID || brand.uid}
                                     </p>
@@ -962,7 +988,7 @@ const EditBrand = () => {
                                     />
                                 </div>
                                 <div className="col-span-2">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-secondary-text mb-2">
                                         Status
                                     </label>
                                     <select
@@ -978,7 +1004,7 @@ const EditBrand = () => {
                                 </div>
                                 {editingBankDetail.status === 'rejected' && (
                                     <div className="col-span-2">
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-secondary-text mb-2">
                                             Rejection Reason (Optional)
                                         </label>
                                         <textarea
@@ -993,7 +1019,7 @@ const EditBrand = () => {
                             </div>
                             <div className="flex justify-end gap-2 mt-4">
                                 <button
-                                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                    className="px-4 py-2 border border-gray-300 rounded-lg text-secondary-text hover:bg-background"
                                     onClick={() => {
                                         setShowEditBankModal(false)
                                         setEditingBankDetail(null)
@@ -1020,7 +1046,7 @@ const EditBrand = () => {
                     <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
                         <h2 className="text-xl font-semibold mb-4">Reject Bank Details</h2>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-secondary-text mb-2">
                                 Rejection Reason
                             </label>
                             <textarea
@@ -1033,7 +1059,7 @@ const EditBrand = () => {
                         </div>
                         <div className="flex gap-2">
                             <button
-                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-gray-50"
+                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-background"
                                 onClick={() => {
                                     setShowRejectionModal(false)
                                     setRejectionReason('')

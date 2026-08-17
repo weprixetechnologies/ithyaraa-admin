@@ -19,6 +19,9 @@ const EditOffer = () => {
         buyCount: '',
         buyAt: '',
         getCount: '',
+        discountType: 'percentage',
+        discountValue: '',
+        productScope: 'different_product',
         products: []
     });
 
@@ -44,7 +47,8 @@ const EditOffer = () => {
                             ? JSON.parse(fetched.products)
                             : [];
                     setOffer({
-                        offerType: 'buy_x_get_y', // fallback default
+                        discountType: 'percentage',
+                        productScope: 'different_product',
                         ...fetched,
                         products: parsedProducts,
                     });
@@ -69,8 +73,7 @@ const EditOffer = () => {
                 ...prev,
                 [field]: e.target.value,
             };
-            // Clear getCount when switching to buy_x_at_x
-            if (field === 'offerType' && e.target.value === 'buy_x_at_x') {
+            if (field === 'offerType' && (e.target.value === 'buy_x_at_x' || e.target.value === 'buy_x_get_off')) {
                 updated.getCount = '';
             }
             return updated;
@@ -92,7 +95,10 @@ const EditOffer = () => {
                 offerID,
                 buyCount: Number(offer.buyCount),
                 buyAt: offer.offerType === 'buy_x_at_x' ? Number(offer.buyAt) : null,
-                getCount: Number(offer.getCount),
+                getCount: offer.offerType === 'buy_x_get_off' ? 0 : Number(offer.getCount),
+                discountType: offer.offerType === 'buy_x_get_off' ? offer.discountType : null,
+                discountValue: offer.offerType === 'buy_x_get_off' ? Number(offer.discountValue) : null,
+                productScope: offer.offerType === 'buy_x_get_off' ? offer.productScope : 'different_product',
                 offerMobileBanner: mobileBanner?.[0]?.imgUrl || '',
                 offerBanner: desktopBanner?.[0]?.imgUrl || '',
                 products: selectedProducts
@@ -100,7 +106,7 @@ const EditOffer = () => {
             const res = await axiosInstance.put(`/offer/edit-offer/${offerID}`, payload);
             const data = res.data;
             if (data.success) {
-                // toast.success('Offer updated successfully');
+                toast.success(data.message || 'Offer updated successfully');
             } else {
                 toast.error(data.message || 'Failed to update offer');
             }
@@ -159,6 +165,7 @@ const EditOffer = () => {
                                 >
                                     <option value="buy_x_get_y">Buy X Get Y</option>
                                     <option value="buy_x_at_x">Buy X at ₹X</option>
+                                    <option value="buy_x_get_off">Buy X Get % / Flat OFF</option>
                                 </select>
 
                                 <InputUi
@@ -173,12 +180,42 @@ const EditOffer = () => {
                                         datafunction={handleChange('buyAt')}
                                     />
                                 )}
-                                <InputUi
-                                    label="Get Count"
-                                    value={offer.offerType === 'buy_x_at_x' ? '' : offer.getCount}
-                                    datafunction={handleChange('getCount')}
-                                    disabled={offer.offerType === 'buy_x_at_x'}
-                                />
+                                {offer.offerType === 'buy_x_get_y' && (
+                                    <InputUi
+                                        label="Get Count"
+                                        value={offer.getCount}
+                                        datafunction={handleChange('getCount')}
+                                    />
+                                )}
+                                {offer.offerType === 'buy_x_get_off' && (
+                                    <>
+                                        <label className="text-sm font-medium mt-2">Discount Type</label>
+                                        <select
+                                            value={offer.discountType || 'percentage'}
+                                            onChange={handleChange('discountType')}
+                                            className="border border-gray-300 rounded px-3 py-2"
+                                        >
+                                            <option value="percentage">Percentage (%) OFF</option>
+                                            <option value="flat">Flat (₹) OFF</option>
+                                        </select>
+
+                                        <InputUi
+                                            label={offer.discountType === 'percentage' ? 'Discount Percentage (%)' : 'Discount Flat Amount (₹)'}
+                                            value={offer.discountValue || ''}
+                                            datafunction={handleChange('discountValue')}
+                                        />
+
+                                        <label className="text-sm font-medium mt-2">Product Requirement / Scope</label>
+                                        <select
+                                            value={offer.productScope || 'different_product'}
+                                            onChange={handleChange('productScope')}
+                                            className="border border-gray-300 rounded px-3 py-2"
+                                        >
+                                            <option value="different_product">Different Products / Mix & Match</option>
+                                            <option value="same_product">Same Product Only</option>
+                                        </select>
+                                    </>
+                                )}
                             </div>
                         </Container>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { getPaginatedProducts, getProductCount } from './../../lib/api/productsApi';
 import InputUi from '@/components/ui/inputui';
 
-const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
+const SelectProducts = ({ onProductToggle, initialSelected = [], type }) => {
     // State management
     const [state, setSelected] = useState({
         filters: {
@@ -10,8 +10,9 @@ const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
             productID: '',
             categoryID: '',
             categoryName: '',
+            type: type
         },
-        appliedFilters: {},
+        appliedFilters: { type: type },
         productsByPage: {},
         page: 1,
         selectedProductIDs: initialSelected,
@@ -58,11 +59,11 @@ const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
     const applyFilters = useCallback(() => {
         setSelected(prev => ({
             ...prev,
-            appliedFilters: { ...prev.filters },
+            appliedFilters: { ...prev.filters, type },
             productsByPage: {},
             page: 1
         }));
-    }, []);
+    }, [type]);
 
     // Fetch products with error handling and caching
     const fetchProducts = useCallback(async (pageToFetch) => {
@@ -80,10 +81,11 @@ const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
                     productID: appliedFilters.productID?.trim() || undefined,
                     categoryID: appliedFilters.categoryID?.trim() || undefined,
                     categoryName: appliedFilters.categoryName?.trim() || undefined,
+                    type: type
                 },
             });
 
-            const { totalItems } = await getProductCount(filters);
+            const { totalItems } = await getProductCount({ ...filters, type });
 
 
 
@@ -109,7 +111,7 @@ const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
             console.error('Error fetching products:', error);
             setSelected(prev => ({ ...prev, loading: false }));
         }
-    }, [appliedFilters, productsByPage]);
+    }, [appliedFilters, productsByPage, type, filters]);
 
     // Toggle product selection with callback to parent
     const toggleProductSelection = (productID) => {
@@ -211,9 +213,9 @@ const SelectProducts = ({ onProductToggle, initialSelected = [] }) => {
 
             {/* Selected Products Summary */}
             {selectedProductIDs.length > 0 && (
-                <div className="mt-4 p-3 bg-gray-50 rounded text-sm">
+                <div className="mt-4 p-3 bg-background rounded text-sm">
                     <strong>Selected Products:</strong> {selectedProductIDs.length} items
-                    <div className="mt-1 text-xs text-gray-600 truncate">
+                    <div className="mt-1 text-xs text-secondary-text truncate">
                         IDs: {selectedProductIDs.join(', ')}
                     </div>
                 </div>
@@ -238,7 +240,7 @@ const ProductCard = ({ product, isSelected, onToggle }) => (
                 </div>
             </div>
         )}
-        <div className="bg-gray-100 rounded overflow-hidden flex items-center justify-center" style={{height: '96px', width: '100%'}}>
+        <div className="bg-gray-100 rounded overflow-hidden flex items-center justify-center" style={{ height: '96px', width: '100%' }}>
             <img
                 src={product.featuredImage?.[0]?.imgUrl || '/placeholder.png'}
                 alt={product.name}
@@ -247,7 +249,7 @@ const ProductCard = ({ product, isSelected, onToggle }) => (
             />
         </div>
         <div className="mt-2">
-            <div className="font-medium text-gray-900 line-clamp-1">{product.name}</div>
+            <div className="font-medium text-foreground line-clamp-1">{product.name}</div>
             <div className="text-xs text-gray-500">ID: {product.productID}</div>
         </div>
     </label>
@@ -264,21 +266,21 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
                 <button
                     onClick={() => canGoPrev && onPageChange(currentPage - 1)}
                     disabled={!canGoPrev}
-                    className={`relative inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium ${canGoPrev ? 'bg-white text-gray-700 hover:bg-gray-50' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                    className={`relative inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium ${canGoPrev ? 'bg-white text-secondary-text hover:bg-background' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
                 >
                     Previous
                 </button>
                 <button
                     onClick={() => canGoNext && onPageChange(currentPage + 1)}
                     disabled={!canGoNext}
-                    className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium ${canGoNext ? 'bg-white text-gray-700 hover:bg-gray-50' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
+                    className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium ${canGoNext ? 'bg-white text-secondary-text hover:bg-background' : 'bg-gray-100 text-gray-400 cursor-not-allowed'}`}
                 >
                     Next
                 </button>
             </div>
             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                 <div>
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-secondary-text">
                         Showing page <span className="font-medium">{currentPage}</span> of{' '}
                         <span className="font-medium">{totalPages}</span>
                     </p>
@@ -288,7 +290,7 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
                         <button
                             onClick={() => canGoPrev && onPageChange(currentPage - 1)}
                             disabled={!canGoPrev}
-                            className={`relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!canGoPrev ? 'cursor-not-allowed opacity-50' : ''}`}
+                            className={`relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-background focus:z-20 focus:outline-offset-0 ${!canGoPrev ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
                             <span className="sr-only">Previous</span>
                             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -305,7 +307,7 @@ const PaginationControls = ({ currentPage, totalPages, onPageChange }) => {
                         <button
                             onClick={() => canGoNext && onPageChange(currentPage + 1)}
                             disabled={!canGoNext}
-                            className={`relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!canGoNext ? 'cursor-not-allowed opacity-50' : ''}`}
+                            className={`relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-background focus:z-20 focus:outline-offset-0 ${!canGoNext ? 'cursor-not-allowed opacity-50' : ''}`}
                         >
                             <span className="sr-only">Next</span>
                             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

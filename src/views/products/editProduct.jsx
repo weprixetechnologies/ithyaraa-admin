@@ -4,6 +4,7 @@ import VariationsComponent from '@/components/products/variations'
 import CrossSellModal from '@/components/products/crossSellModal'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
+import RichTextUi from '@/components/ui/RichTextUi'
 import UploadImages from '@/components/ui/uploadImages'
 import { getProductDetails } from '../../lib/api/productsApi'
 import React, { useEffect, useRef, useState } from 'react'
@@ -12,6 +13,7 @@ import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import CategoryProduct from '@/components/products/categoryProduct'
 import axiosInstance from '../../lib/axiosInstance'
+import { listSizeCharts } from '../../lib/api/sizeChartApi'
 
 const EditProduct = () => {
     const { productID } = useParams()
@@ -21,8 +23,11 @@ const EditProduct = () => {
     const [product, setProduct] = useState({ type: 'variable' })
     const [showCrossSellModal, setShowCrossSellModal] = useState(false)
     const [crossSells, setCrossSells] = useState([])
+    const [sizeCharts, setSizeCharts] = useState([])
 
     useEffect(() => {
+        if (!productID) return;
+
         const fetchProduct = async () => {
             try {
                 const data = await getProductDetails(productID);
@@ -42,12 +47,12 @@ const EditProduct = () => {
                 };
 
                 setProduct(parsedProduct);
-                
+
                 // Extract cross-sell product IDs
                 if (data.crossSellProducts && Array.isArray(data.crossSellProducts)) {
                     setCrossSells(data.crossSellProducts.map(p => p.productID || p.crossSellProductID));
                 }
-                
+
                 console.log(parsedProduct);
 
             } catch (error) {
@@ -56,6 +61,20 @@ const EditProduct = () => {
         };
 
         fetchProduct();
+    }, [productID]);
+
+    useEffect(() => {
+        const fetchSizeCharts = async () => {
+            try {
+                const res = await listSizeCharts();
+                if (res.success) {
+                    setSizeCharts(res.data || []);
+                }
+            } catch (err) {
+                console.error('Error fetching size charts:', err);
+            }
+        };
+        fetchSizeCharts();
     }, []);
 
     // helper function
@@ -87,24 +106,46 @@ const EditProduct = () => {
             const finalImages = await uploadRef.current?.uploadImageFunction();
             const galleryupload = await galleryRef.current?.uploadImageFunction();
 
+            // Ensure variations include variationID and variationSlug if they exist
+            const variationsToSend = product.productVariations?.map(variation => {
+                // Preserve all existing fields, especially variationID and variationSlug
+                return {
+                    ...variation,
+                    // Ensure variationID is preserved if it exists
+                    variationID: variation.variationID || null,
+                    // Ensure variationSlug is preserved if it exists
+                    variationSlug: variation.variationSlug || null,
+                };
+            }) || [];
+
             const fullProductData = {
                 ...product,
                 featuredImage: finalImages,
                 galleryImage: galleryupload,
-                crossSells: crossSells
+                crossSells: crossSells,
+                productVariations: variationsToSend
             };
 
             console.log('🚀 Full product with images:', fullProductData);
+            console.log('📦 Variations being sent:', variationsToSend.map(v => ({
+                variationID: v.variationID,
+                variationSlug: v.variationSlug,
+                variationName: v.variationName
+            })));
 
             // Use axiosInstance for POST request
             const response = await axiosInstance.post('/products/edit-product', fullProductData);
 
             console.log('Product edited successfully:', response.data);
-            // toast.success('Product updated successfully!');
+            if (response.data?.success) {
+                toast.success(response.data.message || 'Product updated successfully!');
+            } else {
+                toast.error(response.data?.message || 'Failed to update product');
+            }
 
         } catch (error) {
             console.error('Error uploading or posting product:', error.message);
-            toast.error(`Error: ${error.message}`);
+            toast.error(error.response?.data?.message || `Error: ${error.message}`);
         }
     };
 
@@ -119,12 +160,11 @@ const EditProduct = () => {
                         <Container gap={3} label={'Basic Information'}>
 
                             <InputUi label={'Product Title'} value={product.name ?? ''} datafunction={(e) => updateFunction(e, 'name')} />
-                            <InputUi label={'Product Description'} value={product.description ?? ''} isInput={false} datafunction={(e) => updateFunction(e, 'description')} fieldClass='h-[200px]' />
-                            <div className="grid grid-cols-2 gap-2">
-                                <InputUi label={'Tab 1'} isInput={false} value={product.tab1 ?? ''} datafunction={(e) => updateFunction(e, 'tab1')} fieldClass='h-[100px]' />
-
-                                <InputUi label={'Tab 2'} isInput={false} value={product.tab2 ?? ''} datafunction={(e) => updateFunction(e, 'tab2')} fieldClass='h-[100px]' />
-
+                            <RichTextUi label={'Product Description'} value={product.description ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'description')} />
+                            <div className="grid grid-cols-3 gap-2">
+                                <RichTextUi label={'Tab 1 - Material Care'} value={product.tab1 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab1')} />
+                                <RichTextUi label={'Tab 2 - Styling and Suggestion'} value={product.tab2 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab2')} />
+                                <RichTextUi label={'Tab 3 - Product Specifications'} value={product.tab3 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab3')} />
                             </div>
                         </Container>
                         <Container gap={3} label={'Pricing & Discount'}>
@@ -133,6 +173,41 @@ const EditProduct = () => {
                         <Container gap={3} label={'Variation & Stocking'}>
                             <VariationsComponent defaultValue={product.productAttributes} defaultVariation={product.variations} setProducts={setProduct} products={product} />
                         </Container>
+                        {product.type === 'variable' && (
+                            <Container gap={3} label={'Size Chart (Variable Products Only)'}>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-xs font-medium text-secondary-text">
+                                        Select Size Chart
+                                    </label>
+                                    <select
+                                        className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                                        value={product.sizeChartUrl || ''}
+                                        onChange={(e) =>
+                                            setProduct(prev => ({ ...prev, sizeChartUrl: e.target.value || null }))
+                                        }
+                                    >
+                                        <option value="">None</option>
+                                        {sizeCharts.map(chart => (
+                                            <option key={chart.id} value={chart.imgUrl}>
+                                                {chart.chartName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {product.sizeChartUrl && (
+                                        <div className="mt-2">
+                                            <p className="text-xs text-secondary-text mb-1">Preview:</p>
+                                            <div className="w-40 h-40 border rounded overflow-hidden bg-background">
+                                                <img
+                                                    src={product.sizeChartUrl}
+                                                    alt="Size chart preview"
+                                                    className="w-full h-full object-contain"
+                                                />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </Container>
+                        )}
                     </div>
 
                 </div>
@@ -162,7 +237,7 @@ const EditProduct = () => {
                                     Select Cross-Sell Products
                                 </button>
                                 {crossSells.length > 0 && (
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-secondary-text">
                                         {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
                                     </div>
                                 )}
@@ -174,7 +249,7 @@ const EditProduct = () => {
                         <Container gap={3} label={'Gallery Images'}>
                             <UploadImages ref={galleryRef} maxImages={8} defaultImages={product.galleryImage} />
                         </Container>
-                        <button className='primary-button' onClick={handleUpload}>Upload Product</button>
+                        <button className='primary-button' onClick={handleUpload}>Update Product</button>
 
                     </div>
                 </div>

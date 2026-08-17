@@ -11,6 +11,8 @@ const AddCoupon = () => {
         usageLimit: '',
         discountType: '',
         discountValue: '',
+        maxUsagePerUser: '',
+        minOrderValue: '',
     });
 
     const handleChange = (field) => (e) => {
@@ -38,8 +40,19 @@ const AddCoupon = () => {
                 discountValue: Number(formData.discountValue),
             };
 
+            // Optional fields
             if (!formData.assignedUser) {
                 delete payload.assignedUser;
+            }
+            if (!formData.maxUsagePerUser) {
+                delete payload.maxUsagePerUser;
+            } else {
+                payload.maxUsagePerUser = Number(formData.maxUsagePerUser);
+            }
+            if (!formData.minOrderValue) {
+                delete payload.minOrderValue;
+            } else {
+                payload.minOrderValue = Number(formData.minOrderValue);
             }
 
             const response = await createCoupon(payload);
@@ -52,6 +65,8 @@ const AddCoupon = () => {
                     usageLimit: '',
                     discountType: '',
                     discountValue: '',
+                    maxUsagePerUser: '',
+                    minOrderValue: '',
                 });
             } else {
                 toast.error(response.result?.message || 'Something went wrong');
@@ -77,7 +92,7 @@ const AddCoupon = () => {
                             datafunction={handleChange('assignedUser')}
                         />
                         <InputUi
-                            label={'Usage Limit'}
+                            label={'Usage Limit (Global)'}
                             value={formData.usageLimit}
                             datafunction={handleChange('usageLimit')}
                         />
@@ -99,6 +114,16 @@ const AddCoupon = () => {
                             label={'Discount Value'}
                             value={formData.discountValue}
                             datafunction={handleChange('discountValue')}
+                        />
+                        <InputUi
+                            label={'Max Uses Per User (optional)'}
+                            value={formData.maxUsagePerUser}
+                            datafunction={handleChange('maxUsagePerUser')}
+                        />
+                        <InputUi
+                            label={'Minimum Order Value (₹, optional)'}
+                            value={formData.minOrderValue}
+                            datafunction={handleChange('minOrderValue')}
                         />
                     </div>
                     <div className="primary-button cursor-pointer" onClick={handleSubmit}>

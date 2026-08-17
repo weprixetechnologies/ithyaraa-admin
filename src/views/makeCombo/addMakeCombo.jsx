@@ -3,6 +3,7 @@ import axiosInstance from 'src/lib/axiosInstance'
 import Layout from 'src/layout'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
+import RichTextUi from '@/components/ui/RichTextUi'
 import UploadImages from '@/components/ui/uploadImages'
 import { toast } from 'react-toastify'
 import Pricing from '@/components/products/pricing'
@@ -10,6 +11,7 @@ import CategoryProduct from '@/components/products/categoryProduct'
 import OfferProducts from '@/components/products/offersProducts'
 import SelectProducts from '@/components/ui/selectProducts'
 import CrossSellModal from '@/components/products/crossSellModal'
+import { useNavigate } from 'react-router-dom'
 
 const AddMakeCombo = () => {
     const uploadRef = useRef();
@@ -29,8 +31,13 @@ const AddMakeCombo = () => {
     };
 
 
+    const [isUploading, setIsUploading] = useState(false);
+    const navigate = useNavigate();
+
     const handleUpload = async () => {
+        if (isUploading) return;
         try {
+            setIsUploading(true);
             const finalImages = await uploadRef.current?.uploadImageFunction();
             const galleryupload = await galleryRef.current?.uploadImageFunction();
 
@@ -42,18 +49,22 @@ const AddMakeCombo = () => {
                 products: selectedProducts,
                 crossSells: crossSells
             };
-            console.log(fullProductData);
-
-
-            console.log('🚀 Full product with images:', fullProductData); // ✅ this has images
 
             const response = await axiosInstance.post('/make-combo/create-make-combo', fullProductData);
             const result = response.data;
-            console.log('Product added successfully:', result);
-            // toast.success('Product Added')
+            toast.success(result?.message || 'Make combo created successfully');
+
+            if (result.productID) {
+                navigate(`/make-combo/detail/${result.productID}`);
+            } else {
+                navigate('/make-combo/list');
+            }
 
         } catch (error) {
-            console.error('Error uploading or posting product:', error.message);
+            console.error('Error uploading or posting product:', error.response?.data || error.message);
+            toast.error(error.response?.data?.message || 'Failed to create make combo');
+        } finally {
+            setIsUploading(false);
         }
     };
     const handleToggleProductParent = (productID) => {
@@ -75,12 +86,11 @@ const AddMakeCombo = () => {
                         <Container gap={3} label={'Basic Information'}>
 
                             <InputUi label={'Product Title'} datafunction={(e) => updateFunction(e, 'name')} />
-                            <InputUi label={'Product Description'} isInput={false} datafunction={(e) => updateFunction(e, 'description')} />
-                            <div className="grid grid-cols-2 gap-2">
-                                <InputUi label={'Tab 1'} isInput={false} datafunction={(e) => updateFunction(e, 'tab1')} fieldClass='h-[100px]' />
-
-                                <InputUi label={'Tab 2'} isInput={false} datafunction={(e) => updateFunction(e, 'tab2')} fieldClass='h-[100px]' />
-
+                            <RichTextUi label={'Product Description'} value={product.description ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'description')} />
+                            <div className="grid grid-cols-3 gap-2">
+                                <RichTextUi label={'Tab 1'} value={product.tab1 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab1')} />
+                                <RichTextUi label={'Tab 2'} value={product.tab2 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab2')} />
+                                <RichTextUi label={'Tab 3 - Product Specifications'} value={product.tab3 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab3')} />
                             </div>
                         </Container>
                         <Container gap={3} label={'Pricing & Discount'}>
@@ -103,7 +113,7 @@ const AddMakeCombo = () => {
                                     Select Cross-Sell Products
                                 </button>
                                 {crossSells.length > 0 && (
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-secondary-text">
                                         {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
                                     </div>
                                 )}
@@ -135,7 +145,20 @@ const AddMakeCombo = () => {
                         <Container gap={3} label={'Gallery Images'}>
                             <UploadImages ref={galleryRef} maxImages={8} setProducts={setProduct} products={product} />
                         </Container>
-                        <button className='primary-button' onClick={handleUpload}>Upload Product</button>
+                        <button
+                            className='primary-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+                            onClick={handleUpload}
+                            disabled={isUploading}
+                        >
+                            {isUploading ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    <span>Uploading...</span>
+                                </>
+                            ) : (
+                                "Upload Product"
+                            )}
+                        </button>
 
                     </div>
                 </div>

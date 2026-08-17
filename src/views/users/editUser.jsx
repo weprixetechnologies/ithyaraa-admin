@@ -49,7 +49,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={!hasPrev}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
             >
                 Previous
             </button>
@@ -60,7 +60,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
                     onClick={() => onPageChange(page)}
                     className={`px-3 py-2 text-sm border rounded ${page === currentPage
                         ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
+                        : 'hover:bg-background'
                         }`}
                 >
                     {page}
@@ -70,7 +70,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={!hasNext}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
             >
                 Next
             </button>
@@ -185,7 +185,7 @@ const UserOrdersSection = ({ uid }) => {
             case 'Shipped': return 'bg-blue-100 text-blue-800'
             case 'Delivered': return 'bg-green-100 text-green-800'
             case 'Cancelled': return 'bg-red-100 text-red-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -195,7 +195,7 @@ const UserOrdersSection = ({ uid }) => {
             case 'pending': return 'bg-yellow-100 text-yellow-800'
             case 'failed': return 'bg-red-100 text-red-800'
             case 'refunded': return 'bg-purple-100 text-purple-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -252,7 +252,7 @@ const UserOrdersSection = ({ uid }) => {
             </div>
 
             {/* Stats */}
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600">
+            <div className="flex flex-wrap gap-4 text-sm text-secondary-text">
                 <span className="whitespace-nowrap">Total Orders: {pagination.totalOrders}</span>
                 <span className="whitespace-nowrap">Page: {pagination.currentPage} of {pagination.totalPages}</span>
             </div>
@@ -819,7 +819,7 @@ const EditUser = () => {
 
                         <Container label={'Verification Management'}>
                             <div className="flex flex-col gap-3">
-                                <section className="flex items-center justify-between gap-2 p-3 bg-gray-50 rounded">
+                                <section className="flex items-center justify-between gap-2 p-3 bg-background rounded">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm font-medium">Email Status:</span>
                                         <span className={`px-2 py-1 rounded text-xs ${user.verifiedEmail ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -846,7 +846,7 @@ const EditUser = () => {
                                     </div>
                                 </section>
 
-                                <section className="flex items-center justify-between gap-2 p-3 bg-gray-50 rounded">
+                                <section className="flex items-center justify-between gap-2 p-3 bg-background rounded">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm font-medium">Phone Status:</span>
                                         <span className={`px-2 py-1 rounded text-xs ${user.verifiedPhone ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -878,48 +878,48 @@ const EditUser = () => {
                         <Container label={'Session Details'} containerclass={'mb-10 bg-white'}>
                             <div className="flex flex-col gap-2">
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Last Login</p>
+                                    <p className="w-40 text-foreground font-semibold">Last Login</p>
                                     <p className="text-secondary-text">{user.lastLogin}</p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Refresh Token</p>
+                                    <p className="w-40 text-foreground font-semibold">Refresh Token</p>
                                     <p className="text-secondary-text max-w-[70%] truncate">{user.refreshToken}</p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Device</p>
+                                    <p className="w-40 text-foreground font-semibold">Device</p>
                                     <p className="text-secondary-text">{user.device}</p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Registered On</p>
+                                    <p className="w-40 text-foreground font-semibold">Registered On</p>
                                     <p className="text-secondary-text">{user.createdOn}</p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Email Verified</p>
+                                    <p className="w-40 text-foreground font-semibold">Email Verified</p>
                                     <p className={`${user.verifiedEmail ? 'text-green-500' : 'text-red-500'}`}>
                                         {user.verifiedEmail ? 'Verified' : 'Not Verified'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Phone Verified</p>
+                                    <p className="w-40 text-foreground font-semibold">Phone Verified</p>
                                     <p className={`${user.verifiedPhone ? 'text-green-500' : 'text-red-500'}`}>
                                         {user.verifiedPhone ? 'Verified' : 'Not Verified'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">Security Status</p>
+                                    <p className="w-40 text-foreground font-semibold">Security Status</p>
                                     <p className={`${user.securityStatus === 'active' ? 'text-green-500' : 'text-red-500'}`}>
                                         {user.securityStatus === 'active' ? 'Active' : 'Issue Found'}
                                     </p>
                                 </section>
 
                                 <section className="flex items-center gap-3">
-                                    <p className="w-40 text-black font-semibold">User Status</p>
+                                    <p className="w-40 text-foreground font-semibold">User Status</p>
                                     <p className="text-secondary-text">{user.status}</p>
                                 </section>
                             </div>

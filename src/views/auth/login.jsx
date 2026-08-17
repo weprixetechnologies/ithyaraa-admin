@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import InputUi from '@/components/ui/inputui';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+// import InputUi from '@/components/ui/inputui';
 import { getCookie, setCookie } from '../../lib/cookieUtil'
 const Login = () => {
     const navigate = useNavigate();
@@ -23,6 +24,7 @@ const Login = () => {
     });
 
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
 
     const handleChange = (field, value) => {
@@ -46,7 +48,7 @@ const Login = () => {
                 }
             );
 
-            const { accessToken, refreshToken } = response.data || {};
+            const { accessToken, refreshToken, user } = response.data || {};
             console.log(refreshToken);
 
             if (!accessToken || !refreshToken) {
@@ -60,6 +62,9 @@ const Login = () => {
             setCookie('_iil', 'true', 7); // 7 days
             setCookie('_at', accessToken, 7);
             setCookie('_rt', refreshToken, 7);
+            if (user?.role) {
+                setCookie('_role', user.role, 7);
+            }
 
             navigate('/');
 
@@ -73,51 +78,115 @@ const Login = () => {
     };
 
     return (
-        <div className="flex-center bg-[#0a0a0a] w-[100dvw] h-[100dvh]">
-            <div className="py-7 px-7 min-w-[400px] bg-dark-text border border-secondary-text rounded-[12px] text-white">
-                <p className="font-semibold text-lg" style={{ fontFamily: 'var(--f2)' }}>
-                    Login to your account
-                </p>
-                <p className="text-sm text-secondary-primary mb-[15px]">
-                    Please enter your credentials to login
-                </p>
-
-                <div className="flex flex-col gap-2">
-                    <InputUi
-                        fieldClass="text-black"
-                        label="Email Address"
-                        labelClassp="text-white text-[14px]"
-                        value={loginForm.email}
-                        datafunction={e => handleChange('email', e.target.value)}
+        <div className="export-wrapper" style={{ width: '100vw', minHeight: '100vh', backgroundColor: 'var(--background)' }}>
+            <div className="login-layout">
+                <div className="branding-panel">
+                    <img
+                        className="branding-image"
+                        src="https://storage.googleapis.com/banani-generated-images/generated-images/8acc6179-c810-4acf-8501-6a563af02589.jpg"
+                        alt="Admin background"
                     />
-
-                    <div className="flex flex-col items-end w-full">
-                        <InputUi
-                            fieldClass="text-black"
-                            label="Password"
-                            labelClassp="text-white text-[14px]"
-                            type="password"
-                            value={loginForm.password}
-                            datafunction={e => handleChange('password', e.target.value)}
-                        />
-                        <a href="/" className="text-sm text-light-grey underline">
-                            Forgot Password
-                        </a>
+                    <div className="branding-content logo">
+                        <div className="logo-icon">
+                            <span style={{ fontWeight: 700 }}>A</span>
+                        </div>
+                        AdminPortal
+                    </div>
+                    <div className="branding-content testimonial">
+                        <div className="testimonial-text">
+                            "The new administrative dashboard has completely transformed how
+                            we manage our internal infrastructure and user permissions."
+                        </div>
+                        <div className="testimonial-author">Sarah Jenkins</div>
+                        <div className="testimonial-role">Director of Operations, TechCorp</div>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-2 justify-center items-center mt-7">
-                    <button
-                        onClick={handleLogin}
-                        disabled={loading}
-                        className={`w-full border-none py-2 text-black rounded-[10px] flex-center text-md ${loading ? 'bg-gray-400' : 'bg-light-grey hover:bg-white'
-                            }`}
-                    >
-                        {loading ? 'Logging in...' : 'Login Securely'}
-                    </button>
-                    <p className="text-sm text-light-grey">
-                        Don't have an account? <a href="/" className="underline">Create One</a>
-                    </p>
+                <div className="form-panel">
+                    <div className="form-container">
+                        <div className="form-header">
+                            <h1 className="form-title">Welcome back</h1>
+                            <p className="form-subtitle">
+                                Please enter your credentials to access the admin portal.
+                            </p>
+                        </div>
+
+                        <div className="form-group">
+                            <div className="input-wrapper">
+                                <label className="input-label">Work Email</label>
+                                <input
+                                    type="email"
+                                    className="simulated-input"
+                                    placeholder="admin@company.com"
+                                    value={loginForm.email}
+                                    onChange={e => handleChange('email', e.target.value)}
+                                />
+                            </div>
+
+                            <div className="input-wrapper">
+                                <label className="input-label">Password</label>
+                                <div className="simulated-input with-icon">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        className="password-input"
+                                        value={loginForm.password}
+                                        onChange={e => handleChange('password', e.target.value)}
+                                        placeholder="••••••••••••"
+                                    />
+                                    <div
+                                        className="input-icon-right cursor-pointer"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                    >
+                                        {showPassword ? (
+                                            <FaEyeSlash style={{ color: 'var(--muted-foreground)' }} />
+                                        ) : (
+                                            <FaEye style={{ color: 'var(--muted-foreground)' }} />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="form-options">
+                                <div className="checkbox-wrapper">
+                                    <div className="simulated-checkbox" />
+                                    <span className="checkbox-label">Remember for 30 days</span>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="forgot-link"
+                                    onClick={() => navigate('/')}
+                                >
+                                    Forgot password?
+                                </button>
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleLogin}
+                                disabled={loading}
+                                className="submit-btn"
+                            >
+                                {loading ? 'Signing in...' : 'Sign In'}
+                            </button>
+                        </div>
+
+                        <div className="divider">
+                            <span className="divider-text">Or continue with</span>
+                        </div>
+
+                        <button type="button" className="sso-btn">
+                            <span className="sso-btn-icon" style={{ width: 18, height: 18 }}>
+                                <span style={{ fontSize: 12 }}>G</span>
+                            </span>
+                            Single Sign-On (SSO)
+                        </button>
+
+                        <p className="footer-text">
+                            By signing in, you agree to our{' '}
+                            <span className="footer-link">Terms of Service</span> and{' '}
+                            <span className="footer-link">Privacy Policy</span>.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

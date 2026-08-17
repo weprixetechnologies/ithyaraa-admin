@@ -14,6 +14,8 @@ const EditCoupon = () => {
         usageLimit: '',
         discountType: '',
         discountValue: '',
+        maxUsagePerUser: '',
+        minOrderValue: '',
     });
     const [loading, setLoading] = useState(true);
 
@@ -28,6 +30,8 @@ const EditCoupon = () => {
                         usageLimit,
                         discountType,
                         discountValue,
+                        maxUsagePerUser,
+                        minOrderValue,
                     } = res.result;
                     console.log(couponCode,
                         assignedUser,
@@ -42,6 +46,8 @@ const EditCoupon = () => {
                         usageLimit: usageLimit?.toString() || '',
                         discountType,
                         discountValue: discountValue?.toString() || '',
+                        maxUsagePerUser: maxUsagePerUser != null ? String(maxUsagePerUser) : '',
+                        minOrderValue: minOrderValue != null ? String(minOrderValue) : '',
                     });
                 } else {
                     toast.error('Failed to load coupon');
@@ -81,13 +87,23 @@ const EditCoupon = () => {
             if (!formData.assignedUser) {
                 delete payload.assignedUser;
             }
+            if (!formData.maxUsagePerUser) {
+                delete payload.maxUsagePerUser;
+            } else {
+                payload.maxUsagePerUser = Number(formData.maxUsagePerUser);
+            }
+            if (!formData.minOrderValue) {
+                delete payload.minOrderValue;
+            } else {
+                payload.minOrderValue = Number(formData.minOrderValue);
+            }
 
             const response = await updateCoupon(payload, couponID);
             console.log(response);
 
 
             if (response?.success) {
-                // toast.success('Coupon updated successfully!');
+                toast.success('Coupon updated successfully!');
             } else {
                 toast.error(response.result?.message || 'Update failed');
             }
@@ -114,7 +130,7 @@ const EditCoupon = () => {
                             datafunction={handleChange('assignedUser')}
                         />
                         <InputUi
-                            label={'Usage Limit'}
+                            label={'Usage Limit (Global)'}
                             value={formData.usageLimit}
                             datafunction={handleChange('usageLimit')}
                         />
@@ -136,6 +152,16 @@ const EditCoupon = () => {
                             label={'Discount Value'}
                             value={formData.discountValue}
                             datafunction={handleChange('discountValue')}
+                        />
+                        <InputUi
+                            label={'Max Uses Per User (optional)'}
+                            value={formData.maxUsagePerUser}
+                            datafunction={handleChange('maxUsagePerUser')}
+                        />
+                        <InputUi
+                            label={'Minimum Order Value (₹, optional)'}
+                            value={formData.minOrderValue}
+                            datafunction={handleChange('minOrderValue')}
                         />
                     </div>
                     <div className="primary-button cursor-pointer" onClick={handleSubmit}>

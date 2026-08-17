@@ -11,13 +11,53 @@ export default function AddFlashSale() {
     const [saving, setSaving] = useState(false);
     const navigate = useNavigate();
 
+    const formatDateTimeForInput = (dateValue) => {
+        if (!dateValue || dateValue === '') return '';
+
+        let val = dateValue;
+        if (typeof val === 'string') {
+            if (val.includes(' ') && !val.includes('T') && !val.includes('Z')) {
+                val = val.replace(' ', 'T') + 'Z';
+            }
+            else if (val.includes('T') && !val.includes('Z') && !val.includes('+') && !val.includes('-')) {
+                val = val + 'Z';
+            }
+        }
+
+        const date = new Date(val);
+        if (isNaN(date.getTime())) return '';
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+
     const set = (k, v) => setForm(prev => ({ ...prev, [k]: v }));
 
     const save = async () => {
         setSaving(true);
         try {
-            const { success, saleID } = await createFlashSale(form);
-            if (success) navigate(`/flash-sale/edit/${saleID}`);
+            const convertToMySQL = (dateStr) => {
+                if (!dateStr || dateStr === '') return null;
+                const d = new Date(dateStr);
+                if (isNaN(d.getTime())) return null;
+                
+                const pad = (n) => n.toString().padStart(2, '0');
+                // Format to LOCAL YYYY-MM-DD HH:mm:ss
+                return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+            };
+
+            const payload = {
+                ...form,
+                startTime: convertToMySQL(form.startTime),
+                endTime: convertToMySQL(form.endTime)
+            };
+
+            const response = await createFlashSale(payload);
+            if (response.success) navigate(`/flash-sale/edit/${response.saleID}`);
         } finally {
             setSaving(false);
         }

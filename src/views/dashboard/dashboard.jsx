@@ -6,10 +6,42 @@ import { FaUsers, FaShoppingCart, FaBoxOpen, FaRupeeSign, FaCheckCircle, FaClock
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [shippingFee, setShippingFee] = useState('0')
+  const [updatingFee, setUpdatingFee] = useState(false)
 
   useEffect(() => {
     fetchDashboardData()
+    fetchSettings()
   }, [])
+
+  const fetchSettings = async () => {
+    try {
+      const response = await axiosInstance.get('/admin/settings')
+      if (response.data.success) {
+        setShippingFee(response.data.data.shipping_fee || '0')
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+    }
+  }
+
+  const handleUpdateShippingFee = async () => {
+    try {
+      setUpdatingFee(true)
+      const response = await axiosInstance.post('/admin/settings/update', {
+        key: 'shipping_fee',
+        value: shippingFee
+      })
+      if (response.data.success) {
+        alert('Shipping fee updated successfully!')
+      }
+    } catch (error) {
+      console.error('Error updating shipping fee:', error)
+      alert('Failed to update shipping fee')
+    } finally {
+      setUpdatingFee(false)
+    }
+  }
 
   const fetchDashboardData = async () => {
     try {
@@ -32,7 +64,7 @@ const Dashboard = () => {
       case 'cancelled': return 'bg-red-100 text-red-800'
       case 'successful': return 'bg-green-100 text-green-800'
       case 'failed': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      default: return 'bg-gray-100 text-foreground'
     }
   }
 
@@ -83,8 +115,8 @@ const Dashboard = () => {
                 <FaUsers className="text-blue-600 text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Users</p>
-                <p className="text-3xl font-bold text-gray-900">{dashboardData.stats.totalUsers}</p>
+                <p className="text-sm font-medium text-secondary-text">Total Users</p>
+                <p className="text-3xl font-bold text-foreground">{dashboardData.stats.totalUsers}</p>
               </div>
             </div>
           </div>
@@ -95,8 +127,8 @@ const Dashboard = () => {
                 <FaShoppingCart className="text-purple-600 text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-3xl font-bold text-gray-900">{dashboardData.stats.totalOrders}</p>
+                <p className="text-sm font-medium text-secondary-text">Total Orders</p>
+                <p className="text-3xl font-bold text-foreground">{dashboardData.stats.totalOrders}</p>
               </div>
             </div>
           </div>
@@ -107,8 +139,8 @@ const Dashboard = () => {
                 <FaRupeeSign className="text-green-600 text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-3xl font-bold text-gray-900">{formatPrice(dashboardData.stats.totalRevenue)}</p>
+                <p className="text-sm font-medium text-secondary-text">Total Revenue</p>
+                <p className="text-3xl font-bold text-foreground">{formatPrice(dashboardData.stats.totalRevenue)}</p>
               </div>
             </div>
           </div>
@@ -119,9 +151,43 @@ const Dashboard = () => {
                 <FaBoxOpen className="text-orange-600 text-2xl" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Products</p>
-                <p className="text-3xl font-bold text-gray-900">{dashboardData.stats.totalProducts}</p>
+                <p className="text-sm font-medium text-secondary-text">Total Products</p>
+                <p className="text-3xl font-bold text-foreground">{dashboardData.stats.totalProducts}</p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Global Settings Section */}
+        <div className="bg-white p-6 rounded-lg shadow-lg mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-orange-100">
+                <FaRupeeSign className="text-orange-600 text-2xl" />
+              </div>
+              <div className="ml-4">
+                <h3 className="text-lg font-bold text-foreground">Shipping Fee Settings</h3>
+                <p className="text-sm text-secondary-text">Set the standard shipping fee for orders below ₹999</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">₹</span>
+                <input
+                  type="number"
+                  value={shippingFee}
+                  onChange={(e) => setShippingFee(e.target.value)}
+                  className="pl-7 pr-4 py-2 border rounded-md bg-background text-foreground w-32 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                  placeholder="Fee"
+                />
+              </div>
+              <button
+                onClick={handleUpdateShippingFee}
+                disabled={updatingFee}
+                className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-md font-medium transition-colors disabled:opacity-50"
+              >
+                {updatingFee ? 'Updating...' : 'Update Fee'}
+              </button>
             </div>
           </div>
         </div>
@@ -134,7 +200,7 @@ const Dashboard = () => {
             <div className="space-y-3">
               {dashboardData.breakdown.orderStatus?.map((item, index) => (
                 <div key={index} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700 capitalize">{item.orderStatus || 'Unknown'}</span>
+                  <span className="text-sm text-secondary-text capitalize">{item.orderStatus || 'Unknown'}</span>
                   <div className="flex items-center gap-3">
                     <div className="w-32 bg-gray-200 rounded-full h-2">
                       <div
@@ -146,7 +212,7 @@ const Dashboard = () => {
                         style={{ width: `${(item.count / dashboardData.stats.totalOrders) * 100}%` }}
                       />
                     </div>
-                    <span className="text-sm font-bold text-gray-900">{item.count}</span>
+                    <span className="text-sm font-bold text-foreground">{item.count}</span>
                   </div>
                 </div>
               ))}
@@ -159,7 +225,7 @@ const Dashboard = () => {
             <div className="space-y-3">
               {dashboardData.breakdown.paymentStatus?.map((item, index) => (
                 <div key={index} className="flex items-center justify-between">
-                  <span className="text-sm text-gray-700 capitalize">{item.paymentStatus || 'Unknown'}</span>
+                  <span className="text-sm text-secondary-text capitalize">{item.paymentStatus || 'Unknown'}</span>
                   <div className="flex items-center gap-3">
                     <div className="w-32 bg-gray-200 rounded-full h-2">
                       <div
@@ -170,7 +236,7 @@ const Dashboard = () => {
                         style={{ width: `${(item.count / dashboardData.stats.totalOrders) * 100}%` }}
                       />
                     </div>
-                    <span className="text-sm font-bold text-gray-900">{item.count}</span>
+                    <span className="text-sm font-bold text-foreground">{item.count}</span>
                   </div>
                 </div>
               ))}
@@ -185,7 +251,7 @@ const Dashboard = () => {
             <h3 className="text-lg font-bold mb-4">Recent Orders</h3>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-background">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Order ID</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">User</th>
@@ -195,10 +261,10 @@ const Dashboard = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {dashboardData.recentOrders?.map((order) => (
-                    <tr key={order.orderID} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">#{order.orderID}</td>
-                      <td className="px-4 py-3 text-sm text-gray-700">{order.username || 'N/A'}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{formatPrice(order.totalAmount)}</td>
+                    <tr key={order.orderID} className="hover:bg-background">
+                      <td className="px-4 py-3 text-sm font-medium text-foreground">#{order.orderID}</td>
+                      <td className="px-4 py-3 text-sm text-secondary-text">{order.username || 'N/A'}</td>
+                      <td className="px-4 py-3 text-sm text-foreground">{formatPrice(order.totalAmount)}</td>
                       <td className="px-4 py-3 text-sm">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.orderStatus)}`}>
                           {order.orderStatus}
@@ -216,7 +282,7 @@ const Dashboard = () => {
             <h3 className="text-lg font-bold mb-4">Recent Users</h3>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-background">
                   <tr>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
                     <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
@@ -226,9 +292,9 @@ const Dashboard = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {dashboardData.recentUsers?.map((user) => (
-                    <tr key={user.uid} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm font-medium text-gray-900">{user.username}</td>
-                      <td className="px-4 py-3 text-sm text-gray-700">{user.emailID}</td>
+                    <tr key={user.uid} className="hover:bg-background">
+                      <td className="px-4 py-3 text-sm font-medium text-foreground">{user.username}</td>
+                      <td className="px-4 py-3 text-sm text-secondary-text">{user.emailID}</td>
                       <td className="px-4 py-3 text-sm">
                         {user.verifiedEmail ? (
                           <FaCheckCircle className="text-green-600" />
@@ -236,7 +302,7 @@ const Dashboard = () => {
                           <FaTimes className="text-red-600" />
                         )}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-700">{formatDate(user.createdAt)}</td>
+                      <td className="px-4 py-3 text-sm text-secondary-text">{formatDate(user.createdAt)}</td>
                     </tr>
                   ))}
                 </tbody>

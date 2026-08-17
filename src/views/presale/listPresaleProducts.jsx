@@ -117,10 +117,10 @@ export default function ListPresaleProducts() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">Pre-Sale Products</h1>
+              <h1 className="text-2xl font-semibold text-foreground">Pre-Sale Products</h1>
               <p className="text-sm text-gray-500 mt-1">Manage your presale product listings</p>
             </div>
-            <Button 
+            <Button
               onClick={() => navigate('/presale/products/add')}
               className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors"
             >
@@ -138,7 +138,7 @@ export default function ListPresaleProducts() {
                 <MdDeleteOutline className="text-red-600" size={18} />
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-foreground">
                   {selectedProducts.length} product{selectedProducts.length > 1 ? 's' : ''} selected
                 </p>
                 <p className="text-xs text-gray-500">Choose an action to perform</p>
@@ -178,12 +178,12 @@ export default function ListPresaleProducts() {
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
                     />
                   </th>
-                  <th className="text-left py-4 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-[35%]">Product</th>
-                  <th className="text-left py-4 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">Price</th>
-                  <th className="text-left py-4 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-[10%]">Status</th>
-                  <th className="text-left py-4 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-[13%]">Start Date</th>
-                  <th className="text-left py-4 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-[13%]">End Date</th>
-                  <th className="text-left py-4 px-4 text-xs font-semibold text-gray-600 uppercase tracking-wider w-[12%]">Actions</th>
+                  <th className="text-left py-4 px-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-[35%]">Product</th>
+                  <th className="text-left py-4 px-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-[12%]">Price</th>
+                  <th className="text-left py-4 px-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-[10%]">Status</th>
+                  <th className="text-left py-4 px-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-[13%]">Start Date</th>
+                  <th className="text-left py-4 px-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-[13%]">End Date</th>
+                  <th className="text-left py-4 px-4 text-xs font-semibold text-secondary-text uppercase tracking-wider w-[12%]">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -204,10 +204,10 @@ export default function ListPresaleProducts() {
                           <MdAdd className="text-gray-400" size={32} />
                         </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">No presale products found</p>
+                          <p className="text-sm font-medium text-foreground">No presale products found</p>
                           <p className="text-xs text-gray-500 mt-1">Get started by adding your first presale product</p>
                         </div>
-                        <Button 
+                        <Button
                           onClick={() => navigate('/presale/products/add')}
                           className="mt-2 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
                         >
@@ -222,9 +222,9 @@ export default function ListPresaleProducts() {
                   const imageUrl = featuredImage[0]?.imgUrl || '';
 
                   return (
-                    <tr 
-                      key={product.presaleProductID} 
-                      className="hover:bg-gray-50/50 transition-colors group"
+                    <tr
+                      key={product.presaleProductID}
+                      className="hover:bg-background/50 transition-colors group"
                     >
                       <td className="py-4 px-6">
                         <input
@@ -238,9 +238,9 @@ export default function ListPresaleProducts() {
                         <div className="flex items-center gap-2">
                           {imageUrl ? (
                             <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 ring-1 ring-gray-200">
-                              <img 
-                                src={imageUrl} 
-                                alt={product.name} 
+                              <img
+                                src={imageUrl}
+                                alt={product.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {
                                   e.target.style.display = 'none';
@@ -257,7 +257,7 @@ export default function ListPresaleProducts() {
                             </div>
                           )}
                           <div className="min-w-0 flex-1 overflow-hidden">
-                            <p className="text-sm font-medium text-gray-900 truncate group-hover:text-blue-600 transition-colors" title={product.name || '-'}>
+                            <p className="text-sm font-medium text-foreground truncate group-hover:text-blue-600 transition-colors" title={product.name || '-'}>
                               {product.name || '-'}
                             </p>
                             <p className="text-xs text-gray-500 font-mono mt-0.5 truncate" title={product.presaleProductID}>{product.presaleProductID}</p>
@@ -266,7 +266,7 @@ export default function ListPresaleProducts() {
                       </td>
                       <td className="py-4 px-4">
                         <div className="flex flex-col">
-                          <span className="text-sm font-semibold text-gray-900">
+                          <span className="text-sm font-semibold text-foreground">
                             ₹{Number(product.salePrice || product.regularPrice).toLocaleString('en-IN')}
                           </span>
                           {product.salePrice && product.regularPrice && (
@@ -277,36 +277,35 @@ export default function ListPresaleProducts() {
                         </div>
                       </td>
                       <td className="py-4 px-4">
-                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          product.status === 'active' 
-                            ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200' 
-                            : product.status === 'completed' 
-                            ? 'bg-gray-100 text-gray-700 ring-1 ring-gray-200'
-                            : 'bg-red-100 text-red-700 ring-1 ring-red-200'
-                        }`}>
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'active'
+                            ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200'
+                            : product.status === 'completed'
+                              ? 'bg-gray-100 text-secondary-text ring-1 ring-gray-200'
+                              : 'bg-red-100 text-red-700 ring-1 ring-red-200'
+                          }`}>
                           {product.status || 'inactive'}
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        <span className="text-sm text-gray-600 whitespace-nowrap">
-                          {product.preSaleStartDate 
+                        <span className="text-sm text-secondary-text whitespace-nowrap">
+                          {product.preSaleStartDate
                             ? new Date(product.preSaleStartDate).toLocaleDateString('en-IN', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric'
-                              })
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })
                             : <span className="text-gray-400">-</span>
                           }
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        <span className="text-sm text-gray-600 whitespace-nowrap">
-                          {product.preSaleEndDate 
+                        <span className="text-sm text-secondary-text whitespace-nowrap">
+                          {product.preSaleEndDate
                             ? new Date(product.preSaleEndDate).toLocaleDateString('en-IN', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric'
-                              })
+                              day: '2-digit',
+                              month: 'short',
+                              year: 'numeric'
+                            })
                             : <span className="text-gray-400">-</span>
                           }
                         </span>

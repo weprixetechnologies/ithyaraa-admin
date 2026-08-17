@@ -141,7 +141,7 @@ const ListOffers = () => {
                                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-emerald-900 to-teal-900 bg-clip-text text-transparent">
                                     Offer Management
                                 </h1>
-                                <p className="text-gray-600 mt-2 text-lg">
+                                <p className="text-secondary-text mt-2 text-lg">
                                     Manage promotional offers and special deals
                                 </p>
                             </div>
@@ -168,8 +168,8 @@ const ListOffers = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Offers</p>
-                                    <p className="text-2xl font-bold text-gray-900">{offers.length}</p>
+                                    <p className="text-sm font-medium text-secondary-text">Total Offers</p>
+                                    <p className="text-2xl font-bold text-foreground">{offers.length}</p>
                                 </div>
                                 <div className="p-3 bg-emerald-100 rounded-full">
                                     <RiGiftLine className="w-6 h-6 text-emerald-600" />
@@ -180,7 +180,7 @@ const ListOffers = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Buy X Get Y</p>
+                                    <p className="text-sm font-medium text-secondary-text">Buy X Get Y</p>
                                     <p className="text-2xl font-bold text-green-600">
                                         {offers.filter(o => o.offerType === 'buy_x_get_y').length}
                                     </p>
@@ -194,7 +194,7 @@ const ListOffers = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Buy X At X</p>
+                                    <p className="text-sm font-medium text-secondary-text">Buy X At X</p>
                                     <p className="text-2xl font-bold text-blue-600">
                                         {offers.filter(o => o.offerType === 'buy_x_at_x').length}
                                     </p>
@@ -208,7 +208,7 @@ const ListOffers = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Active Offers</p>
+                                    <p className="text-sm font-medium text-secondary-text">Active Offers</p>
                                     <p className="text-2xl font-bold text-teal-600">
                                         {offers.length}
                                     </p>
@@ -267,7 +267,7 @@ const ListOffers = () => {
                             <Button
                                 onClick={handleClearFilters}
                                 variant="outline"
-                                className="px-6 py-3 text-gray-600 border-gray-200 hover:bg-gray-50"
+                                className="px-6 py-3 text-secondary-text border-gray-200 hover:bg-background"
                             >
                                 <RiCloseLine className="w-4 h-4 mr-2" />
                                 Clear Filters
@@ -279,7 +279,7 @@ const ListOffers = () => {
                     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                         <div className="p-6 border-b border-gray-100">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-gray-900">Offers</h3>
+                                <h3 className="text-lg font-semibold text-foreground">Offers</h3>
                                 <div className="text-sm text-gray-500">
                                     Showing {offers.length} offers
                                 </div>
@@ -290,22 +290,22 @@ const ListOffers = () => {
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gradient-to-r from-gray-50 to-emerald-50 border-b border-gray-200">
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Offer ID
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Offer Name
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Type
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Buy Count
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Get Count
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Actions
                                         </TableHead>
                                     </TableRow>
@@ -334,7 +334,7 @@ const ListOffers = () => {
                                         offers.map((offer, idx) => (
                                             <TableRow
                                                 key={offer.offerID}
-                                                className={`hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-200 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                                className={`hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-200 ${idx % 2 === 0 ? 'bg-white' : 'bg-background'
                                                     }`}
                                             >
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
@@ -347,34 +347,40 @@ const ListOffers = () => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="text-sm font-mono font-medium text-gray-900">
+                                                            <div className="text-sm font-mono font-medium text-foreground">
                                                                 {offer.offerID || 'N/A'}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-semibold text-gray-900">
+                                                    <div className="text-sm font-semibold text-foreground">
                                                         {offer.offerName || 'Unnamed Offer'}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
                                                     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${offer.offerType === 'buy_x_get_y'
                                                         ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200'
-                                                        : 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200'
+                                                        : offer.offerType === 'buy_x_get_off'
+                                                            ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border border-purple-200'
+                                                            : 'bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 border border-blue-200'
                                                         }`}>
-                                                        <span>{offer.offerType === 'buy_x_get_y' ? '🎁' : '💰'}</span>
-                                                        {offer.offerType ? offer.offerType.replace('_', ' ').toUpperCase() : 'UNKNOWN'}
+                                                        <span>{offer.offerType === 'buy_x_get_y' ? '🎁' : offer.offerType === 'buy_x_get_off' ? '🏷️' : '💰'}</span>
+                                                        {offer.offerType === 'buy_x_get_off'
+                                                            ? `BUY ${offer.buyCount} GET ${offer.discountValue}${offer.discountType === 'percentage' ? '%' : '₹'} OFF`
+                                                            : (offer.offerType ? offer.offerType.replace(/_/g, ' ').toUpperCase() : 'UNKNOWN')}
                                                     </span>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-lg font-bold text-gray-900">
+                                                    <div className="text-lg font-bold text-foreground">
                                                         {offer.buyCount}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-lg font-bold text-gray-900">
-                                                        {offer.getCount}
+                                                    <div className="text-sm font-semibold text-foreground">
+                                                        {offer.offerType === 'buy_x_get_off'
+                                                            ? (offer.productScope === 'same_product' ? 'Same Product' : 'Mix & Match')
+                                                            : (offer.getCount || '-')}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
@@ -418,9 +424,9 @@ const ListOffers = () => {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                        <div className="bg-background px-6 py-4 border-t border-gray-200">
                             <div className="flex items-center justify-between">
-                                <div className="text-sm text-gray-700">
+                                <div className="text-sm text-secondary-text">
                                     Showing page <span className="font-semibold">{page}</span> of{' '}
                                     <span className="font-semibold">{totalPages}</span>
                                 </div>

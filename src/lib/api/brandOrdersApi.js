@@ -1,9 +1,23 @@
 import axiosInstance from '../axiosInstance';
 
 /**
- * Search brands by name
+ * Get all brands (role = brand)
+ * @returns {Promise<Object>} { success, data: brands[] }
+ */
+export const getAllBrands = async () => {
+    try {
+        const response = await axiosInstance.get('/admin/brands');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching brands:', error);
+        throw error;
+    }
+};
+
+/**
+ * Search brands by name (uses users.name where role = 'brand')
  * @param {string} name - Brand name to search
- * @returns {Promise<Object>} Response with brands array
+ * @returns {Promise<Object>} { success, data: brands[] }
  */
 export const searchBrands = async (name) => {
     try {

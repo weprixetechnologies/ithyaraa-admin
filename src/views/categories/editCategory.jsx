@@ -18,6 +18,7 @@ const EditCategory = () => {
         slug: '',
         featuredImage: [],
         categoryBanner: [],
+        isFeatured: false,
     });
 
     useEffect(() => {
@@ -29,6 +30,7 @@ const EditCategory = () => {
                     slug: res.data.slug || '',
                     featuredImage: res.data.featuredImage ? [res.data.featuredImage] : [],
                     categoryBanner: res.data.categoryBanner ? [res.data.categoryBanner] : [],
+                    isFeatured: res.data.isFeatured === 1 || res.data.isFeatured === true,
                 });
             } catch (err) {
                 console.error('Failed to fetch category', err);
@@ -56,13 +58,14 @@ const EditCategory = () => {
                 slug: category.slug,
                 featuredImage: featured?.[0]?.imgUrl || '',
                 categoryBanner: banner?.[0]?.imgUrl || '',
+                isFeatured: category.isFeatured ? 1 : 0,
             };
 
             const res = await axiosInstance.put(`/categories/edit/${categoryID}`, payload);
             if (res.status !== 200) {
                 throw new Error(res.data?.message || 'Failed to update category');
             }
-            // toast.success('Category updated successfully');
+            toast.success('Category updated successfully');
         } catch (err) {
             console.error('Error updating category:', err);
             toast.error(`Update failed: ${err.message}`);
@@ -90,6 +93,20 @@ const EditCategory = () => {
                         <Container label={'Products Added'}>
                             <div className="min-h-52 flex-center">
                                 <p>REGISTER CATEGORY TO GET VIEW OF ADDED PRODUCTS</p>
+                            </div>
+                        </Container>
+                        <Container label="Featured Settings">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    id="isFeatured"
+                                    checked={category.isFeatured}
+                                    onChange={(e) => setCategory(prev => ({ ...prev, isFeatured: e.target.checked }))}
+                                    className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                                />
+                                <label htmlFor="isFeatured" className="text-sm font-medium text-gray-700 cursor-pointer">
+                                    Set as Active Featured
+                                </label>
                             </div>
                         </Container>
                     </div>

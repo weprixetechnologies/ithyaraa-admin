@@ -1,8 +1,10 @@
 import axiosInstance from '@/lib/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 import React, { useCallback, useRef, useState } from 'react'
 import Layout from 'src/layout'
 import Container from '@/components/ui/container'
 import InputUi from '@/components/ui/inputui'
+import RichTextUi from '@/components/ui/RichTextUi'
 import UploadImages from '@/components/ui/uploadImages'
 import { toast } from 'react-toastify'
 import Pricing from '@/components/products/pricing'
@@ -29,12 +31,17 @@ const AddCombo = () => {
     };
 
 
+    const [isUploading, setIsUploading] = useState(false);
+    const navigate = useNavigate();
+
     const handleUpload = async () => {
+        if (isUploading) return;
         try {
             if (selectedProducts.length > 3) {
                 toast.error('More than 3 Items selected.')
                 return;
             }
+            setIsUploading(true);
 
             const finalImages = await uploadRef.current?.uploadImageFunction();
             const galleryupload = await galleryRef.current?.uploadImageFunction();
@@ -47,17 +54,21 @@ const AddCombo = () => {
                 products: selectedProducts,
                 crossSells: crossSells
             };
-            console.log(fullProductData);
-
-
-            console.log('🚀 Full product with images:', fullProductData); // ✅ this has images
 
             const response = await axiosInstance.post('/combo/create-combo', fullProductData);
-            console.log('Product added successfully:', response.data);
-            // toast.success('Product Added')
+            toast.success(response.data?.message || 'Combo product added successfully');
+
+            if (response.data.productID) {
+                navigate(`/combo/detail/${response.data.productID}`);
+            } else {
+                navigate('/combo/list');
+            }
 
         } catch (error) {
-            console.error('Error uploading or posting product:', error.message);
+            console.error('Error uploading or posting product:', error.response?.data || error.message);
+            toast.error(error.response?.data?.message || 'Failed to add combo product');
+        } finally {
+            setIsUploading(false);
         }
     };
     const handleToggleProductParent = (productID) => {
@@ -72,19 +83,18 @@ const AddCombo = () => {
 
 
     return (
-        <Layout active={'admin-mcombo-add'} title={'Create Make Combo'}>
+        <Layout active={'combo-m'} title={'Create Our Combo'}>
             <div className="grid grid-cols-6 gap-2">
                 <div className="col-span-4 gap-2">
                     <div className="flex flex-col gap-2">
                         <Container gap={3} label={'Basic Information'}>
 
                             <InputUi label={'Product Title'} datafunction={(e) => updateFunction(e, 'name')} />
-                            <InputUi label={'Product Description'} isInput={false} datafunction={(e) => updateFunction(e, 'description')} />
-                            <div className="grid grid-cols-2 gap-2">
-                                <InputUi label={'Tab 1'} isInput={false} datafunction={(e) => updateFunction(e, 'tab1')} fieldClass='h-[100px]' />
-
-                                <InputUi label={'Tab 2'} isInput={false} datafunction={(e) => updateFunction(e, 'tab2')} fieldClass='h-[100px]' />
-
+                            <RichTextUi label={'Product Description'} value={product.description ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'description')} />
+                            <div className="grid grid-cols-3 gap-2">
+                                <RichTextUi label={'Tab 1'} value={product.tab1 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab1')} />
+                                <RichTextUi label={'Tab 2'} value={product.tab2 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab2')} />
+                                <RichTextUi label={'Tab 3 - Product Specifications'} value={product.tab3 ?? ''} onChange={(val) => updateFunction({ target: { value: val } }, 'tab3')} />
                             </div>
                         </Container>
                         <Container gap={3} label={'Pricing & Discount'}>
@@ -108,7 +118,7 @@ const AddCombo = () => {
                                     Select Cross-Sell Products
                                 </button>
                                 {crossSells.length > 0 && (
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-sm text-secondary-text">
                                         {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
                                     </div>
                                 )}
@@ -140,7 +150,20 @@ const AddCombo = () => {
                         <Container gap={3} label={'Gallery Images'}>
                             <UploadImages ref={galleryRef} maxImages={8} setProducts={setProduct} products={product} />
                         </Container>
-                        <button className='primary-button' onClick={handleUpload}>Upload Product</button>
+                        <button
+                            className='primary-button disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
+                            onClick={handleUpload}
+                            disabled={isUploading}
+                        >
+                            {isUploading ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                    <span>Uploading...</span>
+                                </>
+                            ) : (
+                                "Upload Product"
+                            )}
+                        </button>
 
                     </div>
                 </div>

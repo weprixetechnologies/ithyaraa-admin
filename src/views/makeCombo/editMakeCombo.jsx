@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Layout from 'src/layout';
 import Container from '@/components/ui/container';
 import InputUi from '@/components/ui/inputui';
+import RichTextUi from '@/components/ui/RichTextUi';
 import UploadImages from '@/components/ui/uploadImages';
 import SelectProducts from '@/components/ui/selectProducts';
 import OfferProducts from '@/components/products/offersProducts';
@@ -27,6 +28,7 @@ const EditMakeCombo = () => {
         description: '',
         tab1: '',
         tab2: '',
+        tab3: '',
         type: 'variable',
         featuredImage: [],
         galleryImage: [],
@@ -47,6 +49,7 @@ const EditMakeCombo = () => {
                     description: data.description ?? '',
                     tab1: data.tab1 ?? '',
                     tab2: data.tab2 ?? '',
+                    tab3: data.tab3 ?? '',
                     featuredImage: parseJSONSafe(data.featuredImage) ?? [],
                     galleryImage: parseJSONSafe(data.galleryImage) ?? [],
                     productAttributes: parseJSONSafe(data.productAttributes) ?? [],
@@ -62,12 +65,12 @@ const EditMakeCombo = () => {
 
                 setProduct(parsedProduct);
                 setSelectedProductIDs(parsedProduct.products);
-                
+
                 // Extract cross-sell product IDs
                 if (data.crossSellProducts && Array.isArray(data.crossSellProducts)) {
                     setCrossSells(data.crossSellProducts.map(p => p.productID || p.crossSellProductID));
                 }
-                
+
                 console.log(parsedProduct);
 
             } catch (error) {
@@ -126,10 +129,10 @@ const EditMakeCombo = () => {
             const response = await axiosInstance.put(`/make-combo/edit/${comboID}`, fullProductData);
             const result = response.data;
             if (response.status !== 200) throw new Error(result.message || 'Failed to edit product');
-            // toast.success('Combo updated successfully!');
+            toast.success(result?.message || 'Combo updated successfully!');
         } catch (error) {
-            console.error('Error uploading or posting product:', error.message);
-            toast.error(`Error: ${error.message}`);
+            console.error('Error uploading or posting product:', error.response?.data || error.message);
+            toast.error(error.response?.data?.message || error.message || 'Failed to update combo product');
         }
     };
 
@@ -145,27 +148,26 @@ const EditMakeCombo = () => {
                             value={product.name ?? ''}
                             datafunction={(e) => updateFunction(e, 'name')}
                         />
-                        <InputUi
+                        <RichTextUi
                             label={'Product Description'}
-                            isInput={false}
                             value={product.description ?? ''}
-                            datafunction={(e) => updateFunction(e, 'description')}
-                            fieldClass="h-[200px]"
+                            onChange={(val) => updateFunction({ target: { value: val } }, 'description')}
                         />
-                        <div className="grid grid-cols-2 gap-2">
-                            <InputUi
+                        <div className="grid grid-cols-3 gap-2">
+                            <RichTextUi
                                 label={'Tab 1'}
-                                isInput={false}
                                 value={product.tab1 ?? ''}
-                                datafunction={(e) => updateFunction(e, 'tab1')}
-                                fieldClass="h-[100px]"
+                                onChange={(val) => updateFunction({ target: { value: val } }, 'tab1')}
                             />
-                            <InputUi
+                            <RichTextUi
                                 label={'Tab 2'}
-                                isInput={false}
                                 value={product.tab2 ?? ''}
-                                datafunction={(e) => updateFunction(e, 'tab2')}
-                                fieldClass="h-[100px]"
+                                onChange={(val) => updateFunction({ target: { value: val } }, 'tab2')}
+                            />
+                            <RichTextUi
+                                label={'Tab 3'}
+                                value={product.tab3 ?? ''}
+                                onChange={(val) => updateFunction({ target: { value: val } }, 'tab3')}
                             />
                         </div>
                     </Container>
@@ -180,7 +182,7 @@ const EditMakeCombo = () => {
                             onProductToggle={handleToggleProductParent}
                         />
                     </Container>
-                    
+
                     <Container gap={3} label={'Cross-Sell Products'}>
                         <div className="flex flex-col gap-2">
                             <button
@@ -191,7 +193,7 @@ const EditMakeCombo = () => {
                                 Select Cross-Sell Products
                             </button>
                             {crossSells.length > 0 && (
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-secondary-text">
                                     {crossSells.length} product{crossSells.length !== 1 ? 's' : ''} selected
                                 </div>
                             )}
@@ -230,7 +232,7 @@ const EditMakeCombo = () => {
                     </Container>
 
                     <button className="primary-button" onClick={handleUpload}>
-                        Upload Product
+                        Update Product
                     </button>
                 </div>
             </div>

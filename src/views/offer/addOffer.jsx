@@ -15,14 +15,16 @@ const AddOffer = () => {
     const [buyCount, setBuyCount] = useState('')
     const [buyAt, setBuyAt] = useState('')
     const [getCount, setGetCount] = useState('')
+    const [discountType, setDiscountType] = useState('percentage')
+    const [discountValue, setDiscountValue] = useState('')
+    const [productScope, setProductScope] = useState('different_product')
 
     const mobileBannerRef = useRef()
     const desktopBannerRef = useRef()
 
     const handleOfferTypeChange = (e) => {
         setOfferType(e.target.value)
-        // Clear getCount when switching to buy_x_at_x
-        if (e.target.value === 'buy_x_at_x') {
+        if (e.target.value === 'buy_x_at_x' || e.target.value === 'buy_x_get_off') {
             setGetCount('')
         }
     }
@@ -52,7 +54,10 @@ const AddOffer = () => {
                 offerType,
                 buyCount: Number(buyCount),
                 buyAt: offerType === 'buy_x_at_x' ? Number(buyAt) : null,
-                getCount: Number(getCount),
+                getCount: offerType === 'buy_x_get_off' ? 0 : Number(getCount),
+                discountType: offerType === 'buy_x_get_off' ? discountType : null,
+                discountValue: offerType === 'buy_x_get_off' ? Number(discountValue) : null,
+                productScope: offerType === 'buy_x_get_off' ? productScope : 'different_product',
                 offerMobileBanner: mobileBanner?.[0]?.imgUrl || '',
                 offerBanner: desktopBanner?.[0]?.imgUrl || '',
                 products: selectedProducts
@@ -67,8 +72,7 @@ const AddOffer = () => {
             if (data.success) {
                 console.log('Offer created successfully');
                 console.log(data);
-                // toast.success('Offer is Live');
-                // Optionally reset form or show toast
+                toast.success(data.message || 'Offer is Live');
             } else {
                 console.error('Failed to create offer:', data.message);
                 toast.error(data.message || 'Failed to create offer');
@@ -95,7 +99,7 @@ const AddOffer = () => {
                                 initialSelected={selectedProducts}
                             />
                             {selectedProducts.length > 0 && (
-                                <div className="mt-4 text-sm text-gray-700">
+                                <div className="mt-4 text-sm text-secondary-text">
                                     <strong>Selected Product IDs:</strong>{' '}
                                     {selectedProducts.join(', ')}
                                 </div>
@@ -117,18 +121,52 @@ const AddOffer = () => {
                                 >
                                     <option value="buy_x_get_y">Buy X Get Y</option>
                                     <option value="buy_x_at_x">Buy X at ₹X</option>
+                                    <option value="buy_x_get_off">Buy X Get % / Flat OFF</option>
                                 </select>
 
                                 <InputUi label={'Buy Count'} datafunction={(val) => setBuyCount(val.target.value)} />
+                                
                                 {offerType === 'buy_x_at_x' && (
                                     <InputUi label={'Buy At'} datafunction={(val) => setBuyAt(val.target.value)} />
                                 )}
-                                <InputUi 
-                                    label={'Get Count'} 
-                                    datafunction={(val) => setGetCount(val.target.value)} 
-                                    disabled={offerType === 'buy_x_at_x'}
-                                    value={offerType === 'buy_x_at_x' ? '' : (getCount || '')}
-                                />
+
+                                {offerType === 'buy_x_get_y' && (
+                                    <InputUi 
+                                        label={'Get Count'} 
+                                        datafunction={(val) => setGetCount(val.target.value)} 
+                                        value={getCount || ''}
+                                    />
+                                )}
+
+                                {offerType === 'buy_x_get_off' && (
+                                    <>
+                                        <label className="text-sm font-medium mt-2">Discount Type</label>
+                                        <select
+                                            value={discountType}
+                                            onChange={(e) => setDiscountType(e.target.value)}
+                                            className="border border-gray-300 rounded px-3 py-2"
+                                        >
+                                            <option value="percentage">Percentage (%) OFF</option>
+                                            <option value="flat">Flat (₹) OFF</option>
+                                        </select>
+
+                                        <InputUi
+                                            label={discountType === 'percentage' ? 'Discount Percentage (%)' : 'Discount Flat Amount (₹)'}
+                                            datafunction={(val) => setDiscountValue(val.target.value)}
+                                            value={discountValue}
+                                        />
+
+                                        <label className="text-sm font-medium mt-2">Product Requirement / Scope</label>
+                                        <select
+                                            value={productScope}
+                                            onChange={(e) => setProductScope(e.target.value)}
+                                            className="border border-gray-300 rounded px-3 py-2"
+                                        >
+                                            <option value="different_product">Different Products / Mix & Match</option>
+                                            <option value="same_product">Same Product Only</option>
+                                        </select>
+                                    </>
+                                )}
                             </div>
                         </Container>
 

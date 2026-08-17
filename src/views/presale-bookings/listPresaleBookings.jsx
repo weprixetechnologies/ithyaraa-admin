@@ -34,7 +34,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
             <button
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={!hasPrev}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
             >
                 Previous
             </button>
@@ -45,7 +45,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
                     onClick={() => onPageChange(page)}
                     className={`px-3 py-2 text-sm border rounded ${page === currentPage
                         ? 'bg-blue-600 text-white border-blue-600'
-                        : 'hover:bg-gray-50'
+                        : 'hover:bg-background'
                         }`}
                 >
                     {page}
@@ -55,7 +55,7 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
             <button
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={!hasNext}
-                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                className="px-3 py-2 text-sm border rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-background"
             >
                 Next
             </button>
@@ -345,7 +345,7 @@ const ListPresaleBookings = () => {
             case 'delivered': return 'bg-green-100 text-green-800'
             case 'cancelled': return 'bg-red-100 text-red-800'
             case 'returned': return 'bg-orange-100 text-orange-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -355,7 +355,7 @@ const ListPresaleBookings = () => {
             case 'pending': return 'bg-yellow-100 text-yellow-800'
             case 'failed': return 'bg-red-100 text-red-800'
             case 'refunded': return 'bg-purple-100 text-purple-800'
-            default: return 'bg-gray-100 text-gray-800'
+            default: return 'bg-gray-100 text-foreground'
         }
     }
 
@@ -411,8 +411,8 @@ const ListPresaleBookings = () => {
                     {/* Modern Search and Filters Section */}
                     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                         <div className="flex items-center gap-3 mb-4">
-                            <FiFilter className="text-gray-600 text-xl" />
-                            <h3 className="text-lg font-semibold text-gray-800">Filters & Search</h3>
+                            <FiFilter className="text-secondary-text text-xl" />
+                            <h3 className="text-lg font-semibold text-foreground">Filters & Search</h3>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             {/* Search Input */}
@@ -434,14 +434,14 @@ const ListPresaleBookings = () => {
                                     <SelectValue placeholder="Order Status" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
-                                    <SelectItem value="all" className="bg-white hover:bg-gray-50">All Status</SelectItem>
-                                    <SelectItem value="pending" className="bg-white hover:bg-gray-50">Pending</SelectItem>
-                                    <SelectItem value="accepted" className="bg-white hover:bg-gray-50">Accepted</SelectItem>
-                                    <SelectItem value="packed" className="bg-white hover:bg-gray-50">Packed</SelectItem>
-                                    <SelectItem value="shipped" className="bg-white hover:bg-gray-50">Shipped</SelectItem>
-                                    <SelectItem value="delivered" className="bg-white hover:bg-gray-50">Delivered</SelectItem>
-                                    <SelectItem value="cancelled" className="bg-white hover:bg-gray-50">Cancelled</SelectItem>
-                                    <SelectItem value="returned" className="bg-white hover:bg-gray-50">Returned</SelectItem>
+                                    <SelectItem value="all" className="bg-white hover:bg-background">All Status</SelectItem>
+                                    <SelectItem value="pending" className="bg-white hover:bg-background">Pending</SelectItem>
+                                    <SelectItem value="accepted" className="bg-white hover:bg-background">Accepted</SelectItem>
+                                    <SelectItem value="packed" className="bg-white hover:bg-background">Packed</SelectItem>
+                                    <SelectItem value="shipped" className="bg-white hover:bg-background">Shipped</SelectItem>
+                                    <SelectItem value="delivered" className="bg-white hover:bg-background">Delivered</SelectItem>
+                                    <SelectItem value="cancelled" className="bg-white hover:bg-background">Cancelled</SelectItem>
+                                    <SelectItem value="returned" className="bg-white hover:bg-background">Returned</SelectItem>
                                 </SelectContent>
                             </Select>
 
@@ -451,11 +451,11 @@ const ListPresaleBookings = () => {
                                     <SelectValue placeholder="Payment Status" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white">
-                                    <SelectItem value="all" className="bg-white hover:bg-gray-50">All Payment</SelectItem>
-                                    <SelectItem value="pending" className="bg-white hover:bg-gray-50">Pending</SelectItem>
-                                    <SelectItem value="successful" className="bg-white hover:bg-gray-50">Successful</SelectItem>
-                                    <SelectItem value="failed" className="bg-white hover:bg-gray-50">Failed</SelectItem>
-                                    <SelectItem value="refunded" className="bg-white hover:bg-gray-50">Refunded</SelectItem>
+                                    <SelectItem value="all" className="bg-white hover:bg-background">All Payment</SelectItem>
+                                    <SelectItem value="pending" className="bg-white hover:bg-background">Pending</SelectItem>
+                                    <SelectItem value="successful" className="bg-white hover:bg-background">Successful</SelectItem>
+                                    <SelectItem value="failed" className="bg-white hover:bg-background">Failed</SelectItem>
+                                    <SelectItem value="refunded" className="bg-white hover:bg-background">Refunded</SelectItem>
                                 </SelectContent>
                             </Select>
 
@@ -572,12 +572,12 @@ const ListPresaleBookings = () => {
                             <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-5 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-gray-600 font-medium mb-1">Page Info</p>
-                                        <p className="text-2xl font-bold text-gray-900">{pagination.currentPage} / {pagination.totalPages}</p>
-                                        <p className="text-xs text-gray-700 mt-1">{pagination.totalBookings} total records</p>
+                                        <p className="text-sm text-secondary-text font-medium mb-1">Page Info</p>
+                                        <p className="text-2xl font-bold text-foreground">{pagination.currentPage} / {pagination.totalPages}</p>
+                                        <p className="text-xs text-secondary-text mt-1">{pagination.totalBookings} total records</p>
                                     </div>
                                     <div className="bg-gray-200 rounded-full p-3">
-                                        <FiFilter className="text-gray-700 text-2xl" />
+                                        <FiFilter className="text-secondary-text text-2xl" />
                                     </div>
                                 </div>
                             </div>
@@ -601,11 +601,11 @@ const ListPresaleBookings = () => {
                             <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="text-sm text-gray-600 font-medium">Current Page</p>
-                                        <p className="text-2xl font-bold text-gray-900 mt-1">{pagination.currentPage} / {pagination.totalPages}</p>
+                                        <p className="text-sm text-secondary-text font-medium">Current Page</p>
+                                        <p className="text-2xl font-bold text-foreground mt-1">{pagination.currentPage} / {pagination.totalPages}</p>
                                     </div>
                                     <div className="bg-gray-200 rounded-full p-3">
-                                        <FiFilter className="text-gray-700 text-xl" />
+                                        <FiFilter className="text-secondary-text text-xl" />
                                     </div>
                                 </div>
                             </div>
@@ -620,7 +620,7 @@ const ListPresaleBookings = () => {
                                     <FiRefreshCw className="text-blue-600" size={18} />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900">
+                                    <p className="text-sm font-medium text-foreground">
                                         {selectedBookings.length} order{selectedBookings.length > 1 ? 's' : ''} selected
                                     </p>
                                     <p className="text-xs text-gray-500">

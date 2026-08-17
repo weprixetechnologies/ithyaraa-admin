@@ -116,7 +116,7 @@ const ListCoupons = () => {
                                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 via-orange-900 to-red-900 bg-clip-text text-transparent">
                                     Coupon Management
                                 </h1>
-                                <p className="text-gray-600 mt-2 text-lg">
+                                <p className="text-secondary-text mt-2 text-lg">
                                     Manage discount coupons and promotional codes
                                 </p>
                             </div>
@@ -143,8 +143,8 @@ const ListCoupons = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Coupons</p>
-                                    <p className="text-2xl font-bold text-gray-900">{totalCount}</p>
+                                    <p className="text-sm font-medium text-secondary-text">Total Coupons</p>
+                                    <p className="text-2xl font-bold text-foreground">{totalCount}</p>
                                 </div>
                                 <div className="p-3 bg-orange-100 rounded-full">
                                     <RiCouponLine className="w-6 h-6 text-orange-600" />
@@ -155,7 +155,7 @@ const ListCoupons = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Percentage Coupons</p>
+                                    <p className="text-sm font-medium text-secondary-text">Percentage Coupons</p>
                                     <p className="text-2xl font-bold text-green-600">
                                         {coupons.filter(c => c.discountType === 'percentage').length}
                                     </p>
@@ -169,7 +169,7 @@ const ListCoupons = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Flat Rate Coupons</p>
+                                    <p className="text-sm font-medium text-secondary-text">Flat Rate Coupons</p>
                                     <p className="text-2xl font-bold text-blue-600">
                                         {coupons.filter(c => c.discountType === 'flat').length}
                                     </p>
@@ -183,7 +183,7 @@ const ListCoupons = () => {
                         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-all duration-300">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-600">Assigned Coupons</p>
+                                    <p className="text-sm font-medium text-secondary-text">Assigned Coupons</p>
                                     <p className="text-2xl font-bold text-red-600">
                                         {coupons.filter(c => c.assignedUser).length}
                                     </p>
@@ -219,9 +219,9 @@ const ListCoupons = () => {
                                 />
                             </div>
                             <div className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-gray-700">Discount Type</label>
+                                <label className="text-sm font-medium text-secondary-text">Discount Type</label>
                                 <select
-                                    className="border border-gray-200 px-3 py-2 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
+                                    className="border border-gray-200 px-3 py-2 rounded-lg bg-white text-foreground focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-200"
                                     value={filters.discountType}
                                     onChange={(e) => handleFilterChange('discountType', e.target.value)}
                                 >
@@ -261,7 +261,7 @@ const ListCoupons = () => {
                             <Button
                                 onClick={handleClearFilters}
                                 variant="outline"
-                                className="px-6 py-3 text-gray-600 border-gray-200 hover:bg-gray-50"
+                                className="px-6 py-3 text-secondary-text border-gray-200 hover:bg-background"
                             >
                                 <RiCloseLine className="w-4 h-4 mr-2" />
                                 Clear Filters
@@ -272,7 +272,7 @@ const ListCoupons = () => {
                     <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                         <div className="p-6 border-b border-gray-100">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold text-gray-900">Coupons</h3>
+                                <h3 className="text-lg font-semibold text-foreground">Coupons</h3>
                                 <div className="text-sm text-gray-500">
                                     Showing {coupons.length} of {totalCount} coupons
                                 </div>
@@ -283,28 +283,34 @@ const ListCoupons = () => {
                             <Table className="w-full">
                                 <TableHeader>
                                     <TableRow className="bg-gradient-to-r from-gray-50 to-orange-50 border-b border-gray-200">
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Coupon ID
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Coupon Code
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Assigned User
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Usage
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Limit
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
+                                            Global Limit
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
+                                            Per-User Limit
+                                        </TableHead>
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
+                                            Min Order (₹)
+                                        </TableHead>
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Value
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Type
                                         </TableHead>
-                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                        <TableHead className="px-6 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             Actions
                                         </TableHead>
                                     </TableRow>
@@ -333,7 +339,7 @@ const ListCoupons = () => {
                                         coupons.map((coupon, idx) => (
                                             <TableRow
                                                 key={coupon.couponID}
-                                                className={`hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-200 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                                                className={`hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-200 ${idx % 2 === 0 ? 'bg-white' : 'bg-background'
                                                     }`}
                                             >
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
@@ -346,14 +352,14 @@ const ListCoupons = () => {
                                                             </div>
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="text-sm font-mono font-medium text-gray-900">
+                                                            <div className="text-sm font-mono font-medium text-foreground">
                                                                 {coupon.couponID || 'N/A'}
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="text-sm font-semibold text-gray-900">
+                                                    <div className="text-sm font-semibold text-foreground">
                                                         {coupon.couponCode || 'N/A'}
                                                     </div>
                                                 </TableCell>
@@ -364,7 +370,7 @@ const ListCoupons = () => {
                                                                 <div className="h-8 w-8 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center mr-3">
                                                                     <RiUserLine className="w-4 h-4 text-white" />
                                                                 </div>
-                                                                <div className="text-sm font-medium text-gray-900">
+                                                                <div className="text-sm font-medium text-foreground">
                                                                     {coupon.assignedUser}
                                                                 </div>
                                                             </>
@@ -374,17 +380,27 @@ const ListCoupons = () => {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-lg font-bold text-gray-900">
+                                                    <div className="text-lg font-bold text-foreground">
                                                         {coupon.couponUsage || 0}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-sm text-gray-900">
-                                                        {coupon.couponLimit || '∞'}
+                                                    <div className="text-sm text-foreground">
+                                                        {coupon.usageLimit ?? '∞'}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap text-center">
-                                                    <div className="text-lg font-bold text-gray-900">
+                                                    <div className="text-sm text-foreground">
+                                                        {coupon.maxUsagePerUser ?? '∞'}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div className="text-sm text-foreground">
+                                                        {coupon.minOrderValue != null ? coupon.minOrderValue : '-'}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div className="text-lg font-bold text-foreground">
                                                         {coupon.discountValue}
                                                         {coupon.discountType === 'percentage' ? '%' : '₹'}
                                                     </div>
@@ -403,7 +419,7 @@ const ListCoupons = () => {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            onClick={() => window.open(`https://backend.ithyaraa.com/coupons/edit/${coupon.couponID}`, '_blank')}
+                                                            onClick={() => window.open(`https://newadmin.ithyaraa.com/coupons/edit/${coupon.couponID}`, '_blank')}
                                                             className="flex items-center gap-1.5 px-3 py-2 text-green-600 border-green-200 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
                                                         >
                                                             <RiEditLine className="w-4 h-4" />
@@ -412,7 +428,7 @@ const ListCoupons = () => {
                                                         <Button
                                                             variant="outline"
                                                             size="sm"
-                                                            onClick={() => window.open(`https://backend.ithyaraa.com/coupons/details/${coupon.couponID}`, '_blank')}
+                                                            onClick={() => window.open(`https://newadmin.ithyaraa.com/coupons/details/${coupon.couponID}`, '_blank')}
                                                             className="flex items-center gap-1.5 px-3 py-2 text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
                                                         >
                                                             <RiEyeLine className="w-4 h-4" />
@@ -432,9 +448,9 @@ const ListCoupons = () => {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
+                        <div className="bg-background px-6 py-4 border-t border-gray-200">
                             <div className="flex items-center justify-between">
-                                <div className="text-sm text-gray-700">
+                                <div className="text-sm text-secondary-text">
                                     Showing page <span className="font-semibold">{page}</span> of{' '}
                                     <span className="font-semibold">{totalPages}</span>
                                 </div>

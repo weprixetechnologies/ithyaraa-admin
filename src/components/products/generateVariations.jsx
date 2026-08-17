@@ -12,7 +12,43 @@ const GenerateVariations = ({ attributes = [], setProducts, products, defaultVar
 
     useEffect(() => {
         console.log('variation', defaultVariation);
-        setVariations(defaultVariation)
+        // Only update if defaultVariation is provided and different from current
+        if (defaultVariation && Array.isArray(defaultVariation) && defaultVariation.length > 0) {
+            // Preserve existing variations if they have the same structure
+            setVariations(prev => {
+                // If we have existing variations with IDs, try to merge
+                if (prev && prev.length > 0 && prev.some(v => v.variationID)) {
+                    const existingMap = new Map();
+                    prev.forEach(v => {
+                        if (v.variationID) existingMap.set(v.variationID, v);
+                        if (v.variationSlug) existingMap.set(v.variationSlug, v);
+                    });
+
+                    // Merge: use existing data if available, otherwise use defaultVariation
+                    return defaultVariation.map(v => {
+                        const existing = existingMap.get(v.variationID) || existingMap.get(v.variationSlug);
+                        if (existing) {
+                            // Preserve existing data, only update if new data has values
+                            return {
+                                ...existing,
+                                ...v,
+                                variationID: existing.variationID || v.variationID,
+                                variationSlug: existing.variationSlug || v.variationSlug,
+                                // Only update if new value is provided
+                                variationStock: v.variationStock !== undefined && v.variationStock !== '' ? v.variationStock : existing.variationStock,
+                                variationPrice: v.variationPrice !== undefined && v.variationPrice !== '' ? v.variationPrice : existing.variationPrice,
+                                variationSalePrice: v.variationSalePrice !== undefined && v.variationSalePrice !== '' ? v.variationSalePrice : existing.variationSalePrice,
+                            };
+                        }
+                        return v;
+                    });
+                }
+                return defaultVariation;
+            });
+        } else if (!defaultVariation || (Array.isArray(defaultVariation) && defaultVariation.length === 0)) {
+            // Only clear if explicitly empty
+            setVariations([]);
+        }
     }, [defaultVariation])
 
     const generateCombinations = () => {
@@ -31,25 +67,45 @@ const GenerateVariations = ({ attributes = [], setProducts, products, defaultVar
 
         const combos = cartesian(attrValues);
 
+        // Create a map of existing variations by their slug for matching
+        const existingVariationsMap = new Map();
+        variations.forEach(v => {
+            if (v.variationSlug) {
+                existingVariationsMap.set(v.variationSlug, v);
+            }
+        });
+
         const formatted = combos?.map((combo) => {
             const variationValues = combo?.map((val, index) => ({
                 [attrNames[index]]: val,
             }));
             console.log(variationValues);
 
-
             const slug = combo.join('_').toLowerCase();
-            const id = `VARI${slug.replace(/_/g, '')}vvid`;
 
-            return {
-                variationID: id,
-                variationSlug: slug,
-                variationName: slug,
-                variationValues,
-                variationStock: '',
-                variationPrice: '',
-                variationSalePrice: ''
-            };
+            // Check if a variation with this slug already exists
+            const existingVariation = existingVariationsMap.get(slug);
+
+            if (existingVariation) {
+                // Preserve existing variationID and other fields, but update variationValues
+                return {
+                    ...existingVariation,
+                    variationValues, // Update variationValues to match new combo
+                    variationName: slug, // Update name to match slug
+                };
+            } else {
+                // Create new variation
+                const id = `VARI${slug.replace(/_/g, '')}vvid`;
+                return {
+                    variationID: id,
+                    variationSlug: slug,
+                    variationName: slug,
+                    variationValues,
+                    variationStock: '',
+                    variationPrice: '',
+                    variationSalePrice: ''
+                };
+            }
         });
 
         setVariations(formatted);

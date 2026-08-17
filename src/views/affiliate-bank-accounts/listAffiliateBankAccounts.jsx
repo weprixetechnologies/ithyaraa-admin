@@ -114,7 +114,7 @@ const ListAffiliateBankAccounts = () => {
             case 'approved': return 'bg-green-100 text-green-800 border-green-200'
             case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
             case 'rejected': return 'bg-red-100 text-red-800 border-red-200'
-            default: return 'bg-gray-100 text-gray-800 border-gray-200'
+            default: return 'bg-gray-100 text-foreground border-gray-200'
         }
     }
 
@@ -142,25 +142,25 @@ const ListAffiliateBankAccounts = () => {
                     <div className="flex flex-wrap gap-2">
                         <button
                             onClick={() => setFilterStatus('all')}
-                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-secondary-text hover:bg-gray-300'}`}
                         >
                             All ({totalItems})
                         </button>
                         <button
                             onClick={() => setFilterStatus('pending')}
-                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'pending' ? 'bg-yellow-600 text-white' : 'bg-gray-200 text-secondary-text hover:bg-gray-300'}`}
                         >
                             Pending
                         </button>
                         <button
                             onClick={() => setFilterStatus('approved')}
-                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'approved' ? 'bg-green-600 text-white' : 'bg-gray-200 text-secondary-text hover:bg-gray-300'}`}
                         >
                             Approved
                         </button>
                         <button
                             onClick={() => setFilterStatus('rejected')}
-                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
+                            className={`px-4 py-2 rounded-lg transition ${filterStatus === 'rejected' ? 'bg-red-600 text-white' : 'bg-gray-200 text-secondary-text hover:bg-gray-300'}`}
                         >
                             Rejected
                         </button>
@@ -254,7 +254,7 @@ const ListAffiliateBankAccounts = () => {
                                     <TableCell className="text-center py-5">
                                         <div className="flex flex-col">
                                             <p className="font-medium">{account.userName || 'N/A'}</p>
-                                            <p className="text-xs text-gray-600">{account.userEmail || account.uid}</p>
+                                            <p className="text-xs text-secondary-text">{account.userEmail || account.uid}</p>
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-center py-5">
@@ -270,12 +270,12 @@ const ListAffiliateBankAccounts = () => {
                                         <div>
                                             <p className="font-medium">{account.bankName}</p>
                                             {account.branchName && (
-                                                <p className="text-xs text-gray-600">{account.branchName}</p>
+                                                <p className="text-xs text-secondary-text">{account.branchName}</p>
                                             )}
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-center py-5">
-                                        <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-700 capitalize">
+                                        <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-secondary-text capitalize">
                                             {account.accountType || 'savings'}
                                         </span>
                                     </TableCell>
@@ -357,7 +357,7 @@ const ListAffiliateBankAccounts = () => {
                                     setShowDetailsModal(false)
                                     setSelectedBankAccount(null)
                                 }}
-                                className="text-gray-400 hover:text-gray-600 transition"
+                                className="text-gray-400 hover:text-secondary-text transition"
                             >
                                 <MdClose size={24} />
                             </button>
@@ -377,57 +377,57 @@ const ListAffiliateBankAccounts = () => {
                             </div>
 
                             {/* User Information */}
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <h3 className="text-lg font-semibold mb-3 text-gray-800">User Information</h3>
+                            <div className="bg-background rounded-lg p-4">
+                                <h3 className="text-lg font-semibold mb-3 text-foreground">User Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <p className="text-sm text-gray-600">User ID</p>
+                                        <p className="text-sm text-secondary-text">User ID</p>
                                         <p className="font-medium">{selectedBankAccount.uid}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">User Name</p>
+                                        <p className="text-sm text-secondary-text">User Name</p>
                                         <p className="font-medium">{selectedBankAccount.userName || 'N/A'}</p>
                                     </div>
                                     <div className="md:col-span-2">
-                                        <p className="text-sm text-gray-600">Email</p>
+                                        <p className="text-sm text-secondary-text">Email</p>
                                         <p className="font-medium">{selectedBankAccount.userEmail || 'N/A'}</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Account Holder Information */}
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <h3 className="text-lg font-semibold mb-3 text-gray-800">Account Holder Information</h3>
+                            <div className="bg-background rounded-lg p-4">
+                                <h3 className="text-lg font-semibold mb-3 text-foreground">Account Holder Information</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <p className="text-sm text-gray-600">Account Holder Name</p>
+                                        <p className="text-sm text-secondary-text">Account Holder Name</p>
                                         <p className="font-medium">{selectedBankAccount.accountHolderName}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">Account Type</p>
+                                        <p className="text-sm text-secondary-text">Account Type</p>
                                         <p className="font-medium capitalize">{selectedBankAccount.accountType || 'Savings'}</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Bank Details */}
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <h3 className="text-lg font-semibold mb-3 text-gray-800">Bank Details</h3>
+                            <div className="bg-background rounded-lg p-4">
+                                <h3 className="text-lg font-semibold mb-3 text-foreground">Bank Details</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <p className="text-sm text-gray-600">Bank Name</p>
+                                        <p className="text-sm text-secondary-text">Bank Name</p>
                                         <p className="font-medium">{selectedBankAccount.bankName}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">Branch Name</p>
+                                        <p className="text-sm text-secondary-text">Branch Name</p>
                                         <p className="font-medium">{selectedBankAccount.branchName || 'N/A'}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">Account Number</p>
+                                        <p className="text-sm text-secondary-text">Account Number</p>
                                         <p className="font-medium font-mono">{selectedBankAccount.accountNumber}</p>
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-600">IFSC Code</p>
+                                        <p className="text-sm text-secondary-text">IFSC Code</p>
                                         <p className="font-medium font-mono">{selectedBankAccount.ifscCode}</p>
                                     </div>
                                 </div>
@@ -435,24 +435,24 @@ const ListAffiliateBankAccounts = () => {
 
                             {/* Additional Information */}
                             {(selectedBankAccount.panNumber || selectedBankAccount.gstin || selectedBankAccount.address) && (
-                                <div className="bg-gray-50 rounded-lg p-4">
-                                    <h3 className="text-lg font-semibold mb-3 text-gray-800">Additional Information</h3>
+                                <div className="bg-background rounded-lg p-4">
+                                    <h3 className="text-lg font-semibold mb-3 text-foreground">Additional Information</h3>
                                     <div className="space-y-3">
                                         {selectedBankAccount.panNumber && (
                                             <div>
-                                                <p className="text-sm text-gray-600">PAN Number</p>
+                                                <p className="text-sm text-secondary-text">PAN Number</p>
                                                 <p className="font-medium font-mono">{selectedBankAccount.panNumber}</p>
                                             </div>
                                         )}
                                         {selectedBankAccount.gstin && (
                                             <div>
-                                                <p className="text-sm text-gray-600">GSTIN</p>
+                                                <p className="text-sm text-secondary-text">GSTIN</p>
                                                 <p className="font-medium font-mono">{selectedBankAccount.gstin}</p>
                                             </div>
                                         )}
                                         {selectedBankAccount.address && (
                                             <div>
-                                                <p className="text-sm text-gray-600">Address</p>
+                                                <p className="text-sm text-secondary-text">Address</p>
                                                 <p className="font-medium">{selectedBankAccount.address}</p>
                                             </div>
                                         )}
@@ -461,27 +461,27 @@ const ListAffiliateBankAccounts = () => {
                             )}
 
                             {/* Timestamps */}
-                            <div className="bg-gray-50 rounded-lg p-4">
-                                <h3 className="text-lg font-semibold mb-3 text-gray-800">Timestamps</h3>
+                            <div className="bg-background rounded-lg p-4">
+                                <h3 className="text-lg font-semibold mb-3 text-foreground">Timestamps</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <div>
-                                        <p className="text-sm text-gray-600">Submitted On</p>
+                                        <p className="text-sm text-secondary-text">Submitted On</p>
                                         <p className="font-medium">{formatDate(selectedBankAccount.createdAt)}</p>
                                     </div>
                                     {selectedBankAccount.approvedAt && (
                                         <div>
-                                            <p className="text-sm text-gray-600">Approved On</p>
+                                            <p className="text-sm text-secondary-text">Approved On</p>
                                             <p className="font-medium">{formatDate(selectedBankAccount.approvedAt)}</p>
                                         </div>
                                     )}
                                     {selectedBankAccount.rejectedAt && (
                                         <div>
-                                            <p className="text-sm text-gray-600">Rejected On</p>
+                                            <p className="text-sm text-secondary-text">Rejected On</p>
                                             <p className="font-medium">{formatDate(selectedBankAccount.rejectedAt)}</p>
                                         </div>
                                     )}
                                     <div>
-                                        <p className="text-sm text-gray-600">Last Updated</p>
+                                        <p className="text-sm text-secondary-text">Last Updated</p>
                                         <p className="font-medium">{formatDate(selectedBankAccount.updatedAt)}</p>
                                     </div>
                                 </div>
@@ -530,12 +530,12 @@ const ListAffiliateBankAccounts = () => {
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 shadow-xl">
                         <h2 className="text-xl font-bold mb-4">Reject Bank Account</h2>
-                        <p className="text-sm text-gray-600 mb-4">
+                        <p className="text-sm text-secondary-text mb-4">
                             Please provide a reason for rejecting this bank account request.
                         </p>
 
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-secondary-text mb-2">
                                 Rejection Reason <span className="text-red-500">*</span>
                             </label>
                             <textarea
@@ -554,7 +554,7 @@ const ListAffiliateBankAccounts = () => {
                                     setRejectionReason('')
                                     setSelectedBankAccountID(null)
                                 }}
-                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition"
+                                className="flex-1 py-2 px-4 border border-gray-300 rounded-lg font-medium hover:bg-background transition"
                             >
                                 Cancel
                             </button>

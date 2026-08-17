@@ -10,14 +10,32 @@ import React, { useRef, useState, useEffect } from 'react'
 import { toast } from 'react-toastify';
 import Layout from 'src/layout'
 import { useParams } from 'react-router-dom'
+import { listSizeCharts } from '../../lib/api/sizeChartApi';
 
 const EditCustomProduct = () => {
     const { productID } = useParams()
-    const [product, setProduct] = useState({ type: 'customproduct', brand: 'inhouse' })
+    const [product, setProduct] = useState({ type: 'customproduct', brand: 'INHOUSE', brandID: 'INHOUSE' })
     const [customInputs, setCustomInputs] = useState([])
+    const [dressTypes, setDressTypes] = useState([])
     const [loading, setLoading] = useState(true)
+    const [sizeCharts, setSizeCharts] = useState([])
     const uploadRef = useRef();
     const galleryRef = useRef();
+
+    // Fetch size charts
+    useEffect(() => {
+        const fetchSizeCharts = async () => {
+            try {
+                const res = await listSizeCharts();
+                if (res.success) {
+                    setSizeCharts(res.data || []);
+                }
+            } catch (err) {
+                console.error('Error fetching size charts:', err);
+            }
+        };
+        fetchSizeCharts();
+    }, []);
 
     // Load existing product data
     useEffect(() => {
@@ -33,7 +51,8 @@ const EditCustomProduct = () => {
                     featuredImage: parseJSONSafe(data.featuredImage),
                     galleryImage: parseJSONSafe(data.galleryImage),
                     categories: parseJSONSafe(data.categories),
-                    custom_inputs: parseJSONSafe(data.custom_inputs)
+                    custom_inputs: parseJSONSafe(data.custom_inputs),
+                    dressTypes: parseJSONSafe(data.dressTypes)
                 };
 
                 setProduct(parsedProduct);
@@ -42,7 +61,10 @@ const EditCustomProduct = () => {
                 if (parsedProduct.custom_inputs && Array.isArray(parsedProduct.custom_inputs)) {
                     setCustomInputs(parsedProduct.custom_inputs);
                 }
-
+                // Set dress types if they exist
+                if (parsedProduct.dressTypes && Array.isArray(parsedProduct.dressTypes)) {
+                    setDressTypes(parsedProduct.dressTypes);
+                }
                 console.log('Parsed product:', parsedProduct);
             } catch (error) {
                 console.error('Error fetching product details:', error);
@@ -132,6 +154,21 @@ const EditCustomProduct = () => {
         ));
     };
 
+    // --- Dress Types Handlers ---
+    const addDressType = () => {
+        setDressTypes(prev => [...prev, { label: '', price: '' }]);
+    };
+
+    const removeDressType = (index) => {
+        setDressTypes(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const updateDressType = (index, field, value) => {
+        setDressTypes(prev => prev.map((item, i) => 
+            i === index ? { ...item, [field]: value } : item
+        ));
+    };
+
     const handleUpload = async () => {
         try {
             // Validate custom inputs
@@ -163,6 +200,18 @@ const EditCustomProduct = () => {
                 }
             }
 
+            // Validate dress types
+            for (let i = 0; i < dressTypes.length; i++) {
+                if (!dressTypes[i].label || !dressTypes[i].label.trim()) {
+                    toast.error(`Dress Type ${i + 1}: Label is required`);
+                    return;
+                }
+                if (!dressTypes[i].price || isNaN(dressTypes[i].price)) {
+                    toast.error(`Dress Type ${i + 1}: Valid price is required`);
+                    return;
+                }
+            }
+
             const finalImages = await uploadRef.current?.uploadImageFunction();
             const galleryupload = await galleryRef.current?.uploadImageFunction();
 
@@ -170,7 +219,8 @@ const EditCustomProduct = () => {
                 ...product,
                 featuredImage: finalImages,
                 galleryImage: galleryupload,
-                custom_inputs: customInputs
+                custom_inputs: customInputs,
+                dressTypes: dressTypes
             };
 
             console.log('🚀 Full custom product with images:', fullProductData);
@@ -182,11 +232,11 @@ const EditCustomProduct = () => {
             );
 
             console.log('Custom product updated successfully:', result);
-            // toast.success('Custom Product Updated Successfully');
+            toast.success(result?.message || 'Custom Product Updated Successfully');
 
         } catch (error) {
             console.error('Error updating custom product:', error.response?.data || error.message);
-            toast.error(error.response?.data?.message || 'Failed to update custom product');
+            toast.error(error.response?.data?.message || error.message || 'Failed to update custom product');
         }
     };
 
@@ -218,7 +268,7 @@ const EditCustomProduct = () => {
                                 value={product.description || ''}
                                 datafunction={(e) => updateFunction(e, 'description')}
                             />
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-3 gap-2">
                                 <InputUi
                                     label={'Tab 1'}
                                     isInput={false}
@@ -231,6 +281,13 @@ const EditCustomProduct = () => {
                                     isInput={false}
                                     value={product.tab2 || ''}
                                     datafunction={(e) => updateFunction(e, 'tab2')}
+                                    fieldClass='h-[100px]'
+                                />
+                                <InputUi
+                                    label={'Tab 3'}
+                                    isInput={false}
+                                    value={product.tab3 || ''}
+                                    datafunction={(e) => updateFunction(e, 'tab3')}
                                     fieldClass='h-[100px]'
                                 />
                             </div>
@@ -250,7 +307,7 @@ const EditCustomProduct = () => {
                                 </div>
 
                                 {/* Allow Customer Image Upload Checkbox */}
-                                <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                <div className="border border-gray-200 rounded-lg p-4 bg-background">
                                     <label className="flex items-center space-x-3 cursor-pointer">
                                         <input
                                             type="checkbox"
@@ -259,7 +316,7 @@ const EditCustomProduct = () => {
                                             className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
                                         />
                                         <div>
-                                            <span className="text-sm font-medium text-gray-700">Allow Customer to Upload Photo</span>
+                                            <span className="text-sm font-medium text-secondary-text">Allow Customer to Upload Photo</span>
                                             <p className="text-xs text-gray-500 mt-1">Enable this to allow customers to upload images when ordering this custom product</p>
                                         </div>
                                     </label>
@@ -273,9 +330,9 @@ const EditCustomProduct = () => {
                                 ) : (
                                     <div className="space-y-4">
                                         {customInputs.map((input, index) => (
-                                            <div key={input.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                            <div key={input.id} className="border border-gray-200 rounded-lg p-4 bg-background">
                                                 <div className="flex justify-between items-start mb-3">
-                                                    <h4 className="font-medium text-gray-700">Field {index + 1}</h4>
+                                                    <h4 className="font-medium text-secondary-text">Field {index + 1}</h4>
                                                     <button
                                                         type="button"
                                                         onClick={() => removeCustomInput(input.id)}
@@ -287,7 +344,7 @@ const EditCustomProduct = () => {
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        <label className="block text-sm font-medium text-secondary-text mb-1">
                                                             Field Label *
                                                         </label>
                                                         <input
@@ -300,7 +357,7 @@ const EditCustomProduct = () => {
                                                     </div>
 
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        <label className="block text-sm font-medium text-secondary-text mb-1">
                                                             Field Type *
                                                         </label>
                                                         <select
@@ -318,7 +375,7 @@ const EditCustomProduct = () => {
                                                     </div>
 
                                                     <div>
-                                                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                                                        <label className="block text-sm font-medium text-secondary-text mb-1">
                                                             Placeholder Text
                                                         </label>
                                                         <input
@@ -338,7 +395,7 @@ const EditCustomProduct = () => {
                                                                 onChange={(e) => updateCustomInput(input.id, 'required', e.target.checked)}
                                                                 className="mr-2"
                                                             />
-                                                            <span className="text-sm font-medium text-gray-700">Required Field</span>
+                                                            <span className="text-sm font-medium text-secondary-text">Required Field</span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -347,7 +404,7 @@ const EditCustomProduct = () => {
                                                 {input.type === 'select' && (
                                                     <div className="mt-4">
                                                         <div className="flex justify-between items-center mb-2">
-                                                            <label className="block text-sm font-medium text-gray-700">
+                                                            <label className="block text-sm font-medium text-secondary-text">
                                                                 Options *
                                                             </label>
                                                             <button
@@ -390,8 +447,96 @@ const EditCustomProduct = () => {
                             </div>
                         </Container>
 
-                        <Container gap={3} label={'Pricing & Discount'}>
+                        <Container gap={3} label={'Dress Types & Pricing (Optional Overrides)'}>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center">
+                                    <div>
+                                        <h3 className="text-lg font-medium">Dress Types</h3>
+                                        <p className="text-xs text-gray-500 mt-1">Add dress types if you want the price to change based on customer selection (e.g. Saree vs Lehenga)</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={addDressType}
+                                        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors"
+                                    >
+                                        + Add Dress Type
+                                    </button>
+                                </div>
+
+                                {dressTypes.length === 0 ? (
+                                    <div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-lg text-gray-500">
+                                        <p className="text-sm">No dress types added. Base pricing will be used.</p>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {dressTypes.map((item, index) => (
+                                            <div key={index} className="flex gap-4 items-end bg-background p-3 border border-gray-100 rounded-lg">
+                                                <div className="flex-1">
+                                                    <label className="block text-xs font-medium text-secondary-text mb-1">Label (e.g. Saree)</label>
+                                                    <input
+                                                        type="text"
+                                                        value={item.label}
+                                                        onChange={(e) => updateDressType(index, 'label', e.target.value)}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                                        placeholder="Type Name"
+                                                    />
+                                                </div>
+                                                <div className="w-32">
+                                                    <label className="block text-xs font-medium text-secondary-text mb-1">Price (₹)</label>
+                                                    <input
+                                                        type="number"
+                                                        value={item.price}
+                                                        onChange={(e) => updateDressType(index, 'price', e.target.value)}
+                                                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                                                        placeholder="0"
+                                                    />
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeDressType(index)}
+                                                    className="px-3 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </Container>
+
+                        <Container gap={3} label={'Pricing & Discount (Base Price)'}>
                             <Pricing setProducts={setProduct} products={product} />
+                        </Container>
+
+                        <Container gap={3} label={'Size Chart (Optional)'}>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-xs font-medium text-secondary-text">Select Size Chart</label>
+                                <select
+                                    className="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-background"
+                                    value={product.sizeChartUrl || ''}
+                                    onChange={(e) => setProduct(prev => ({ ...prev, sizeChartUrl: e.target.value || null }))}
+                                >
+                                    <option value="">None</option>
+                                    {sizeCharts.map(chart => (
+                                        <option key={chart.id} value={chart.imgUrl}>
+                                            {chart.chartName}
+                                        </option>
+                                    ))}
+                                </select>
+                                {product.sizeChartUrl && (
+                                    <div className="mt-2">
+                                        <p className="text-xs text-secondary-text mb-1">Preview:</p>
+                                        <div className="w-40 h-40 border rounded overflow-hidden bg-background">
+                                            <img
+                                                src={product.sizeChartUrl}
+                                                alt="Size chart preview"
+                                                className="w-full h-full object-contain"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </Container>
                     </div>
                 </div>

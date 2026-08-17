@@ -238,17 +238,17 @@ const CustomProductList = () => {
             {productToDelete && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={cancelDelete}>
                     <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                        <h3 className="text-lg font-semibold text-foreground mb-4">
                             Confirm Delete
                         </h3>
-                        <p className="text-gray-600 mb-6">
+                        <p className="text-secondary-text mb-6">
                             Are you sure you want to delete the custom product "{productToDelete.name}"?
                             This action cannot be undone.
                         </p>
                         <div className="flex gap-3 justify-end">
                             <button
                                 onClick={cancelDelete}
-                                className="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300"
+                                className="px-4 py-2 text-secondary-text bg-gray-200 rounded hover:bg-gray-300"
                                 disabled={deleteLoading}
                             >
                                 Cancel
