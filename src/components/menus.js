@@ -20,7 +20,8 @@ import {
     RiGroupLine,        // Affiliates
     RiCheckLine,        // Approval
     RiVideoLine,        // Reels
-    RiCustomerService2Line, // Support
+    RiCustomerService2Line,
+    RiPriceTagLine, // Support
 } from 'react-icons/ri';
 
 
@@ -261,7 +262,7 @@ export const mainMenu = [
         subMenu: [
             { menuID: 'admin-homepage-sections-add', url: '/homepage-sections/add', icon: <RiFolderAddLine />, title: 'Add Section' },
             { menuID: 'admin-homepage-sections-list', url: '/homepage-sections/list', icon: <RiListUnordered />, title: 'List Sections' },
-            { menuID: 'admin-homepage-sections-tags', url: '/homepage-sections/tags', icon: <RiTagLine />, title: 'Section Tag Manager' },
+            { menuID: 'admin-homepage-sections-tags', url: '/homepage-sections/tags', icon: <RiPriceTagLine />, title: 'Section Tag Manager' },
             { menuID: 'admin-home-slider', url: '/home-slider', icon: <RiImageLine />, title: 'Home Slider Banners' },
             { menuID: 'admin-featured-blocks', url: '/featured-blocks/add', icon: <RiImageLine />, title: 'Add Featured Block' },
         ],

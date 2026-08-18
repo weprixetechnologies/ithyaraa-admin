@@ -1,13 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import Layout from 'src/layout'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from '@/components/ui/container'
 import { IoMdEye } from 'react-icons/io';
-import { RiShoppingCart2Line, RiSearchLine, RiStoreLine, RiInboxLine } from 'react-icons/ri';
+import { RiSearchLine, RiStoreLine, RiInboxLine, RiArrowDownSLine, RiCloseLine, RiCheckLine } from 'react-icons/ri';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useNavigate } from 'react-router-dom';
-import { searchBrands, getBrandOrders } from '@/lib/api/brandOrdersApi';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getBrandOrders, getAllBrands } from '@/lib/api/brandOrdersApi';
 import { toast } from 'react-toastify';
 
 // Simple Pagination Component
@@ -64,13 +63,13 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
 const BrandOrders = () => {
     const navigate = useNavigate()
 
+    const [allBrands, setAllBrands] = useState([])
+    const [loadingBrands, setLoadingBrands] = useState(false)
     const [orderList, setOrderList] = useState([])
     const [loadingAPI, setLoadingAPI] = useState(false)
     const [brandSearchText, setBrandSearchText] = useState('')
-    const [brandSearchResults, setBrandSearchResults] = useState([])
     const [selectedBrand, setSelectedBrand] = useState(null)
     const [showBrandDropdown, setShowBrandDropdown] = useState(false)
-    const [searching, setSearching] = useState(false)
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
     const [pagination, setPagination] = useState({
@@ -81,58 +80,62 @@ const BrandOrders = () => {
         hasPrev: false
     })
     const [expandedOrders, setExpandedOrders] = useState(new Set())
+    const dropdownRef = useRef(null)
 
-    // Search brands
-    const handleBrandSearch = useCallback(async (searchText) => {
-        const trimmedText = searchText?.trim() || ''
-
-        if (trimmedText.length < 2) {
-            setBrandSearchResults([])
-            setShowBrandDropdown(false)
-            setSearching(false)
-            return
+    // Load all brands on mount
+    useEffect(() => {
+        const fetchAllBrandsList = async () => {
+            try {
+                setLoadingBrands(true)
+                const res = await getAllBrands()
+                if (res && res.success && Array.isArray(res.data)) {
+                    const normalized = res.data.map(b => ({
+                        ...b,
+                        brandID: b.brandID || b.uid,
+                        uid: b.uid || b.brandID,
+                        name: b.name || b.username || 'Unnamed Brand'
+                    }))
+                    setAllBrands(normalized)
+                }
+            } catch (err) {
+                console.error('Failed to load brands:', err)
+            } finally {
+                setLoadingBrands(false)
+            }
         }
+        fetchAllBrandsList()
+    }, [])
 
-        try {
-            setSearching(true)
-            console.log('Searching for brands with:', trimmedText)
-            const response = await searchBrands(trimmedText)
-            console.log('Search response:', response)
-
-            if (response && response.success) {
-                const results = response.data || []
-                setBrandSearchResults(results)
-                setShowBrandDropdown(results.length > 0)
-                console.log('Found brands:', results.length)
-            } else {
-                console.warn('Unexpected response format:', response)
-                setBrandSearchResults([])
+    // Click outside to close dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setShowBrandDropdown(false)
             }
-        } catch (error) {
-            console.error('Error searching brands:', error)
-            console.error('Error details:', error.response?.data || error.message)
-            toast.error(error.response?.data?.message || 'Failed to search brands')
-            setBrandSearchResults([])
-            setShowBrandDropdown(false)
-        } finally {
-            setSearching(false)
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [])
 
-    // Debounce brand search
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            if (brandSearchText) {
-                handleBrandSearch(brandSearchText)
-            } else {
-                setBrandSearchResults([])
-                setShowBrandDropdown(false)
-            }
-        }, 300)
-
-        return () => clearTimeout(timer)
-    }, [brandSearchText, handleBrandSearch])
+    // Filter brands based on search text
+    const filteredBrands = useMemo(() => {
+        const trimmed = brandSearchText.trim().toLowerCase()
+        if (!trimmed) {
+            return allBrands
+        }
+        // If the text matches currently selected brand's name, show all brands so user can easily switch
+        if (selectedBrand && (selectedBrand.name?.toLowerCase() === trimmed || selectedBrand.username?.toLowerCase() === trimmed)) {
+            return allBrands
+        }
+        return allBrands.filter(brand => {
+            const nameMatch = brand.name?.toLowerCase().includes(trimmed)
+            const usernameMatch = brand.username?.toLowerCase().includes(trimmed)
+            const emailMatch = brand.emailID?.toLowerCase().includes(trimmed)
+            return nameMatch || usernameMatch || emailMatch
+        })
+    }, [allBrands, brandSearchText, selectedBrand])
 
     // Fetch orders
     const fetchOrders = useCallback(async () => {
@@ -151,7 +154,7 @@ const BrandOrders = () => {
         try {
             setLoadingAPI(true)
             const params = {
-                brandID: selectedBrand.brandID,
+                brandID: selectedBrand.brandID || selectedBrand.uid,
                 page: pagination.currentPage,
                 limit: 10
             }
@@ -186,11 +189,23 @@ const BrandOrders = () => {
     }, [selectedBrand, fromDate, toDate, pagination.currentPage, fetchOrders])
 
     const handleBrandSelect = (brand) => {
-        setSelectedBrand(brand)
-        setBrandSearchText(brand.name)
-        setBrandSearchResults([])
+        const normalized = {
+            ...brand,
+            brandID: brand.brandID || brand.uid,
+            uid: brand.uid || brand.brandID,
+            name: brand.name || brand.username || 'Unnamed Brand'
+        }
+        setSelectedBrand(normalized)
+        setBrandSearchText(normalized.name)
         setShowBrandDropdown(false)
         setPagination(prev => ({ ...prev, currentPage: 1 }))
+    }
+
+    const handleClearBrand = () => {
+        setBrandSearchText('')
+        setSelectedBrand(null)
+        setOrderList([])
+        setShowBrandDropdown(true)
     }
 
     const handleSearch = () => {
@@ -203,7 +218,7 @@ const BrandOrders = () => {
     }
 
     // Check if search button should be enabled
-    const isSearchEnabled = selectedBrand && brandSearchText.trim().length >= 2
+    const isSearchEnabled = Boolean(selectedBrand)
 
     const handlePageChange = (page) => {
         setPagination(prev => ({ ...prev, currentPage: page }))
@@ -269,64 +284,104 @@ const BrandOrders = () => {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
                             <label className="text-sm font-medium text-secondary-text">Brand Name</label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="Search Brand by Name..."
-                                    value={brandSearchText}
-                                    onChange={(e) => {
-                                        const value = e.target.value
-                                        setBrandSearchText(value)
-                                        if (!value) {
-                                            setSelectedBrand(null)
-                                            setOrderList([])
-                                            setShowBrandDropdown(false)
-                                            setBrandSearchResults([])
-                                        }
-                                    }}
-                                    onFocus={() => {
-                                        if (brandSearchResults.length > 0) {
+                            <div className="relative" ref={dropdownRef}>
+                                <div className="relative flex items-center">
+                                    <input
+                                        type="text"
+                                        placeholder="Search or select a brand..."
+                                        value={brandSearchText}
+                                        onChange={(e) => {
+                                            const value = e.target.value
+                                            setBrandSearchText(value)
                                             setShowBrandDropdown(true)
-                                        }
-                                    }}
-                                    onBlur={() => {
-                                        // Delay hiding dropdown to allow click events
-                                        setTimeout(() => setShowBrandDropdown(false), 200)
-                                    }}
-                                    className="w-full p-2 rounded-[10px] border border-grey text-xs tracking-wideset h-[35px]"
-                                />
-                                {searching && (
-                                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xs">
-                                        Searching...
-                                    </div>
-                                )}
-                                {showBrandDropdown && brandSearchResults.length > 0 && (
-                                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                        {brandSearchResults.map((brand, index) => (
-                                            <div
-                                                key={brand.brandID || index}
-                                                onMouseDown={(e) => {
-                                                    // Prevent blur event from firing
-                                                    e.preventDefault()
+                                            if (!value.trim()) {
+                                                setSelectedBrand(null)
+                                                setOrderList([])
+                                            }
+                                        }}
+                                        onFocus={() => setShowBrandDropdown(true)}
+                                        onClick={() => setShowBrandDropdown(true)}
+                                        className="w-full p-2 pr-16 rounded-[10px] border border-grey text-xs tracking-wideset h-[35px] focus:outline-none focus:border-blue-500"
+                                    />
+                                    <div className="absolute right-2 flex items-center gap-1">
+                                        {brandSearchText && (
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    handleClearBrand()
                                                 }}
-                                                onClick={() => handleBrandSelect(brand)}
-                                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 last:border-b-0"
+                                                className="p-1 text-gray-400 hover:text-gray-600 rounded-full cursor-pointer"
+                                                title="Clear brand"
                                             >
-                                                <div className="font-medium">{brand.name}</div>
-                                                {brand.emailID && (
-                                                    <div className="text-sm text-gray-500">{brand.emailID}</div>
-                                                )}
-                                            </div>
-                                        ))}
+                                                <RiCloseLine size={16} />
+                                            </button>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation()
+                                                setShowBrandDropdown(prev => !prev)
+                                            }}
+                                            className="p-1 text-gray-400 hover:text-gray-600 cursor-pointer"
+                                            title="Toggle brand list"
+                                        >
+                                            <RiArrowDownSLine size={18} className={`transition-transform duration-200 ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                                        </button>
                                     </div>
-                                )}
-                                {showBrandDropdown && !searching && brandSearchResults.length === 0 && brandSearchText.trim().length > 0 && (
-                                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg p-4 text-center text-gray-500 text-sm">
-                                        No brands found
+                                </div>
+
+                                {showBrandDropdown && (
+                                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                                        {loadingBrands ? (
+                                            <div className="p-4 text-center text-gray-500 text-xs">
+                                                Loading brands...
+                                            </div>
+                                        ) : filteredBrands.length > 0 ? (
+                                            filteredBrands.map((brand, index) => {
+                                                const isSelected = selectedBrand && (
+                                                    (selectedBrand.brandID && (selectedBrand.brandID === brand.brandID || selectedBrand.brandID === brand.uid)) ||
+                                                    (selectedBrand.uid && (selectedBrand.uid === brand.uid || selectedBrand.uid === brand.brandID))
+                                                )
+
+                                                return (
+                                                    <div
+                                                        key={brand.brandID || brand.uid || index}
+                                                        onMouseDown={(e) => {
+                                                            // Prevent blur event from firing
+                                                            e.preventDefault()
+                                                        }}
+                                                        onClick={() => handleBrandSelect(brand)}
+                                                        className={`px-4 py-2.5 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 flex items-center justify-between transition-colors ${
+                                                            isSelected ? 'bg-blue-50/70' : ''
+                                                        }`}
+                                                    >
+                                                        <div>
+                                                            <div className="font-medium text-xs text-gray-900 flex items-center gap-1.5">
+                                                                <RiStoreLine className="text-gray-400" size={14} />
+                                                                {brand.name || brand.username || 'Unnamed Brand'}
+                                                            </div>
+                                                            {(brand.emailID || brand.username) && (
+                                                                <div className="text-[11px] text-gray-500 pl-5">
+                                                                    {brand.emailID || `@${brand.username}`}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        {isSelected && (
+                                                            <RiCheckLine className="text-blue-600" size={16} />
+                                                        )}
+                                                    </div>
+                                                )
+                                            })
+                                        ) : (
+                                            <div className="p-4 text-center text-gray-500 text-xs">
+                                                No brands found
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
-                            <p className="text-xs text-gray-500">Search by registered brand name</p>
+                            <p className="text-xs text-gray-500">Select from the list or type to search by brand name</p>
                         </div>
 
                         <div className="flex flex-col md:flex-row gap-4 items-end">

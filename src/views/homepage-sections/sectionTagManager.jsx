@@ -23,8 +23,15 @@ import {
     RiCheckLine,
     RiRefreshLine,
     RiPriceTag3Line,
-    RiCloseLine
+    RiCloseLine,
+    RiFilterLine,
+    RiArrowLeftSLine,
+    RiArrowRightSLine,
+    RiSkipBackLine,
+    RiSkipForwardLine,
 } from "react-icons/ri";
+
+const PAGE_SIZE_OPTIONS = [10, 20, 50, 100];
 
 const SectionTagManager = () => {
     // Tag sections list state
@@ -51,9 +58,21 @@ const SectionTagManager = () => {
     const [catalogProducts, setCatalogProducts] = useState([]);
     const [catalogTotal, setCatalogTotal] = useState(0);
     const [catalogPage, setCatalogPage] = useState(1);
+    const [catalogPageSize, setCatalogPageSize] = useState(20);
     const [catalogSearch, setCatalogSearch] = useState("");
     const [loadingCatalog, setLoadingCatalog] = useState(false);
     const [selectedProductIDs, setSelectedProductIDs] = useState([]);
+
+    // Advanced filter state
+    const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+    const [filterType, setFilterType] = useState("");
+    const [filterStatus, setFilterStatus] = useState("");
+    const [filterBrandID, setFilterBrandID] = useState("");
+    const [filterBrandName, setFilterBrandName] = useState("");
+    const [filterCategoryName, setFilterCategoryName] = useState("");
+    const [filterSectionTag, setFilterSectionTag] = useState("");
+    const [filterMinPrice, setFilterMinPrice] = useState("");
+    const [filterMaxPrice, setFilterMaxPrice] = useState("");
 
     // Action state
     const [actionLoading, setActionLoading] = useState(false);
@@ -72,11 +91,11 @@ const SectionTagManager = () => {
                     setSelectedTagSection(list[0]);
                 }
             } else {
-                toast.error("Failed to load tag sections");
+                toast.error(res.data?.message || "Failed to load tag sections");
             }
         } catch (err) {
             console.error("Error fetching tag sections:", err);
-            toast.error("Error loading section tags");
+            toast.error(err.response?.data?.message || err.message || "Error loading section tags");
         } finally {
             setLoadingSections(false);
         }
@@ -121,23 +140,36 @@ const SectionTagManager = () => {
             setLoadingCatalog(true);
             const params = new URLSearchParams({
                 page: catalogPage,
-                limit: 10,
+                limit: catalogPageSize,
             });
             if (catalogSearch.trim()) {
                 params.append("name", catalogSearch.trim());
             }
+            // Advanced filters
+            if (filterType) params.append("type", filterType);
+            if (filterStatus) params.append("status", filterStatus);
+            if (filterBrandID.trim()) params.append("brandID", filterBrandID.trim());
+            if (filterBrandName.trim()) params.append("brandName", filterBrandName.trim());
+            if (filterCategoryName.trim()) params.append("categoryName", filterCategoryName.trim());
+            if (filterSectionTag.trim()) params.append("sectionid", filterSectionTag.trim());
+            if (filterMinPrice.trim()) params.append("minPrice", filterMinPrice.trim());
+            if (filterMaxPrice.trim()) params.append("maxPrice", filterMaxPrice.trim());
 
             const res = await axiosInstance.get(`/products/all-products?${params.toString()}`);
             if (res.data?.success || res.data?.data) {
-                setCatalogProducts(res.data.data || []);
-                setCatalogTotal(res.data.count || res.data.total || 0);
+                const fetchedData = res.data.data || [];
+                setCatalogProducts(fetchedData);
+                
+                // Extract total count accurately from count, total, totalItems or fallback to length
+                const total = res.data.count ?? res.data.total ?? res.data.totalItems ?? res.data.pagination?.total;
+                setCatalogTotal(total !== undefined && total !== null ? total : fetchedData.length);
             }
         } catch (err) {
             console.error("Error fetching catalog products:", err);
         } finally {
             setLoadingCatalog(false);
         }
-    }, [catalogPage, catalogSearch]);
+    }, [catalogPage, catalogPageSize, catalogSearch, filterType, filterStatus, filterBrandID, filterBrandName, filterCategoryName, filterSectionTag, filterMinPrice, filterMaxPrice]);
 
     useEffect(() => {
         fetchCatalogProducts();
@@ -322,6 +354,53 @@ const SectionTagManager = () => {
         return typeof feat === 'string' ? feat : '';
     };
 
+    // ──────────────────────────────────────────────────────────────────────────
+    // Pagination helpers
+    // ──────────────────────────────────────────────────────────────────────────
+    const totalPages = Math.ceil(catalogTotal / catalogPageSize) || 1;
+
+    const clearAllFilters = () => {
+        setCatalogSearch("");
+        setFilterType("");
+        setFilterStatus("");
+        setFilterBrandID("");
+        setFilterBrandName("");
+        setFilterCategoryName("");
+        setFilterSectionTag("");
+        setFilterMinPrice("");
+        setFilterMaxPrice("");
+        setCatalogPage(1);
+    };
+
+    const hasActiveFilters = Boolean(
+        filterType ||
+        filterStatus ||
+        filterBrandID.trim() ||
+        filterBrandName.trim() ||
+        filterCategoryName.trim() ||
+        filterSectionTag.trim() ||
+        filterMinPrice.trim() ||
+        filterMaxPrice.trim()
+    );
+
+    // Generate page numbers with ellipsis
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisible = 7;
+        if (totalPages <= maxVisible) {
+            for (let i = 1; i <= totalPages; i++) pages.push(i);
+        } else {
+            pages.push(1);
+            if (catalogPage > 3) pages.push("...");
+            const start = Math.max(2, catalogPage - 1);
+            const end = Math.min(totalPages - 1, catalogPage + 1);
+            for (let i = start; i <= end; i++) pages.push(i);
+            if (catalogPage < totalPages - 2) pages.push("...");
+            pages.push(totalPages);
+        }
+        return pages;
+    };
+
     return (
         <Layout active="admin-homepage-sections-list" title="Homepage Section Tag Manager">
             <div className="flex flex-col gap-6">
@@ -481,6 +560,23 @@ const SectionTagManager = () => {
                                         />
                                         <RiSearchLine className="absolute left-2.5 top-2 text-gray-400" size={14} />
                                     </div>
+                                    <button
+                                        onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                                        className={`flex items-center gap-1 px-3 py-1.5 rounded-md border text-xs font-medium transition-colors whitespace-nowrap ${
+                                            showAdvancedFilters || hasActiveFilters
+                                                ? 'bg-purple-100 border-purple-300 text-purple-700'
+                                                : 'bg-white border-gray-300 text-gray-600 hover:border-purple-400'
+                                        }`}
+                                        title="Advanced Filters"
+                                    >
+                                        <RiFilterLine size={14} />
+                                        Filters
+                                        {hasActiveFilters && (
+                                            <span className="bg-purple-600 text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                                !
+                                            </span>
+                                        )}
+                                    </button>
                                 </div>
 
                                 <div className="flex items-center gap-3">
@@ -513,6 +609,102 @@ const SectionTagManager = () => {
                                 </div>
                             </div>
 
+                            {/* Advanced Filters Panel */}
+                            {showAdvancedFilters && (
+                                <div className="bg-white border border-gray-200 rounded-lg p-4">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                                            <RiFilterLine className="text-purple-600" /> Advanced Filters
+                                        </h3>
+                                        {hasActiveFilters && (
+                                            <button
+                                                onClick={clearAllFilters}
+                                                className="text-xs text-red-600 hover:text-red-800 underline"
+                                            >
+                                                Clear All Filters
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Product Type</label>
+                                            <select
+                                                value={filterType}
+                                                onChange={(e) => { setFilterType(e.target.value); setCatalogPage(1); }}
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600 bg-white"
+                                            >
+                                                <option value="">All Types</option>
+                                                <option value="variable">Variable</option>
+                                                <option value="simple">Simple</option>
+                                                <option value="custom">Custom</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Status</label>
+                                            <select
+                                                value={filterStatus}
+                                                onChange={(e) => { setFilterStatus(e.target.value); setCatalogPage(1); }}
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600 bg-white"
+                                            >
+                                                <option value="">All Statuses</option>
+                                                <option value="published">Published</option>
+                                                <option value="draft">Draft</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Brand Name</label>
+                                            <input
+                                                type="text"
+                                                value={filterBrandName}
+                                                onChange={(e) => { setFilterBrandName(e.target.value); setCatalogPage(1); }}
+                                                placeholder="e.g. Zara"
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Brand ID</label>
+                                            <input
+                                                type="text"
+                                                value={filterBrandID}
+                                                onChange={(e) => { setFilterBrandID(e.target.value); setCatalogPage(1); }}
+                                                placeholder="e.g. BR001"
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Min Price (₹)</label>
+                                            <input
+                                                type="number"
+                                                value={filterMinPrice}
+                                                onChange={(e) => { setFilterMinPrice(e.target.value); setCatalogPage(1); }}
+                                                placeholder="e.g. 500"
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Max Price (₹)</label>
+                                            <input
+                                                type="number"
+                                                value={filterMaxPrice}
+                                                onChange={(e) => { setFilterMaxPrice(e.target.value); setCatalogPage(1); }}
+                                                placeholder="e.g. 5000"
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1 block">Category</label>
+                                            <input
+                                                type="text"
+                                                value={filterCategoryName}
+                                                onChange={(e) => { setFilterCategoryName(e.target.value); setCatalogPage(1); }}
+                                                placeholder="e.g. Dresses"
+                                                className="w-full border border-gray-300 rounded-md px-2 py-1.5 text-xs outline-none focus:border-purple-600"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Catalog Products Table */}
                             <div className="border border-gray-200 rounded-lg overflow-hidden">
                                 <Table>
@@ -527,6 +719,8 @@ const SectionTagManager = () => {
                                             </TableHead>
                                             <TableHead>Product</TableHead>
                                             <TableHead>Product ID</TableHead>
+                                            <TableHead>Brand</TableHead>
+                                            <TableHead>Type</TableHead>
                                             <TableHead>Current Section Tags</TableHead>
                                             <TableHead>Price</TableHead>
                                         </TableRow>
@@ -534,21 +728,20 @@ const SectionTagManager = () => {
                                     <TableBody>
                                         {loadingCatalog ? (
                                             <TableRow>
-                                                <TableCell colSpan={5} className="text-center py-6 text-sm text-gray-500">
+                                                <TableCell colSpan={7} className="text-center py-6 text-sm text-gray-500">
                                                     Loading catalog products...
                                                 </TableCell>
                                             </TableRow>
                                         ) : catalogProducts.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={5} className="text-center py-6 text-sm text-gray-500">
-                                                    No catalog products found matching search.
+                                                <TableCell colSpan={7} className="text-center py-6 text-sm text-gray-500">
+                                                    No catalog products found matching search/filters.
                                                 </TableCell>
                                             </TableRow>
                                         ) : (
                                             catalogProducts.map(p => {
                                                 const isSelected = selectedProductIDs.includes(p.productID);
                                                 const img = getImageUrl(p);
-                                                const hasTag = (p.sectionid || '').toLowerCase().includes(selectedTagSection.tag);
 
                                                 return (
                                                     <TableRow key={p.productID} className={isSelected ? 'bg-purple-50/50' : ''}>
@@ -570,11 +763,23 @@ const SectionTagManager = () => {
                                                                 </div>
                                                                 <div>
                                                                     <div className="text-sm font-medium text-gray-900">{p.name}</div>
-                                                                    <div className="text-xs text-gray-500">{p.brand || 'Inhouse'}</div>
                                                                 </div>
                                                             </div>
                                                         </TableCell>
                                                         <TableCell className="font-mono text-xs text-gray-600">{p.productID}</TableCell>
+                                                        <TableCell>
+                                                            <div className="text-xs font-medium text-gray-800">{p.brand || 'Inhouse'}</div>
+                                                            {p.brandID && <div className="text-[10px] font-mono text-gray-400">{p.brandID}</div>}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <span className={`text-[10px] font-medium px-2 py-0.5 rounded ${
+                                                                p.type === 'variable' ? 'bg-blue-100 text-blue-800' :
+                                                                p.type === 'custom' ? 'bg-amber-100 text-amber-800' :
+                                                                'bg-gray-100 text-gray-700'
+                                                            }`}>
+                                                                {p.type || 'N/A'}
+                                                            </span>
+                                                        </TableCell>
                                                         <TableCell>
                                                             {p.sectionid ? (
                                                                 <div className="flex flex-wrap gap-1">
@@ -607,22 +812,81 @@ const SectionTagManager = () => {
                             </div>
 
                             {/* Pagination */}
-                            <div className="flex items-center justify-between text-xs text-gray-600">
-                                <div>Showing page {catalogPage} of {Math.ceil(catalogTotal / 10) || 1} ({catalogTotal} total)</div>
-                                <div className="flex gap-2">
+                            <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-gray-600">
+                                <div className="flex items-center gap-3">
+                                    <span>
+                                        Showing {catalogProducts.length > 0 ? ((catalogPage - 1) * catalogPageSize + 1) : 0}–{Math.min(catalogPage * catalogPageSize, catalogTotal)} of <strong>{catalogTotal}</strong> products
+                                    </span>
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="text-gray-500">Rows:</span>
+                                        <select
+                                            value={catalogPageSize}
+                                            onChange={(e) => { setCatalogPageSize(Number(e.target.value)); setCatalogPage(1); }}
+                                            className="border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-purple-600 bg-white"
+                                        >
+                                            {PAGE_SIZE_OPTIONS.map(size => (
+                                                <option key={size} value={size}>{size}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-1">
+                                    {/* First page */}
+                                    <button
+                                        disabled={catalogPage <= 1}
+                                        onClick={() => setCatalogPage(1)}
+                                        className="p-1.5 rounded border border-gray-200 bg-white disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                                        title="First page"
+                                    >
+                                        <RiSkipBackLine size={14} />
+                                    </button>
+                                    {/* Previous */}
                                     <button
                                         disabled={catalogPage <= 1}
                                         onClick={() => setCatalogPage(p => p - 1)}
-                                        className="px-3 py-1 bg-white border border-gray-300 rounded disabled:opacity-50"
+                                        className="p-1.5 rounded border border-gray-200 bg-white disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                                        title="Previous page"
                                     >
-                                        Previous
+                                        <RiArrowLeftSLine size={14} />
                                     </button>
+
+                                    {/* Page numbers */}
+                                    {getPageNumbers().map((page, idx) =>
+                                        page === "..." ? (
+                                            <span key={`ellipsis-${idx}`} className="px-1.5 text-gray-400">…</span>
+                                        ) : (
+                                            <button
+                                                key={page}
+                                                onClick={() => setCatalogPage(page)}
+                                                className={`w-7 h-7 rounded border text-xs font-medium transition-colors ${
+                                                    catalogPage === page
+                                                        ? 'bg-purple-600 text-white border-purple-600'
+                                                        : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        )
+                                    )}
+
+                                    {/* Next */}
                                     <button
-                                        disabled={catalogPage >= Math.ceil(catalogTotal / 10)}
+                                        disabled={catalogPage >= totalPages}
                                         onClick={() => setCatalogPage(p => p + 1)}
-                                        className="px-3 py-1 bg-white border border-gray-300 rounded disabled:opacity-50"
+                                        className="p-1.5 rounded border border-gray-200 bg-white disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                                        title="Next page"
                                     >
-                                        Next
+                                        <RiArrowRightSLine size={14} />
+                                    </button>
+                                    {/* Last page */}
+                                    <button
+                                        disabled={catalogPage >= totalPages}
+                                        onClick={() => setCatalogPage(totalPages)}
+                                        className="p-1.5 rounded border border-gray-200 bg-white disabled:opacity-40 hover:bg-gray-50 transition-colors"
+                                        title="Last page"
+                                    >
+                                        <RiSkipForwardLine size={14} />
                                     </button>
                                 </div>
                             </div>

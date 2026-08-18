@@ -57,8 +57,8 @@ const AddCoupon = () => {
 
             const response = await createCoupon(payload);
 
-            if (response.result?.success) {
-                // toast.success('Coupon created successfully!');
+            if (response?.result?.success || response?.success) {
+                toast.success('Coupon created successfully!');
                 setFormData({
                     couponCode: '',
                     assignedUser: '',
@@ -69,10 +69,10 @@ const AddCoupon = () => {
                     minOrderValue: '',
                 });
             } else {
-                toast.error(response.result?.message || 'Something went wrong');
+                toast.error(response?.result?.message || response?.message || 'Something went wrong');
             }
         } catch (err) {
-            toast.error('Failed to create coupon');
+            toast.error(err?.response?.data?.message || 'Failed to create coupon');
         }
     };
 
