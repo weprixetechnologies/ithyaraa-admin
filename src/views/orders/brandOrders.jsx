@@ -3,7 +3,18 @@ import Layout from 'src/layout'
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from '@/components/ui/container'
 import { IoMdEye } from 'react-icons/io';
-import { RiSearchLine, RiStoreLine, RiInboxLine, RiArrowDownSLine, RiCloseLine, RiCheckLine } from 'react-icons/ri';
+import {
+    RiSearchLine,
+    RiStoreLine,
+    RiInboxLine,
+    RiArrowDownSLine,
+    RiCloseLine,
+    RiCheckLine,
+    RiFilterLine,
+    RiBuildingLine,
+    RiGlobalLine,
+    RiCheckboxMultipleLine
+} from 'react-icons/ri';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useNavigate } from 'react-router-dom';
 import { getBrandOrders, getAllBrands } from '@/lib/api/brandOrdersApi';
@@ -14,7 +25,6 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
     const pages = []
     const maxVisiblePages = 5
 
-    // Calculate which pages to show
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2))
     let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1)
 
@@ -60,6 +70,15 @@ const SimplePagination = ({ currentPage, totalPages, onPageChange, hasNext, hasP
     )
 }
 
+const INHOUSE_BRAND = {
+    brandID: 'inhouse',
+    uid: 'inhouse',
+    name: 'Inhouse (Ithyaraa Direct)',
+    username: 'inhouse',
+    emailID: 'inhouse@ithyaraa.com',
+    isInhouse: true
+}
+
 const BrandOrders = () => {
     const navigate = useNavigate()
 
@@ -67,8 +86,12 @@ const BrandOrders = () => {
     const [loadingBrands, setLoadingBrands] = useState(false)
     const [orderList, setOrderList] = useState([])
     const [loadingAPI, setLoadingAPI] = useState(false)
+
+    // Preset filter mode: 'except_inhouse' | 'only_inhouse' | 'all' | 'custom'
+    const [filterType, setFilterType] = useState('except_inhouse')
+    const [selectedBrands, setSelectedBrands] = useState([])
+
     const [brandSearchText, setBrandSearchText] = useState('')
-    const [selectedBrand, setSelectedBrand] = useState(null)
     const [showBrandDropdown, setShowBrandDropdown] = useState(false)
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
@@ -88,6 +111,7 @@ const BrandOrders = () => {
             try {
                 setLoadingBrands(true)
                 const res = await getAllBrands()
+                const brandList = [INHOUSE_BRAND]
                 if (res && res.success && Array.isArray(res.data)) {
                     const normalized = res.data.map(b => ({
                         ...b,
@@ -95,8 +119,9 @@ const BrandOrders = () => {
                         uid: b.uid || b.brandID,
                         name: b.name || b.username || 'Unnamed Brand'
                     }))
-                    setAllBrands(normalized)
+                    brandList.push(...normalized)
                 }
+                setAllBrands(brandList)
             } catch (err) {
                 console.error('Failed to load brands:', err)
             } finally {
@@ -119,14 +144,10 @@ const BrandOrders = () => {
         }
     }, [])
 
-    // Filter brands based on search text
+    // Filter brands based on search text in custom selector
     const filteredBrands = useMemo(() => {
         const trimmed = brandSearchText.trim().toLowerCase()
         if (!trimmed) {
-            return allBrands
-        }
-        // If the text matches currently selected brand's name, show all brands so user can easily switch
-        if (selectedBrand && (selectedBrand.name?.toLowerCase() === trimmed || selectedBrand.username?.toLowerCase() === trimmed)) {
             return allBrands
         }
         return allBrands.filter(brand => {
@@ -135,11 +156,15 @@ const BrandOrders = () => {
             const emailMatch = brand.emailID?.toLowerCase().includes(trimmed)
             return nameMatch || usernameMatch || emailMatch
         })
-    }, [allBrands, brandSearchText, selectedBrand])
+    }, [allBrands, brandSearchText])
 
     // Fetch orders
-    const fetchOrders = useCallback(async () => {
-        if (!selectedBrand) {
+    const fetchOrders = useCallback(async (overrides = {}) => {
+        const currentFilter = overrides.filterType || filterType
+        const currentBrands = overrides.selectedBrands || selectedBrands
+        const currentPage = overrides.page || pagination.currentPage
+
+        if (currentFilter === 'custom' && currentBrands.length === 0) {
             setOrderList([])
             setPagination({
                 currentPage: 1,
@@ -154,9 +179,14 @@ const BrandOrders = () => {
         try {
             setLoadingAPI(true)
             const params = {
-                brandID: selectedBrand.brandID || selectedBrand.uid,
-                page: pagination.currentPage,
+                filterType: currentFilter,
+                page: currentPage,
                 limit: 10
+            }
+
+            if (currentFilter === 'custom') {
+                const brandIDsStr = currentBrands.map(b => b.brandID || b.uid).join(',')
+                params.brandIDs = brandIDsStr
             }
 
             if (fromDate) params.fromDate = fromDate
@@ -180,48 +210,65 @@ const BrandOrders = () => {
         } finally {
             setLoadingAPI(false)
         }
-    }, [selectedBrand, fromDate, toDate, pagination.currentPage])
+    }, [filterType, selectedBrands, fromDate, toDate, pagination.currentPage])
 
     useEffect(() => {
-        if (selectedBrand) {
-            fetchOrders()
-        }
-    }, [selectedBrand, fromDate, toDate, pagination.currentPage, fetchOrders])
+        fetchOrders()
+    }, [fetchOrders])
 
-    const handleBrandSelect = (brand) => {
-        const normalized = {
-            ...brand,
-            brandID: brand.brandID || brand.uid,
-            uid: brand.uid || brand.brandID,
-            name: brand.name || brand.username || 'Unnamed Brand'
-        }
-        setSelectedBrand(normalized)
-        setBrandSearchText(normalized.name)
-        setShowBrandDropdown(false)
+    const handleFilterTypeChange = (newType) => {
+        setFilterType(newType)
         setPagination(prev => ({ ...prev, currentPage: 1 }))
+        fetchOrders({ filterType: newType, page: 1 })
     }
 
-    const handleClearBrand = () => {
-        setBrandSearchText('')
-        setSelectedBrand(null)
-        setOrderList([])
-        setShowBrandDropdown(true)
+    const toggleBrandSelection = (brand) => {
+        const brandID = brand.brandID || brand.uid
+        setSelectedBrands(prev => {
+            const exists = prev.some(b => (b.brandID || b.uid) === brandID)
+            let updated
+            if (exists) {
+                updated = prev.filter(b => (b.brandID || b.uid) !== brandID)
+            } else {
+                updated = [...prev, brand]
+            }
+            if (filterType === 'custom') {
+                fetchOrders({ filterType: 'custom', selectedBrands: updated, page: 1 })
+            }
+            return updated
+        })
+    }
+
+    const handleSelectAllBrands = () => {
+        setSelectedBrands([...allBrands])
+        if (filterType === 'custom') {
+            fetchOrders({ filterType: 'custom', selectedBrands: allBrands, page: 1 })
+        }
+    }
+
+    const handleClearAllBrands = () => {
+        setSelectedBrands([])
+        if (filterType === 'custom') {
+            setOrderList([])
+        }
+    }
+
+    const handleRemoveBrandChip = (brandID) => {
+        const updated = selectedBrands.filter(b => (b.brandID || b.uid) !== brandID)
+        setSelectedBrands(updated)
+        if (filterType === 'custom') {
+            fetchOrders({ filterType: 'custom', selectedBrands: updated, page: 1 })
+        }
     }
 
     const handleSearch = () => {
-        if (!selectedBrand) {
-            toast.error('Please select a brand first')
-            return
-        }
         setPagination(prev => ({ ...prev, currentPage: 1 }))
-        fetchOrders()
+        fetchOrders({ page: 1 })
     }
-
-    // Check if search button should be enabled
-    const isSearchEnabled = Boolean(selectedBrand)
 
     const handlePageChange = (page) => {
         setPagination(prev => ({ ...prev, currentPage: page }))
+        fetchOrders({ page })
     }
 
     const toggleOrderExpansion = (orderID) => {
@@ -278,189 +325,296 @@ const BrandOrders = () => {
 
     return (
         <Layout active="admin-brand-orders" title={'Brand Orders'}>
-            <Container containerclass={'bg-transaparent'}>
-                {/* Search Section - Card Container */}
+            <Container containerclass={'bg-transparent'}>
+                {/* Search & Filter Options Card */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium text-secondary-text">Brand Name</label>
-                            <div className="relative" ref={dropdownRef}>
-                                <div className="relative flex items-center">
-                                    <input
-                                        type="text"
-                                        placeholder="Search or select a brand..."
-                                        value={brandSearchText}
-                                        onChange={(e) => {
-                                            const value = e.target.value
-                                            setBrandSearchText(value)
-                                            setShowBrandDropdown(true)
-                                            if (!value.trim()) {
-                                                setSelectedBrand(null)
-                                                setOrderList([])
-                                            }
-                                        }}
-                                        onFocus={() => setShowBrandDropdown(true)}
-                                        onClick={() => setShowBrandDropdown(true)}
-                                        className="w-full p-2 pr-16 rounded-[10px] border border-grey text-xs tracking-wideset h-[35px] focus:outline-none focus:border-blue-500"
-                                    />
-                                    <div className="absolute right-2 flex items-center gap-1">
-                                        {brandSearchText && (
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    handleClearBrand()
-                                                }}
-                                                className="p-1 text-gray-400 hover:text-gray-600 rounded-full cursor-pointer"
-                                                title="Clear brand"
-                                            >
-                                                <RiCloseLine size={16} />
-                                            </button>
-                                        )}
+                    <div className="flex flex-col gap-5">
+
+                        {/* Quick Presets Section */}
+                        <div>
+                            <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider block mb-2">
+                                Brand Filter Mode
+                            </label>
+                            <div className="flex flex-wrap items-center gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => handleFilterTypeChange('except_inhouse')}
+                                    className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 border ${
+                                        filterType === 'except_inhouse'
+                                            ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    <RiFilterLine size={15} />
+                                    All Brands Except Inhouse
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleFilterTypeChange('only_inhouse')}
+                                    className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 border ${
+                                        filterType === 'only_inhouse'
+                                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    <RiBuildingLine size={15} />
+                                    Show Only Inhouse
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleFilterTypeChange('all')}
+                                    className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 border ${
+                                        filterType === 'all'
+                                            ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    <RiGlobalLine size={15} />
+                                    All Orders (Global)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => handleFilterTypeChange('custom')}
+                                    className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 border ${
+                                        filterType === 'custom'
+                                            ? 'bg-purple-600 text-white border-purple-600 shadow-sm'
+                                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                                    }`}
+                                >
+                                    <RiCheckboxMultipleLine size={15} />
+                                    Custom Brand Selection {selectedBrands.length > 0 && `(${selectedBrands.length})`}
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Multi-Brand Custom Selector (Active when Custom Mode selected) */}
+                        {filterType === 'custom' && (
+                            <div className="flex flex-col gap-2 pt-3 border-t border-gray-100">
+                                <div className="flex justify-between items-center">
+                                    <label className="text-xs font-medium text-secondary-text">Select Brands (Multiple Allowed)</label>
+                                    <div className="flex gap-2">
                                         <button
                                             type="button"
-                                            onClick={(e) => {
-                                                e.stopPropagation()
-                                                setShowBrandDropdown(prev => !prev)
-                                            }}
-                                            className="p-1 text-gray-400 hover:text-gray-600 cursor-pointer"
-                                            title="Toggle brand list"
+                                            onClick={handleSelectAllBrands}
+                                            className="text-[11px] text-blue-600 hover:underline font-medium"
                                         >
-                                            <RiArrowDownSLine size={18} className={`transition-transform duration-200 ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                                            Select All
+                                        </button>
+                                        <span className="text-gray-300 text-xs">|</span>
+                                        <button
+                                            type="button"
+                                            onClick={handleClearAllBrands}
+                                            className="text-[11px] text-red-500 hover:underline font-medium"
+                                        >
+                                            Clear All
                                         </button>
                                     </div>
                                 </div>
 
-                                {showBrandDropdown && (
-                                    <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                                        {loadingBrands ? (
-                                            <div className="p-4 text-center text-gray-500 text-xs">
-                                                Loading brands...
-                                            </div>
-                                        ) : filteredBrands.length > 0 ? (
-                                            filteredBrands.map((brand, index) => {
-                                                const isSelected = selectedBrand && (
-                                                    (selectedBrand.brandID && (selectedBrand.brandID === brand.brandID || selectedBrand.brandID === brand.uid)) ||
-                                                    (selectedBrand.uid && (selectedBrand.uid === brand.uid || selectedBrand.uid === brand.brandID))
-                                                )
-
-                                                return (
-                                                    <div
-                                                        key={brand.brandID || brand.uid || index}
-                                                        onMouseDown={(e) => {
-                                                            // Prevent blur event from firing
-                                                            e.preventDefault()
-                                                        }}
-                                                        onClick={() => handleBrandSelect(brand)}
-                                                        className={`px-4 py-2.5 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 flex items-center justify-between transition-colors ${
-                                                            isSelected ? 'bg-blue-50/70' : ''
-                                                        }`}
-                                                    >
-                                                        <div>
-                                                            <div className="font-medium text-xs text-gray-900 flex items-center gap-1.5">
-                                                                <RiStoreLine className="text-gray-400" size={14} />
-                                                                {brand.name || brand.username || 'Unnamed Brand'}
-                                                            </div>
-                                                            {(brand.emailID || brand.username) && (
-                                                                <div className="text-[11px] text-gray-500 pl-5">
-                                                                    {brand.emailID || `@${brand.username}`}
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                        {isSelected && (
-                                                            <RiCheckLine className="text-blue-600" size={16} />
-                                                        )}
-                                                    </div>
-                                                )
-                                            })
-                                        ) : (
-                                            <div className="p-4 text-center text-gray-500 text-xs">
-                                                No brands found
-                                            </div>
-                                        )}
+                                {/* Selected Brands Chips */}
+                                {selectedBrands.length > 0 && (
+                                    <div className="flex flex-wrap gap-1.5 mb-1">
+                                        {selectedBrands.map(b => (
+                                            <span
+                                                key={b.brandID || b.uid}
+                                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${
+                                                    b.isInhouse
+                                                        ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
+                                                        : 'bg-blue-50 text-blue-700 border border-blue-200'
+                                                }`}
+                                            >
+                                                {b.name}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveBrandChip(b.brandID || b.uid)}
+                                                    className="hover:text-red-600 rounded-full p-0.5"
+                                                >
+                                                    <RiCloseLine size={14} />
+                                                </button>
+                                            </span>
+                                        ))}
                                     </div>
                                 )}
-                            </div>
-                            <p className="text-xs text-gray-500">Select from the list or type to search by brand name</p>
-                        </div>
 
-                        <div className="flex flex-col md:flex-row gap-4 items-end">
+                                {/* Dropdown Input Container */}
+                                <div className="relative" ref={dropdownRef}>
+                                    <div className="relative flex items-center">
+                                        <input
+                                            type="text"
+                                            placeholder="Search and select brands..."
+                                            value={brandSearchText}
+                                            onChange={(e) => {
+                                                setBrandSearchText(e.target.value)
+                                                setShowBrandDropdown(true)
+                                            }}
+                                            onFocus={() => setShowBrandDropdown(true)}
+                                            className="w-full p-2 pr-10 rounded-[10px] border border-gray-300 text-xs h-[38px] focus:outline-none focus:border-blue-500"
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowBrandDropdown(prev => !prev)}
+                                            className="absolute right-2 p-1 text-gray-400 hover:text-gray-600"
+                                        >
+                                            <RiArrowDownSLine size={18} className={`transition-transform ${showBrandDropdown ? 'rotate-180' : ''}`} />
+                                        </button>
+                                    </div>
+
+                                    {/* Dropdown Menu with Checkboxes */}
+                                    {showBrandDropdown && (
+                                        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                                            {loadingBrands ? (
+                                                <div className="p-4 text-center text-gray-500 text-xs">
+                                                    Loading brands...
+                                                </div>
+                                            ) : filteredBrands.length > 0 ? (
+                                                filteredBrands.map((brand, index) => {
+                                                    const brandID = brand.brandID || brand.uid
+                                                    const isChecked = selectedBrands.some(b => (b.brandID || b.uid) === brandID)
+
+                                                    return (
+                                                        <div
+                                                            key={brandID || index}
+                                                            onClick={() => toggleBrandSelection(brand)}
+                                                            className={`px-3.5 py-2.5 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0 flex items-center justify-between transition-colors ${
+                                                                isChecked ? 'bg-blue-50/70' : ''
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-center gap-2.5">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={isChecked}
+                                                                    onChange={() => {}} // Handled by container onClick
+                                                                    className="rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                                                />
+                                                                <div>
+                                                                    <div className="font-medium text-xs text-gray-900 flex items-center gap-1.5">
+                                                                        {brand.isInhouse ? (
+                                                                            <RiBuildingLine className="text-indigo-500" size={14} />
+                                                                        ) : (
+                                                                            <RiStoreLine className="text-gray-400" size={14} />
+                                                                        )}
+                                                                        {brand.name}
+                                                                    </div>
+                                                                    {brand.emailID && (
+                                                                        <div className="text-[11px] text-gray-500 pl-5">
+                                                                            {brand.emailID}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                            {isChecked && (
+                                                                <RiCheckLine className="text-blue-600" size={16} />
+                                                            )}
+                                                        </div>
+                                                    )
+                                                })
+                                            ) : (
+                                                <div className="p-4 text-center text-gray-500 text-xs">
+                                                    No matching brands found
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Date Filters & Action Controls */}
+                        <div className="flex flex-col md:flex-row gap-4 items-end pt-3 border-t border-gray-100">
                             <div className="flex-1">
-                                <label className="text-sm font-medium text-secondary-text mb-2 block">From Date</label>
+                                <label className="text-xs font-medium text-secondary-text mb-1.5 block">From Date</label>
                                 <input
                                     type="date"
                                     value={fromDate}
                                     onChange={(e) => setFromDate(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs h-[38px]"
                                 />
                             </div>
                             <div className="flex-1">
-                                <label className="text-sm font-medium text-secondary-text mb-2 block">To Date</label>
+                                <label className="text-xs font-medium text-secondary-text mb-1.5 block">To Date</label>
                                 <input
                                     type="date"
                                     value={toDate}
                                     onChange={(e) => setToDate(e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-xs h-[38px]"
                                 />
                             </div>
-                            <button
-                                onClick={handleSearch}
-                                disabled={!isSearchEnabled}
-                                className="shrink-0 px-6 py-2 bg-blue-600 text-white rounded text-[12px] hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed h-[35px]"
-                            >
-                                Search
-                            </button>
+                            <div className="flex gap-2 shrink-0">
+                                {(fromDate || toDate) && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setFromDate('')
+                                            setToDate('')
+                                            fetchOrders({ page: 1 })
+                                        }}
+                                        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-xs hover:bg-gray-200 h-[38px] font-medium"
+                                    >
+                                        Clear Dates
+                                    </button>
+                                )}
+                                <button
+                                    onClick={handleSearch}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg text-xs hover:bg-blue-700 h-[38px] font-semibold transition-colors"
+                                >
+                                    Filter Orders
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Selected Brand Info */}
-                        {selectedBrand && (
-                            <div className="text-sm text-secondary-text pt-2 border-t border-gray-200">
-                                <span className="font-medium">Selected Brand:</span> <span className="text-blue-600">{selectedBrand.name}</span>
+                        {/* Stats Bar */}
+                        <div className="flex flex-wrap gap-4 text-xs text-secondary-text pt-3 border-t border-gray-100 items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="font-semibold text-gray-700">Mode:</span>
+                                <span className="bg-gray-100 text-gray-800 px-2 py-0.5 rounded font-medium">
+                                    {filterType === 'except_inhouse' && 'All Except Inhouse'}
+                                    {filterType === 'only_inhouse' && 'Only Inhouse'}
+                                    {filterType === 'all' && 'All Brands'}
+                                    {filterType === 'custom' && `Custom (${selectedBrands.length} Selected)`}
+                                </span>
                             </div>
-                        )}
+                            <div className="flex gap-4">
+                                <span>Total Orders: <strong className="text-gray-900">{pagination.totalOrders}</strong></span>
+                                <span>Page <strong className="text-gray-900">{pagination.currentPage}</strong> of <strong className="text-gray-900">{pagination.totalPages}</strong></span>
+                            </div>
+                        </div>
 
-                        {/* Stats */}
-                        {selectedBrand && (
-                            <div className="flex gap-4 text-sm text-secondary-text pt-2 border-t border-gray-200">
-                                <span className="font-medium">Total Orders: <span className="text-foreground">{pagination.totalOrders}</span></span>
-                                <span className="font-medium">Page: <span className="text-foreground">{pagination.currentPage} of {pagination.totalPages}</span></span>
-                            </div>
-                        )}
                     </div>
                 </div>
             </Container>
 
-            {/* Initial Empty State - Before Brand Search */}
-            {!selectedBrand && (
+            {/* Custom Mode Empty Selection Notice */}
+            {filterType === 'custom' && selectedBrands.length === 0 && (
                 <Container containerclass="bg-transparent">
-                    <div className="flex items-center justify-center min-h-[400px]">
+                    <div className="flex items-center justify-center min-h-[300px]">
                         <div className="max-w-md w-full text-center">
-                            <div className="flex justify-center mb-6">
-                                <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <RiSearchLine className="text-gray-400" size={40} />
+                            <div className="flex justify-center mb-4">
+                                <div className="w-16 h-16 rounded-full bg-purple-50 flex items-center justify-center">
+                                    <RiCheckboxMultipleLine className="text-purple-500" size={32} />
                                 </div>
                             </div>
-                            <h3 className="text-xl font-semibold text-foreground mb-2">
-                                Search a Brand to View Orders
+                            <h3 className="text-lg font-semibold text-foreground mb-1">
+                                Select Brands to View Orders
                             </h3>
-                            <p className="text-gray-500 text-sm">
-                                Enter a brand name above to view brand-wise orders and revenue.
+                            <p className="text-gray-500 text-xs">
+                                Use the dropdown above to choose one or multiple brands for custom filtering.
                             </p>
                         </div>
                     </div>
                 </Container>
             )}
 
-            {/* Orders Table - Only show when brand is selected */}
-            {selectedBrand && (
+            {/* Orders Table */}
+            {(filterType !== 'custom' || selectedBrands.length > 0) && (
                 <Container containerclass="bg-transparent">
                     <Table className="border-separate border-spacing-y-2">
                         <TableHeader>
-                            <TableRow className="text-unique text-[16px] uppercase">
+                            <TableRow className="text-unique text-[14px] uppercase">
                                 <TableHead className="pl-5">ORDER ID</TableHead>
-                                <TableHead className="text-left pl-10">Customer</TableHead>
+                                <TableHead className="text-left pl-6">Customer</TableHead>
+                                <TableHead className="text-left">Brand(s)</TableHead>
                                 <TableHead className="text-center">Items</TableHead>
-                                <TableHead className="text-center">Brand Amount</TableHead>
+                                <TableHead className="text-center">Amount</TableHead>
                                 <TableHead className="text-center">Status</TableHead>
                                 <TableHead className="text-center">Payment</TableHead>
                                 <TableHead className="text-center">Ordered On</TableHead>
@@ -471,7 +625,7 @@ const BrandOrders = () => {
                         <TableBody className="bg-white">
                             {loadingAPI && orderList?.length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={8} className='rounded-[10px]'>
+                                    <TableCell colSpan={9} className='rounded-[10px]'>
                                         <DotLottieReact
                                             src="https://lottie.host/15a4b106-bbe8-40d8-bb4e-834fb23fceae/I9HKWeP6l2.lottie"
                                             loop
@@ -485,47 +639,63 @@ const BrandOrders = () => {
                             {orderList?.length > 0 && !loadingAPI &&
                                 orderList?.map((order, index) => {
                                     const isExpanded = expandedOrders.has(order.orderID)
+                                    const brandNames = order.brandNames ? order.brandNames.split(', ') : [order.brandName || 'Inhouse']
+
                                     return (
                                         <React.Fragment key={index}>
-                                            <TableRow className="rounded-full bg-white shadow-lg shadow-cyan-500/50">
-                                                <TableCell className="rounded-l-[10px] font-bold py-5 pl-5">
+                                            <TableRow className="rounded-full bg-white shadow-sm hover:shadow-md transition-shadow">
+                                                <TableCell className="rounded-l-[10px] font-bold py-4 pl-5">
                                                     #{order.orderID}
                                                 </TableCell>
-                                                <TableCell className="text-center py-5 pl-10">
-                                                    <div className="flex gap-2 justify-start items-center">
-                                                        <div className="flex flex-col justify-start items-start text-right">
-                                                            <p className='text-right font-medium'>{order.customerName || 'N/A'}</p>
-                                                        </div>
+                                                <TableCell className="py-4 pl-6">
+                                                    <div className="flex flex-col">
+                                                        <span className="font-medium text-xs text-gray-900">{order.customerName || 'N/A'}</span>
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className="text-center py-5">
-                                                    <span className="bg-gray-100 px-2 py-1 rounded text-sm">
+                                                <TableCell className="py-4 text-xs">
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {brandNames.map((bn, bIdx) => (
+                                                            <span
+                                                                key={bIdx}
+                                                                className={`px-2 py-0.5 rounded text-[11px] font-medium ${
+                                                                    bn === 'Inhouse'
+                                                                        ? 'bg-purple-100 text-purple-800'
+                                                                        : 'bg-blue-100 text-blue-800'
+                                                                }`}
+                                                            >
+                                                                {bn}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-center py-4">
+                                                    <span className="bg-gray-100 px-2 py-1 rounded text-xs">
                                                         {order.itemCount}
                                                     </span>
                                                 </TableCell>
-                                                <TableCell className="text-center py-5 font-medium">
+                                                <TableCell className="text-center py-4 font-semibold text-xs text-gray-900">
                                                     {formatPrice(order.brandOrderAmount)}
                                                 </TableCell>
-                                                <TableCell className="text-center py-5">
-                                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(order.orderStatus)}`}>
+                                                <TableCell className="text-center py-4">
+                                                    <span className={`px-2 py-1 rounded-full text-[11px] font-medium ${getStatusColor(order.orderStatus)}`}>
                                                         {order.orderStatus || 'N/A'}
                                                     </span>
                                                 </TableCell>
-                                                <TableCell className="text-center py-5">
-                                                    <div className="flex flex-col gap-1">
-                                                        <span className="text-sm font-medium">{order.paymentMode || 'N/A'}</span>
-                                                        <span className={`px-2 py-1 rounded-full text-xs ${getPaymentStatusColor(order.paymentStatus)}`}>
+                                                <TableCell className="text-center py-4">
+                                                    <div className="flex flex-col items-center gap-0.5">
+                                                        <span className="text-xs font-medium">{order.paymentMode || 'N/A'}</span>
+                                                        <span className={`px-2 py-0.5 rounded-full text-[10px] ${getPaymentStatusColor(order.paymentStatus)}`}>
                                                             {order.paymentStatus || 'N/A'}
                                                         </span>
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className="text-center py-5 text-sm">
+                                                <TableCell className="text-center py-4 text-xs">
                                                     {formatDate(order.orderDate)}
                                                 </TableCell>
                                                 <TableCell className="rounded-r-[10px] text-center pr-5">
-                                                    <div className="flex-center gap-2">
+                                                    <div className="flex justify-center items-center">
                                                         <button
-                                                            className='bg-blue-600 cursor border-none text-white p-2 rounded-full flex-center hover:bg-blue-700'
+                                                            className='bg-blue-600 border-none text-white p-2 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors'
                                                             onClick={() => toggleOrderExpansion(order.orderID)}
                                                             title={isExpanded ? "Hide Items" : "Show Items"}
                                                         >
@@ -534,33 +704,48 @@ const BrandOrders = () => {
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
+
+                                            {/* Expanded Order Items */}
                                             {isExpanded && order.items && order.items.length > 0 && (
                                                 <TableRow>
-                                                    <TableCell colSpan={8} className="bg-background">
-                                                        <div className="p-4">
-                                                            <h4 className="font-semibold mb-3">Order Items (Brand Only)</h4>
+                                                    <TableCell colSpan={9} className="bg-gray-50/60 p-0">
+                                                        <div className="p-4 border-l-4 border-blue-500 my-2">
+                                                            <h4 className="font-semibold text-xs text-gray-700 mb-3 flex items-center gap-1.5">
+                                                                <RiStoreLine size={16} className="text-blue-600" />
+                                                                Order Items Breakdown
+                                                            </h4>
                                                             <div className="overflow-x-auto">
-                                                                <table className="w-full text-sm">
+                                                                <table className="w-full text-xs">
                                                                     <thead>
-                                                                        <tr className="border-b">
+                                                                        <tr className="border-b bg-gray-100/70 text-gray-600">
                                                                             <th className="text-left p-2">Product</th>
+                                                                            <th className="text-left p-2">Brand</th>
                                                                             <th className="text-left p-2">Variation</th>
-                                                                            <th className="text-center p-2">Quantity</th>
+                                                                            <th className="text-center p-2">Qty</th>
                                                                             <th className="text-right p-2">Unit Price</th>
                                                                             <th className="text-right p-2">Line Total</th>
-                                                                            <th className="text-center p-2">Status</th>
+                                                                            <th className="text-center p-2">Item Status</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
+                                                                    <tbody className="divide-y divide-gray-200 bg-white">
                                                                         {order.items.map((item, itemIndex) => (
-                                                                            <tr key={itemIndex} className="border-b">
-                                                                                <td className="p-2">{item.name}</td>
-                                                                                <td className="p-2">{item.variationName || 'N/A'}</td>
+                                                                            <tr key={itemIndex} className="hover:bg-gray-50">
+                                                                                <td className="p-2 font-medium">{item.name}</td>
+                                                                                <td className="p-2">
+                                                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-medium ${
+                                                                                        (item.brandName || 'Inhouse') === 'Inhouse'
+                                                                                            ? 'bg-purple-100 text-purple-800'
+                                                                                            : 'bg-blue-100 text-blue-800'
+                                                                                    }`}>
+                                                                                        {item.brandName || 'Inhouse'}
+                                                                                    </span>
+                                                                                </td>
+                                                                                <td className="p-2 text-gray-500">{item.variationName || 'N/A'}</td>
                                                                                 <td className="text-center p-2">{item.quantity}</td>
                                                                                 <td className="text-right p-2">{formatPrice(item.unitPriceAfter)}</td>
-                                                                                <td className="text-right p-2 font-medium">{formatPrice(item.lineTotalAfter)}</td>
+                                                                                <td className="text-right p-2 font-semibold text-gray-900">{formatPrice(item.lineTotalAfter)}</td>
                                                                                 <td className="text-center p-2">
-                                                                                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(item.itemStatus)}`}>
+                                                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] ${getStatusColor(item.itemStatus)}`}>
                                                                                         {item.itemStatus || 'N/A'}
                                                                                     </span>
                                                                                 </td>
@@ -568,9 +753,9 @@ const BrandOrders = () => {
                                                                         ))}
                                                                     </tbody>
                                                                     <tfoot>
-                                                                        <tr className="font-semibold">
-                                                                            <td colSpan={4} className="text-right p-2">Total:</td>
-                                                                            <td className="text-right p-2">{formatPrice(order.brandOrderAmount)}</td>
+                                                                        <tr className="font-semibold bg-gray-50">
+                                                                            <td colSpan={5} className="text-right p-2 text-gray-700">Total Filtered Amount:</td>
+                                                                            <td className="text-right p-2 text-blue-600 font-bold">{formatPrice(order.brandOrderAmount)}</td>
                                                                             <td></td>
                                                                         </tr>
                                                                     </tfoot>
@@ -584,18 +769,19 @@ const BrandOrders = () => {
                                     )
                                 })
                             }
-                            {!loadingAPI && orderList?.length === 0 && selectedBrand && (
+
+                            {!loadingAPI && orderList?.length === 0 && (
                                 <TableRow>
-                                    <TableCell colSpan={8} className="px-6 py-12">
+                                    <TableCell colSpan={9} className="px-6 py-12">
                                         <div className="flex flex-col items-center justify-center">
                                             <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
                                                 <RiInboxLine className="text-gray-400" size={32} />
                                             </div>
-                                            <p className="text-gray-500 text-lg font-medium mb-1">No orders found for this brand</p>
-                                            <p className="text-gray-400 text-sm">
+                                            <p className="text-gray-500 text-base font-medium mb-1">No orders found</p>
+                                            <p className="text-gray-400 text-xs">
                                                 {fromDate || toDate
-                                                    ? "Try changing the date range or search another brand."
-                                                    : "This brand has no orders yet."}
+                                                    ? "Try expanding the date range or choosing a different brand filter."
+                                                    : "No orders match the selected brand criteria."}
                                             </p>
                                         </div>
                                     </TableCell>
@@ -607,7 +793,7 @@ const BrandOrders = () => {
             )}
 
             {/* Pagination */}
-            {selectedBrand && !loadingAPI && pagination.totalPages > 1 && (
+            {!loadingAPI && pagination.totalPages > 1 && (
                 <Container containerclass="bg-transparent">
                     <SimplePagination
                         currentPage={pagination.currentPage}
@@ -623,4 +809,3 @@ const BrandOrders = () => {
 }
 
 export default BrandOrders
-

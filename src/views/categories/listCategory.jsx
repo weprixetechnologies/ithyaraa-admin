@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/container";
-import { getPaginatedCategories, getCategoryCount, deleteCategory, bulkSetFeatured } from "./../../lib/api/categoryApi";
+import { getPaginatedCategories, getCategoryCount, deleteCategory, bulkSetFeatured, reorderAllCategories } from "./../../lib/api/categoryApi";
 import { Input } from "@/components/ui/input";
 import {
     RiSearchLine,
@@ -19,7 +19,12 @@ import {
     RiImageLine,
     RiFolderLine,
     RiCloseLine,
-    RiDeleteBinLine
+    RiDeleteBinLine,
+    RiListOrdered2,
+    RiArrowUpLine,
+    RiArrowDownLine,
+    RiSaveLine,
+    RiDragMove2Fill
 } from "react-icons/ri";
 import { MdEdit } from "react-icons/md";
 import { IoMdEye } from "react-icons/io";
@@ -36,6 +41,14 @@ const ListCategory = () => {
     const limit = 10;
     const navigate = useNavigate();
     const [selectedCategories, setSelectedCategories] = useState([]);
+
+    // Reorder State
+    const [showReorderModal, setShowReorderModal] = useState(false);
+    const [reorderList, setReorderList] = useState([]);
+    const [reorderLoading, setReorderLoading] = useState(false);
+    const [savingOrder, setSavingOrder] = useState(false);
+    const [draggedIndex, setDraggedIndex] = useState(null);
+    const [dragOverIndex, setDragOverIndex] = useState(null);
 
     // Fetch categories
     const fetchData = async () => {
@@ -69,6 +82,93 @@ const ListCategory = () => {
     const handleSearch = () => {
         setPage(1);
         fetchData();
+    };
+
+    const handleOpenReorderModal = async () => {
+        setShowReorderModal(true);
+        setReorderLoading(true);
+        try {
+            const res = await getPaginatedCategories({ page: 1, limit: 1000 });
+            if (res && res.data) {
+                setReorderList(res.data);
+            }
+        } catch (err) {
+            console.error("Error fetching categories for reorder:", err);
+            toast.error("Failed to fetch categories for reordering");
+        } finally {
+            setReorderLoading(false);
+        }
+    };
+
+    const moveReorderItem = (index, direction) => {
+        const newList = [...reorderList];
+        const targetIndex = direction === 'up' ? index - 1 : index + 1;
+        if (targetIndex >= 0 && targetIndex < newList.length) {
+            const temp = newList[index];
+            newList[index] = newList[targetIndex];
+            newList[targetIndex] = temp;
+            setReorderList(newList);
+        }
+    };
+
+    // Drag and Drop handlers for reorder modal
+    const handleDragStart = (e, index) => {
+        setDraggedIndex(index);
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", String(index));
+    };
+
+    const handleDragOver = (e, index) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        if (dragOverIndex !== index) {
+            setDragOverIndex(index);
+        }
+    };
+
+    const handleDragLeave = () => {
+        setDragOverIndex(null);
+    };
+
+    const handleDrop = (e, targetIndex) => {
+        e.preventDefault();
+        setDragOverIndex(null);
+        if (draggedIndex === null || draggedIndex === targetIndex) return;
+
+        const newList = [...reorderList];
+        const [movedItem] = newList.splice(draggedIndex, 1);
+        newList.splice(targetIndex, 0, movedItem);
+
+        setReorderList(newList);
+        setDraggedIndex(null);
+    };
+
+    const handleDragEnd = () => {
+        setDraggedIndex(null);
+        setDragOverIndex(null);
+    };
+
+    const handleSaveOrder = async () => {
+        try {
+            setSavingOrder(true);
+            const payload = reorderList.map((cat, index) => ({
+                categoryID: cat.categoryID,
+                order: index + 1
+            }));
+            const response = await reorderAllCategories(payload);
+            if (response.success) {
+                toast.success(response.message || "Category order updated successfully!");
+                setShowReorderModal(false);
+                fetchData();
+            } else {
+                toast.error(response.error || response.message || "Failed to update category order");
+            }
+        } catch (err) {
+            console.error("Error saving category order:", err);
+            toast.error("An error occurred while saving category order");
+        } finally {
+            setSavingOrder(false);
+        }
     };
 
     const handleDeleteCategory = async (categoryID, categoryName) => {
@@ -184,6 +284,14 @@ const ListCategory = () => {
                                 >
                                     <RiRefreshLine className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                                     Refresh
+                                </Button>
+                                <Button
+                                    onClick={handleOpenReorderModal}
+                                    variant="outline"
+                                    className="flex items-center gap-2 border-purple-300 text-purple-700 hover:bg-purple-50 font-medium"
+                                >
+                                    <RiListOrdered2 className="w-4 h-4 text-purple-600" />
+                                    Reorder Categories
                                 </Button>
                                 <Button className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" onClick={() => navigate('/categories/add')}>
                                     <RiAddLine className="w-4 h-4" />
@@ -338,6 +446,9 @@ const ListCategory = () => {
                                                 className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
                                             />
                                         </TableHead>
+                                        <TableHead className="px-4 py-4 text-center text-xs font-semibold text-secondary-text uppercase tracking-wider">
+                                            Order
+                                        </TableHead>
                                         <TableHead className="px-6 py-4 text-left text-xs font-semibold text-secondary-text uppercase tracking-wider">
                                             ID
                                         </TableHead>
@@ -358,7 +469,7 @@ const ListCategory = () => {
                                 <TableBody className="bg-white divide-y divide-gray-100">
                                     {loading ? (
                                         <TableRow>
-                                            <TableCell colSpan={5} className="px-6 py-12 text-center">
+                                            <TableCell colSpan={7} className="px-6 py-12 text-center">
                                                 <div className="flex flex-col items-center justify-center">
                                                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-4"></div>
                                                     <p className="text-gray-500 text-lg">Loading categories...</p>
@@ -367,7 +478,7 @@ const ListCategory = () => {
                                         </TableRow>
                                     ) : categories.length === 0 ? (
                                         <TableRow>
-                                            <TableCell colSpan={5} className="px-6 py-12 text-center">
+                                            <TableCell colSpan={7} className="px-6 py-12 text-center">
                                                 <div className="flex flex-col items-center justify-center">
                                                     <RiFolderLine className="w-16 h-16 text-gray-300 mb-4" />
                                                     <p className="text-gray-500 text-lg font-medium">No categories found</p>
@@ -389,6 +500,11 @@ const ListCategory = () => {
                                                         onChange={() => toggleSelect(cat.categoryID)}
                                                         className="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
                                                     />
+                                                </TableCell>
+                                                <TableCell className="px-4 py-4 whitespace-nowrap text-center">
+                                                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-purple-100 text-purple-800 text-xs font-bold border border-purple-200">
+                                                        {cat.order ?? (idx + 1)}
+                                                    </span>
                                                 </TableCell>
                                                 <TableCell className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex items-center">
@@ -531,6 +647,130 @@ const ListCategory = () => {
                                     >
                                         Next
                                     </Button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {/* Reorder Modal */}
+                    {showReorderModal && (
+                        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col border border-purple-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+                                {/* Modal Header */}
+                                <div className="p-5 border-b border-gray-100 flex items-center justify-between bg-gradient-to-r from-purple-50 to-pink-50">
+                                    <div>
+                                        <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                                            <RiListOrdered2 className="w-5 h-5 text-purple-600" />
+                                            Reorder Categories
+                                        </h2>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Drag and drop items or use up/down arrows to reorder. Sequence set here will reflect on the website categories page.
+                                        </p>
+                                    </div>
+                                    <button
+                                        onClick={() => setShowReorderModal(false)}
+                                        className="text-gray-400 hover:text-gray-600 p-1.5 rounded-full hover:bg-white transition-colors"
+                                    >
+                                        <RiCloseLine className="w-6 h-6" />
+                                    </button>
+                                </div>
+
+                                {/* Modal Body */}
+                                <div className="p-5 overflow-y-auto flex-1 bg-slate-50/50 space-y-2">
+                                    {reorderLoading ? (
+                                        <div className="flex flex-col items-center justify-center py-12">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mb-3"></div>
+                                            <p className="text-sm text-gray-500">Loading categories...</p>
+                                        </div>
+                                    ) : reorderList.length === 0 ? (
+                                        <div className="text-center py-8 text-gray-500">No categories found to reorder.</div>
+                                    ) : (
+                                        reorderList.map((cat, index) => (
+                                            <div
+                                                key={cat.categoryID}
+                                                draggable
+                                                onDragStart={(e) => handleDragStart(e, index)}
+                                                onDragOver={(e) => handleDragOver(e, index)}
+                                                onDragLeave={handleDragLeave}
+                                                onDrop={(e) => handleDrop(e, index)}
+                                                onDragEnd={handleDragEnd}
+                                                className={`flex items-center justify-between p-3 rounded-xl border transition-all duration-200 cursor-grab active:cursor-grabbing ${
+                                                    draggedIndex === index
+                                                        ? "opacity-40 border-dashed border-purple-500 bg-purple-50"
+                                                        : dragOverIndex === index
+                                                        ? "border-purple-600 bg-purple-100/70 shadow-md scale-[1.01]"
+                                                        : "bg-white border-gray-200 hover:border-purple-300 hover:shadow-md"
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <div className="text-gray-400 hover:text-purple-600 cursor-grab active:cursor-grabbing p-1">
+                                                        <RiDragMove2Fill className="w-5 h-5" />
+                                                    </div>
+                                                    <span className="w-7 h-7 rounded-full bg-purple-100 text-purple-700 font-bold text-xs flex items-center justify-center border border-purple-200">
+                                                        {index + 1}
+                                                    </span>
+                                                    {cat.featuredImage ? (
+                                                        <img
+                                                            src={cat.featuredImage}
+                                                            alt={cat.categoryName}
+                                                            className="w-10 h-10 rounded-lg object-cover border border-gray-200 pointer-events-none"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 text-xs pointer-events-none">
+                                                            <RiImageLine className="w-5 h-5" />
+                                                        </div>
+                                                    )}
+                                                    <div>
+                                                        <h4 className="text-sm font-bold text-gray-900">{cat.categoryName}</h4>
+                                                        <p className="text-xs text-gray-400 font-mono">ID: {cat.categoryID}</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-1.5">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => moveReorderItem(index, 'up')}
+                                                        disabled={index === 0}
+                                                        className="h-8 w-8 p-0 border-gray-200 hover:bg-purple-50 text-gray-700 disabled:opacity-30"
+                                                    >
+                                                        <RiArrowUpLine className="w-4 h-4 text-purple-600" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        onClick={() => moveReorderItem(index, 'down')}
+                                                        disabled={index === reorderList.length - 1}
+                                                        className="h-8 w-8 p-0 border-gray-200 hover:bg-purple-50 text-gray-700 disabled:opacity-30"
+                                                    >
+                                                        <RiArrowDownLine className="w-4 h-4 text-purple-600" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                {/* Modal Footer */}
+                                <div className="p-4 border-t border-gray-100 bg-white flex items-center justify-between">
+                                    <span className="text-xs text-gray-500 font-medium">
+                                        Total: {reorderList.length} categories
+                                    </span>
+                                    <div className="flex items-center gap-3">
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => setShowReorderModal(false)}
+                                            disabled={savingOrder}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            onClick={handleSaveOrder}
+                                            disabled={savingOrder || reorderLoading || reorderList.length === 0}
+                                            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white flex items-center gap-2"
+                                        >
+                                            <RiSaveLine className="w-4 h-4" />
+                                            {savingOrder ? "Saving..." : "Save Order"}
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

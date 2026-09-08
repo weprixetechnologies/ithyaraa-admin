@@ -19,6 +19,7 @@ import Login from './views/auth/login';
 import AddProduct from './views/products/addProduct';
 import ListProducts from './views/products/listProducts';
 import EditProduct from './views/products/editProduct';
+import ProductBadges from './views/products/productBadges';
 import ListCategory from './views/categories/listCategory';
 import AddCategory from './views/categories/addCategory';
 import EditCategory from './views/categories/editCategory';
@@ -149,6 +150,7 @@ function App() {
 
         <Route path="/products/add" element={<ProtectedRoute>     <AddProduct />   </ProtectedRoute>} />
         <Route path="/products/list" element={<ProtectedRoute>     <ListProducts />   </ProtectedRoute>} />
+        <Route path="/products/badges" element={<ProtectedRoute>     <ProductBadges />   </ProtectedRoute>} />
         <Route path="/products/deleted" element={<ProtectedRoute>     <SoftDeletedProducts />   </ProtectedRoute>} />
         <Route path="/products/details/:productID" element={<ProtectedRoute>     <EditProduct />   </ProtectedRoute>} />
 

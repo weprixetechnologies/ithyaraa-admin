@@ -114,3 +114,13 @@ export const reorderCategories = async (reorderedItems) => {
         return { success: false, error: error.message };
     }
 };
+
+export const reorderAllCategories = async (reorderedItems) => {
+    try {
+        const response = await axiosInstance.put("/categories/reorder-all", { reorderedItems });
+        return response.data;
+    } catch (error) {
+        console.error("Error reordering categories:", error);
+        return { success: false, error: error.message };
+    }
+};

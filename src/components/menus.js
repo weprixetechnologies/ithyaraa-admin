@@ -98,6 +98,7 @@ export const mainMenu = [
         subMenu: [
             { menuID: 'admin-products-add', url: '/products/add', icon: <RiFolderAddLine />, title: 'Add Products' },
             { menuID: 'admin-products-list', url: '/products/list', icon: <RiListUnordered />, title: 'List Products' },
+            { menuID: 'admin-product-badges', url: '/products/badges', icon: <RiPriceTagLine />, title: 'Product Badges' },
         ],
     },
     {
