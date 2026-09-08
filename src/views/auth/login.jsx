@@ -41,7 +41,7 @@ const Login = () => {
             setLoading(true);
 
             const response = await axios.post(
-                'http://localhost:7885/api/auth/login',
+                'https://backend.ithyaraa.com/api/auth/login',
                 loginForm,
                 {
                     headers: { 'Content-Type': 'application/json' },
