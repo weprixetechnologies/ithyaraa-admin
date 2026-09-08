@@ -13,7 +13,8 @@ import {
     RiFilterLine,
     RiBuildingLine,
     RiGlobalLine,
-    RiCheckboxMultipleLine
+    RiCheckboxMultipleLine,
+    RiExternalLinkLine
 } from 'react-icons/ri';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useNavigate } from 'react-router-dom';
@@ -645,7 +646,13 @@ const BrandOrders = () => {
                                         <React.Fragment key={index}>
                                             <TableRow className="rounded-full bg-white shadow-sm hover:shadow-md transition-shadow">
                                                 <TableCell className="rounded-l-[10px] font-bold py-4 pl-5">
-                                                    #{order.orderID}
+                                                    <button
+                                                        onClick={() => navigate(`/orders/details/${order.orderID}`)}
+                                                        className="text-blue-600 hover:text-blue-800 hover:underline font-bold text-xs flex items-center gap-1 cursor-pointer"
+                                                        title="Open Order Details Page"
+                                                    >
+                                                        #{order.orderID}
+                                                    </button>
                                                 </TableCell>
                                                 <TableCell className="py-4 pl-6">
                                                     <div className="flex flex-col">
@@ -693,13 +700,23 @@ const BrandOrders = () => {
                                                     {formatDate(order.orderDate)}
                                                 </TableCell>
                                                 <TableCell className="rounded-r-[10px] text-center pr-5">
-                                                    <div className="flex justify-center items-center">
+                                                    <div className="flex justify-center items-center gap-2">
+                                                        {/* Quick Items Breakdown Toggle */}
                                                         <button
-                                                            className='bg-blue-600 border-none text-white p-2 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors'
+                                                            className='bg-blue-600 border-none text-white p-2 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors shadow-sm'
                                                             onClick={() => toggleOrderExpansion(order.orderID)}
-                                                            title={isExpanded ? "Hide Items" : "Show Items"}
+                                                            title={isExpanded ? "Hide Quick Breakdown" : "Quick Breakdown"}
                                                         >
                                                             <IoMdEye style={{ width: '16px', height: '16px' }} />
+                                                        </button>
+
+                                                        {/* Open Order Detail Page */}
+                                                        <button
+                                                            className='bg-emerald-600 border-none text-white p-2 rounded-full flex items-center justify-center hover:bg-emerald-700 transition-colors shadow-sm'
+                                                            onClick={() => navigate(`/orders/details/${order.orderID}`)}
+                                                            title="Open Full Order Detail Page"
+                                                        >
+                                                            <RiExternalLinkLine style={{ width: '16px', height: '16px' }} />
                                                         </button>
                                                     </div>
                                                 </TableCell>
@@ -710,10 +727,18 @@ const BrandOrders = () => {
                                                 <TableRow>
                                                     <TableCell colSpan={9} className="bg-gray-50/60 p-0">
                                                         <div className="p-4 border-l-4 border-blue-500 my-2">
-                                                            <h4 className="font-semibold text-xs text-gray-700 mb-3 flex items-center gap-1.5">
-                                                                <RiStoreLine size={16} className="text-blue-600" />
-                                                                Order Items Breakdown
-                                                            </h4>
+                                                            <div className="flex justify-between items-center mb-3">
+                                                                <h4 className="font-semibold text-xs text-gray-700 flex items-center gap-1.5">
+                                                                    <RiStoreLine size={16} className="text-blue-600" />
+                                                                    Order Items Breakdown
+                                                                </h4>
+                                                                <button
+                                                                    onClick={() => navigate(`/orders/details/${order.orderID}`)}
+                                                                    className="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 hover:underline"
+                                                                >
+                                                                    Open Full Order Details <RiExternalLinkLine size={14} />
+                                                                </button>
+                                                            </div>
                                                             <div className="overflow-x-auto">
                                                                 <table className="w-full text-xs">
                                                                     <thead>
