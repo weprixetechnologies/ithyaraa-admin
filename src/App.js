@@ -29,6 +29,7 @@ import EditOffer from './views/offer/editOffer';
 import ListCoupons from './views/coupons/listCoupons';
 import AddCoupon from './views/coupons/addCoupon';
 import EditCoupon from './views/coupons/editCoupon';
+import FeaturedCoupons from './views/coupons/featuredCoupons';
 import AddMakeCombo from './views/makeCombo/addMakeCombo';
 import ListMakeCombo from './views/makeCombo/listMakeCombo';
 import EditMakeCombo from './views/makeCombo/editMakeCombo';
@@ -167,6 +168,7 @@ function App() {
         <Route path="/coupons/add" element={<ProtectedRoute allowedRoles={['admin']}>     <AddCoupon />   </ProtectedRoute>} />
         <Route path="/coupons/list" element={<ProtectedRoute allowedRoles={['admin']}>     <ListCoupons />   </ProtectedRoute>} />
         <Route path="/coupons/edit/:couponID" element={<ProtectedRoute allowedRoles={['admin']}>     <EditCoupon />   </ProtectedRoute>} />
+        <Route path="/coupons/featured" element={<ProtectedRoute allowedRoles={['admin']}>     <FeaturedCoupons />   </ProtectedRoute>} />
 
         <Route path="/make-combo/add" element={<ProtectedRoute>     <AddMakeCombo />   </ProtectedRoute>} />
         <Route path="/make-combo/list" element={<ProtectedRoute>     <ListMakeCombo />   </ProtectedRoute>} />

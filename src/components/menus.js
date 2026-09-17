@@ -153,6 +153,7 @@ export const mainMenu = [
         subMenu: [
             { menuID: 'admin-coupons-add', url: '/coupons/add', icon: <RiFolderAddLine />, title: 'Add Coupons' },
             { menuID: 'admin-coupons-list', url: '/coupons/list', icon: <RiListUnordered />, title: 'List Coupons' },
+            { menuID: 'admin-coupons-featured', url: '/coupons/featured', icon: <RiStarLine />, title: 'Floating / Featured Coupons' },
         ],
     }, {
         menuID: 'mcombo-m',
