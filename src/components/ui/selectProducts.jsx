@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { getPaginatedProducts, getProductCount } from './../../lib/api/productsApi';
+import { getPaginatedProducts } from './../../lib/api/productsApi';
 import InputUi from '@/components/ui/inputui';
 
 const SelectProducts = ({ onProductToggle, initialSelected = [], type }) => {
@@ -85,17 +85,17 @@ const SelectProducts = ({ onProductToggle, initialSelected = [], type }) => {
                 },
             });
 
-            const { totalItems } = await getProductCount({ ...filters, type });
+            // totalItems is already returned by getPaginatedProducts — no need for a second API call
+            const totalItems = result.totalItems ?? result.total ?? result.count ?? 0;
 
-
-
-
-            const parsedProducts = result.data.map(product => ({
+            const parsedProducts = (result.data || []).map(product => ({
                 ...product,
-                featuredImage: JSON.parse(product.featuredImage || '[]'),
+                featuredImage: (() => {
+                    try { return JSON.parse(product.featuredImage || '[]'); }
+                    catch { return []; }
+                })(),
             }));
 
-            // Calculate total pages more accurately
             const calculatedTotalPages = Math.ceil(totalItems / limit) || 1;
 
             setSelected(prev => ({
@@ -111,7 +111,8 @@ const SelectProducts = ({ onProductToggle, initialSelected = [], type }) => {
             console.error('Error fetching products:', error);
             setSelected(prev => ({ ...prev, loading: false }));
         }
-    }, [appliedFilters, productsByPage, type, filters]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [appliedFilters, type]);
 
     // Toggle product selection with callback to parent
     const toggleProductSelection = (productID) => {

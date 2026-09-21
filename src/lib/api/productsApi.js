@@ -24,16 +24,7 @@ export const getPaginatedProducts = async ({ page = 1, limit = 10, filters = {} 
     }
 
     const queryUrl = `/products/all-products?${params.toString()}`;
-    console.log('GET:', queryUrl);
-    console.log('Filters:', filters);
-
-    const start = performance.now(); // start timing
     const response = await axiosInstance.get(queryUrl);
-    const end = performance.now();   // end timing
-
-    console.log(response);
-    console.log(`⏱ Request took ${(end - start).toFixed(2)} ms`);
-
     return response.data;
 };
 
@@ -49,10 +40,6 @@ export const getProductCount = async (filters = {}) => {
     }
 
     const response = await axiosInstance.get(`/products/count-product?${params.toString()}`);
-    // console.log(response);
-
-    console.log('count', response.data);
-
     return response.data || 0;
 };
 
@@ -93,5 +80,20 @@ export const bulkRemoveSection = async ({ productIDs }) => {
     const response = await axiosInstance.post('/products/bulk-remove-section', {
         productIDs
     });
+    return response.data;
+};
+
+export const getProductsForReorder = async (filters = {}) => {
+    const params = new URLSearchParams();
+    if (filters.search) params.append('search', filters.search);
+    if (filters.categoryID) params.append('categoryID', filters.categoryID);
+    if (filters.brandID) params.append('brandID', filters.brandID);
+    
+    const response = await axiosInstance.get(`/products/reorder-list?${params.toString()}`);
+    return response.data;
+};
+
+export const reorderProducts = async (reorderedItems) => {
+    const response = await axiosInstance.put('/products/reorder', { reorderedItems });
     return response.data;
 };

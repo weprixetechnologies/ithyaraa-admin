@@ -116,7 +116,7 @@ const SectionTagManager = () => {
         }
         try {
             setLoadingPreview(true);
-            const res = await axiosInstance.get(`/homepage-tag-sections/${selectedTagSection.tag}/products?limit=50`);
+            const res = await axiosInstance.get(`/homepage-tag-sections/${selectedTagSection.tag}/products?limit=50&refresh=true`);
             if (res.data?.success) {
                 setPreviewProducts(res.data.data || []);
                 setPreviewTotal(res.data.total || 0);
